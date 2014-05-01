@@ -1,0 +1,13 @@
+{
+  "name": "kronos-app-frontend",
+  "version": "0.0.0",
+  "homepage": "https://github.com/kronostechnologies/kronos-app-frontend",
+  "description": "Application Frontend by Kronos Technologies",
+  "private": true,
+  "ignore": [
+  ],
+  "dependencies": {
+    "jquery": "1.11.0",
+    "jquery-migrate": "1.2.1",
+  }
+}

@@ -14,7 +14,12 @@ module.exports = function(grunt) {
 
     uglify: {
       'dist/application.min.js': 'dist/application.js',
-      'dist/list.min.js': 'dist/list.js'
+      'dist/list.min.js': 'dist/list.js',
+      'dist/jquery.ajaxUploader.min.js': 'dist/jquery.ajaxUploader.js',
+      'dist/jquery.one-to-many.min.js': 'dist/jquery.one-to-many.js',
+      'dist/jquery.pagination.min.js': 'dist/jquery.pagination.js',
+      'dist/jquery.iphoneui.min.js': 'dist/jquery.iphoneui.js',
+      'dist/jquery.pseudo.min.js': 'dist/jquery.pseudo.js'
     },
 
 

@@ -60,6 +60,7 @@ module.exports = function(grunt) {
     bump: {
       options: {
         files: ['package.json', 'bower.json'],
+        commitFiles: ['package.json', 'bower.json'],
         push: false
       }
     }
@@ -77,6 +78,11 @@ module.exports = function(grunt) {
     'neuter',
     'sass',
     'uglify'
+  ]);
+  
+  grunt.registerTask('release', [
+    'default',
+    'bump',
   ]);
 
 };

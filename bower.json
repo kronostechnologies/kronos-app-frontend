@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "jquery": "1.11.0",
-    "jquery-migrate": "1.2.1"
+    "jquery-migrate": "1.2.1",
+    "jquery-ui": "1.9.2"
   }
 }

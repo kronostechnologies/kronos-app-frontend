@@ -28,7 +28,7 @@ module.exports = function(grunt) {
         files: ['package.json', 'bower.json'],
         commitFiles: ['package.json', 'bower.json'],
         push: true,
-	pushTo: 'master'
+	pushTo: 'origin'
       }
     }
   });

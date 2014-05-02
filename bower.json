@@ -6,7 +6,7 @@
   "private": true,
   "ignore": [
     "**/.*",
-    "src/*"
+    "src/*",
     "node_modules",
     "bower_files"
   ],

@@ -5,9 +5,13 @@
   "description": "Application Frontend by Kronos Technologies",
   "private": true,
   "ignore": [
+    "**/.*",
+    "src/*"
+    "node_modules",
+    "bower_files"
   ],
   "dependencies": {
     "jquery": "1.11.0",
-    "jquery-migrate": "1.2.1",
+    "jquery-migrate": "1.2.1"
   }
 }

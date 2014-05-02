@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "homepage": "https://github.com/kronostechnologies/kronos-app-frontend",
   "description": "Application Frontend by Kronos Technologies",
-  "private": true,
   "ignore": [
     "**/.*",
     "src/*",

@@ -55,6 +55,13 @@ module.exports = function(grunt) {
 //         'frontend/public/css/print_ie.css': 'frontend/app/assets/css/print_ie.scss'
         }
       }
+    },
+
+    bump: {
+      options: {
+        files: ['package.json', 'bower.json'],
+        push: false
+      }
     }
   });
 

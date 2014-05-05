@@ -1331,7 +1331,6 @@ var app = {
 		}
 
 		this._initView();
-
 		this._getViewObject(this.currentView)._validateable = data.validateable;
 
 		if(data.html) {

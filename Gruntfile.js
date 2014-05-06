@@ -5,7 +5,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
 
     copy: {
-      main: { 
+      build: { 
 	files: [
           {expand:true, cwd: 'src/', src: '*.js', dest: 'dist/'},
           {expand:true, cwd: 'src/', src: '*.map', dest: 'dist/'}
@@ -14,10 +14,10 @@ module.exports = function(grunt) {
     },
 
     uglify: {
-      my_target: {
+      build: {
         options: {
           sourceMap:true,
-          mangle: false
+          mangle: true
         },
         files: {
           'dist/application.min.js': 'dist/application.js',

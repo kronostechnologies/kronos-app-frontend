@@ -7,8 +7,6 @@ module.exports = function(grunt) {
     copy: {
       build: { 
 	files: [
-          {expand:true, cwd: 'src/', src: '*.js', dest: 'dist/'},
-          {expand:true, cwd: 'src/', src: '*.map', dest: 'dist/'}
 	]
       }
     },
@@ -20,13 +18,13 @@ module.exports = function(grunt) {
           mangle: true
         },
         files: {
-          'dist/application.min.js': 'dist/application.js',
-          'dist/list.min.js': 'dist/list.js',
-          'dist/jquery.ajaxUploader.min.js': 'dist/jquery.ajaxUploader.js',
-          'dist/jquery.one-to-many.min.js': 'dist/jquery.one-to-many.js',
-          'dist/jquery.pagination.min.js': 'dist/jquery.pagination.js',
-          'dist/jquery.iphoneui.min.js': 'dist/jquery.iphoneui.js',
-          'dist/jquery.pseudo.min.js': 'dist/jquery.pseudo.js'
+          'js/application.min.js': 'js/application.js',
+          'js/list.min.js': 'js/list.js',
+          'js/jquery.ajaxUploader.min.js': 'js/jquery.ajaxUploader.js',
+          'js/jquery.one-to-many.min.js': 'js/jquery.one-to-many.js',
+          'js/jquery.pagination.min.js': 'js/jquery.pagination.js',
+          'js/jquery.iphoneui.min.js': 'js/jquery.iphoneui.js',
+          'js/jquery.pseudo.min.js': 'js/jquery.pseudo.js'
         }
       }
     },

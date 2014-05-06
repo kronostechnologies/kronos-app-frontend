@@ -1,0 +1,27 @@
+#nav-main .active .nav-toggler,
+#nav-main .sub-nav,
+.nav-content-actions .sub-nav {
+	border: 1px solid #ccc;
+}
+
+header #nav-main .active .nav-toggler {
+	margin-top: 7px;
+	margin-left: -11px;
+}
+
+header #nav-main .sub-nav {
+	margin-left: -11px;
+}
+
+.nav-content-actions .sub-nav {
+	margin-left: -1px;
+}
+
+.has-ico .before {
+	margin-top: -5px;
+	padding-bottom: 5px;
+}
+
+.main-search .ico {
+	padding-top: 4px;
+}

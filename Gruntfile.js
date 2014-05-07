@@ -1,26 +1,15 @@
-/*jshint camelcase: false */
-/*global module:false */
-
+// vim: set ts=2 sw=2 sts=2 et :
+/* jshint camelcase: false, node:true, indent: 2 */
+/* global module:false */
 
 module.exports = function(grunt) {
 
-   function readOptionalJSON( filepath ) {
-                var data = {};
-                try {
-                        data = grunt.file.readJSON( filepath );
-                } catch ( e ) {}
-                return data;
-   }
-
-      
-    var jsHintOptions = readOptionalJSON( "js/.jshintrc" );
-
-    grunt.initConfig({
+  grunt.initConfig({
 
     copy: {
-      build: { 
-	files: [
-	]
+	    build: { 
+	      files: [
+	      ]
       }
     },
 
@@ -43,15 +32,11 @@ module.exports = function(grunt) {
     },
 
     jshint: {
-      grunt: {
-        src: ["Gruntfile.js"],
+      all: {
+        src: ["Gruntfile.js", 'js/application.js', 'js/list.js'],
         options: {
           jshintrc: true
         }
-      },
-      js: {
-        src: ['js/application.js', 'js/list.js'],
-	options: jsHintOptions
       }
     },
 
@@ -60,7 +45,7 @@ module.exports = function(grunt) {
         files: ['package.json', 'bower.json'],
         commitFiles: ['package.json', 'bower.json'],
         push: true,
-	pushTo: 'origin'
+	      pushTo: 'origin'
       }
     }
   });
@@ -68,11 +53,6 @@ module.exports = function(grunt) {
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
 
-
-  /*
-    Default task. Compiles templates, neuters application code, and begins
-    watching for changes.
-  */
   grunt.registerTask('default', [
     'jshint',
     'copy',

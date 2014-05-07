@@ -1,17 +1,25 @@
 {
-        "boss": true,
-        "curly": true,
-        "eqeqeq": true,
-        "eqnull": true,
-        "expr": true,
-        "immed": true,
-        "noarg": true,
-        "onevar": true,
-        "smarttabs": true,
-        "trailing": true,
-        "undef": true,
-        "unused": true,
-
-        "node": true
+  "indent": 4,
+  "white": false,
+  "curly": false,
+  "eqeqeq": false,
+  "immed": true,
+  "latedef": true,
+  "newcap": false,
+  "noarg": true,
+  "sub": true,
+  "undef": true,
+  "boss": true,
+  "eqnull": true,
+  "browser": true,
+  "smarttabs": true,
+  "trailing": true,
+  "multistr": true,
+  "jquery":true,
+  "scripturl": true,
+  "globals": {
+    "console": true,
+    "google": true
+  }
 }
 

@@ -25,7 +25,7 @@
 					});
 				}
 
-				if(i != 0) {
+				if(i !== 0) {
 					list.name += '.'+i;
 				}
 				i++;
@@ -39,7 +39,7 @@
 
 				list.selector = $this;
 
-				if(list.nbPages == 0)
+				if(list.nbPages === 0)
 					list.nbPages = 1;
 
 				if(list.page >= list.nbPages) // Pages are indexed from 0, so must be lower than nbPages
@@ -86,14 +86,12 @@
 		},
 
 		options : function() {
-			if(arguments.length == 0 || (arguments.length == 1 && typeof arguments[0] == 'string')) {
-				var opts = new Array();
-
-				var args = arguments;
-
+			var args = arguments;
+			
+			if(arguments.length === 0 || (arguments.length == 1 && typeof arguments[0] == 'string')) {
+				var opts = [];
 				this.each(function() {
 					var list = $(this).data('list');
-
 					if(list) {
 						opts.push({selector : this, options : list.getOptions.apply(list, args)});
 					}
@@ -107,11 +105,8 @@
 				}
 			}
 			else {
-				args = arguments;
 				return this.each(function() {
 					var list = $(this).data('list');
-
-
 					if(list) list.setOptions.apply(list, args);
 				});
 			}
@@ -134,8 +129,8 @@
 		},
 
 		data : function(data) {
-			if(arguments.length == 0) {
-				var datas = new Array();
+			if(arguments.length === 0) {
+				var datas = [];
 
 				this.each(function() {
 					var list = $(this).data('list');
@@ -162,8 +157,8 @@
 		},
 
 		sort : function(header, asc, update) {
-			if(arguments.length == 0) {
-				var sorts = new Array();
+			if(arguments.length === 0) {
+				var sorts = [];
 
 				this.each(function() {
 					var list = $(this).data('list');
@@ -190,8 +185,8 @@
 		},
 
 		page : function(page, update) {
-			if(arguments.length == 0) {
-				var pages = new Array();
+			if(arguments.length === 0) {
+				var pages = [];
 
 				this.each(function() {
 					var list = $(this).data('list');
@@ -226,11 +221,10 @@
 		},
 
 		getContextValue : function(key) {
-			var contexts = new Array();
+			var contexts = [];
 
 			this.each(function() {
 				var list = $(this).data('list');
-
 				if(list) {
 					contexts.push({selector : this, 'context' : list.getContextValue(key)});
 				}
@@ -250,7 +244,7 @@
 				var $this = $(this),
 					list = $this.data('list'),
 					$all_rows = $this.find('tbody tr');
-				if(!list.data || !$.isArray(list.data) || list.data.length == 0) return;
+				if(!list.data || !$.isArray(list.data) || list.data.length === 0) return;
 
 				if(list.group && list.group.groupClass){
 					$all_rows = $all_rows.not('.' + list.group.groupClass);
@@ -259,8 +253,8 @@
 					var $this = $(this);
 					if(list.oddClass) $this.removeClass(list.oddClass);
 					if(list.evenClass) $this.removeClass(list.evenClass);
-					if(i % 2 != 0 && list.oddClass) $this.addClass(list.oddClass);
-					else if(i % 2 == 0 && list.evenClass) $this.addClass(list.evenClass);
+					if(i % 2 !== 0 && list.oddClass) $this.addClass(list.oddClass);
+					else if(i % 2 === 0 && list.evenClass) $this.addClass(list.evenClass);
 				});
 			});
 		}
@@ -327,10 +321,11 @@
 		subContextPrefix : 'sub',
 		ignoreLocaleEvent : false,
 		buildTable : function() {
+			var i;
 			var html = '<table' + ((this.tableClass) ? ' class="' + this.tableClass + '"' : '') + '>';
 			html += '<thead><tr>';
 
-			for(var i = 0; i < this.headers.length; i++) {
+			for(i = 0; i < this.headers.length; i++) {
 				html += '<th id="'+this.name+'_header_'+i+'" />';
 			}
 
@@ -345,9 +340,13 @@
 			if(this.headerClass)
 				this.selector.find('thead tr').addClass(this.headerClass);
 
+			var doSort = function() {
+				t.setPage(0, t.nbPages, false);
+				t.sortHeader($(this).data('sortField'));
+			};
 
 			var t = this;
-			for(var i = 0; i < this.headers.length; i++) {
+			for(i = 0; i < this.headers.length; i++) {
 				if($.isPlainObject(this.headers[i]) && this.headers[i].sortable) {
 					if(!this.headers[i].sortField){
 						this.headers[i].sortField = this.headers[i].name;
@@ -357,16 +356,10 @@
 					$tmp_header.addClass('sortable');
 
 					if(this.sortSafeClick) {
-						$tmp_header.safeClick(function() {
-							t.setPage(0, t.nbPages, false);
-							t.sortHeader($(this).data('sortField'));
-						});
+						$tmp_header.safeClick(doSort);
 					}
 					else {
-						$tmp_header.click(function() {
-							t.setPage(0, t.nbPages, false);
-							t.sortHeader($(this).data('sortField'));
-						});
+						$tmp_header.click(doSort);
 					}
 				}
 			}
@@ -382,7 +375,7 @@
 				if($.isPlainObject(this.headers[i])) {
 					var content = this.headers[i].label;
 
-					if(this.headers[i].sortable == true){
+					if(this.headers[i].sortable === true){
 						var lastSpace = content.lastIndexOf(' '),
 							before = content.substring(0, lastSpace),
 							after = '<span class="nowrap">' + content.substring(lastSpace) + '<span class="sort-arrow"></span></span>';
@@ -440,7 +433,7 @@
 
 			// Header was not found, we assume the data callback will handle it
 			if(typeof asc == 'undefined')
-				this.asc = (this.sort == header ? !this.asc : true)
+				this.asc = (this.sort == header ? !this.asc : true);
 			else
 				this.asc = asc;
 			this.sort = header;
@@ -455,7 +448,7 @@
 		fetchData : function() {
 			var t = this;
 			//Clear data if page is 0 to avoid appending twice the same data
-			if(this.page == 0 && this.pagination == 'more') this.clear();
+			if(this.page === 0 && this.pagination == 'more') this.clear();
 			this.source(this, this.page, this.sort, this.asc, this.subContext);
 		},
 
@@ -468,26 +461,31 @@
 		draw : function(append) {
 			if(!append) this.clear();
 
-			if(!this.data || !$.isArray(this.data) || this.data.length == 0) {
+			if(!this.data || !$.isArray(this.data) || this.data.length === 0) {
 				this.selector.find('tbody').append(this.noData());
 			}
 			else {
+				var t = this;
 				var previous_group = null;
 				var odd = false;
 				var tbody = this.selector.find('tbody');
 				var actual_rows_length = tbody.find('tr').length;
 
-				var t = this;
+				var doClick = function(e) {
+					var $this = $(this);
+					t.click($this.data('index'), $this.data('record'), e);
+				};
+
 				for(var i = 0; i < this.data.length; i++) {
 					var current_i = actual_rows_length + i;
 					if(this.group) {
 						if($.isPlainObject(this.group)) {
-
+							var group_value;
 							if(this.group.dotSeperatedKey === true){
-								var group_value = $.app.getByKey(this.data[i], this.group.field);
+								group_value = $.app.getByKey(this.data[i], this.group.field);
 							}
 							else{
-								var group_value = this.data[i][this.group.field];
+								group_value = this.data[i][this.group.field];
 							}
 
 							if(group_value != previous_group) {
@@ -506,10 +504,7 @@
 					odd = !odd;
 
 					if($.isFunction(this.click)) {
-						$('#'+this.name+'_row_'+current_i).data('index', current_i).data('record', this.data[i]).safeClick(function(e) {
-							var $this = $(this);
-							t.click($this.data('index'), $this.data('record'), e);
-						});
+						$('#'+this.name+'_row_'+current_i).data('index', current_i).data('record', this.data[i]).safeClick(doClick);
 					}
 				}
 			}
@@ -554,18 +549,20 @@
 				}
 
 				// Extract value from key format
+				var value;
 				if(this.headers[i].dotSeperatedKey === true)
-					var value = $.app.getByKey(record, this.headers[i].name)
+					value = $.app.getByKey(record, this.headers[i].name);
 				else
-					var value = record[this.headers[i].name];
+					value = record[this.headers[i].name];
 
 //				if(!value){
 //					tr.append($('<td></td>'));
 //					continue;
 //				}
 
+				var formatted_value;
 				if(this.headers[i].format && $.isFunction(this.headers[i].format)) {
-					var formatted_value = this.headers[i].format(value, record, this, index);
+					formatted_value = this.headers[i].format(value, record, this, index);
 				}
 				else {
 					formatted_value = value;
@@ -599,11 +596,19 @@
 
 		attachRowClick : function(index) {
 			var t = this;
+			
+			var doClick = function(e) {
+				var list_click = $(this).data('list_click');
+				if(list_click && $.isFunction(list_click.click)) {
+					list_click.click.call(this, list_click.value, list_click.record, e);
+				}
+			};
 
 			for(var i = 0; i < this.headers.length; i++) {
 				if($.isFunction(this.headers[i].click)) {
+					var value;
 					if($.isPlainObject(this.headers[i])) {
-						var value = this.data[index][this.headers[i].name];
+						value = this.data[index][this.headers[i].name];
 					}
 					else {
 						value = this.data[index][i];
@@ -613,12 +618,7 @@
 							click: this.headers[i].click,
 							value : value,
 							record : this.data[index]
-						}).safeClick(function(e) {
-							var list_click = $(this).data('list_click');
-							if(list_click && $.isFunction(list_click.click)) {
-								list_click.click.call(this, list_click.value, list_click.record, e);
-							}
-						});
+						}).safeClick(doClick);
 				}
 			}
 		},
@@ -704,11 +704,13 @@
 		},
 
 		update : function(type, params){
+			var p;
+			var required_params;
 			if(type == 'pages'){
 				required_params = ['page', 'nbPages', 'sort', 'asc', 'data'];
 				for(p in required_params){
 					if(typeof required_params[p] == 'undefined'){
-						throw new p + ' is a required param for update.more (jQuery.list)';
+						throw new p() + ' is a required param for update.more (jQuery.list)';
 					}
 				}
 				this.setPage(params['page'], params['nbPages'], false);
@@ -719,7 +721,7 @@
 				required_params = ['page', 'hasMore', 'sort', 'asc', 'data'];
 				for(p in required_params){
 					if(typeof required_params[p] == 'undefined'){
-						throw new p + ' is a required param for update.pages (jQuery.list)';
+						throw new p() + ' is a required param for update.pages (jQuery.list)';
 					}
 				}
 				this.page = params['page'];
@@ -728,7 +730,7 @@
 				this.hasMore = params['hasMore'];
 				this.updateContext();
 				this.updatePagination.more.call(this);
-				this.draw(true)
+				this.draw(true);
 
 			}
 		},
@@ -751,7 +753,7 @@
 				page : this.page,
 				sort : this.sort,
 				asc : this.asc
-			}
+			};
 
 			if(this.paging == 'pages'){
 				$.extend(context, this._extraContextPages());
@@ -777,15 +779,16 @@
 
 
 		setOptions : function() {
+			var options;
 			if(arguments.length == 1) {
 				if(!$.isPlainObject(arguments[0])) {
 					throw 'jQuery.list internal setOptions need an object if only one argument is given';
 				}
 
-				var options = arguments[0];
+				options = arguments[0];
 			}
 			else if(arguments.length == 2) {
-				var options = {};
+				options = {};
 				options[arguments[0]] = arguments[1];
 			}
 			else {
@@ -823,5 +826,5 @@
 		updateContext : function() {
 			$.app.setContextValue('list.'+this.name, this.getContext());
 		}
-	}
+	};
 })(jQuery);

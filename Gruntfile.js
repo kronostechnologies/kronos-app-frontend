@@ -1,8 +1,21 @@
 /*jshint camelcase: false */
 /*global module:false */
 
+
 module.exports = function(grunt) {
-  grunt.initConfig({
+
+   function readOptionalJSON( filepath ) {
+                var data = {};
+                try {
+                        data = grunt.file.readJSON( filepath );
+                } catch ( e ) {}
+                return data;
+   }
+
+      
+    var jsHintOptions = readOptionalJSON( "js/.jshintrc" );
+
+    grunt.initConfig({
 
     copy: {
       build: { 
@@ -29,6 +42,18 @@ module.exports = function(grunt) {
       }
     },
 
+    jshint: {
+      grunt: {
+        src: ["Gruntfile.js"],
+        options: {
+          jshintrc: true
+        }
+      },
+      js: {
+        src: ['js/application.js', 'js/list.js'],
+	options: jsHintOptions
+      }
+    },
 
     bump: {
       options: {
@@ -49,6 +74,7 @@ module.exports = function(grunt) {
     watching for changes.
   */
   grunt.registerTask('default', [
+    'jshint',
     'copy',
     'uglify'
   ]);

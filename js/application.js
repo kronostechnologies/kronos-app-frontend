@@ -45,7 +45,7 @@ var app = {
 	_messages : {},
 
 	// Validations
-	emailRegex : new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\.(?:[a-zA-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)$"),
+	emailRegex : new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.(?:[a-zA-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)$"),
 
 	// Google Visualization API
 	_visualization_ready : false,
@@ -70,8 +70,8 @@ var app = {
 			}
 		}
 		
-		$(document).ajaxStart(function(){t.ajaxQueryLoading = true});
-		$(document).ajaxStop(function(){t.ajaxQueryLoading = false});
+		$(document).ajaxStart(function(){t.ajaxQueryLoading = true;});
+		$(document).ajaxStop(function(){t.ajaxQueryLoading = false;});
 		
 		// if the ping interval is defined, we had the ping query interval to the document.
 		if(this.pingInterval){
@@ -100,8 +100,6 @@ var app = {
 		this._opera = $.browser.opera;
 		this._msie = $.browser.msie;
 		this._mozilla = $.browser.mozilla;
-
-		var t = this;
 
 		// Error catching function
 		window.onerror = function(description, page, line) {
@@ -144,14 +142,14 @@ var app = {
 		//Extends jquery
 		jQuery.fn.extend({
 			alternateText : function(value, alternate_value){
-				this.text(value && value != "" ? value:alternate_value);
+				this.text(value && value !== "" ? value:alternate_value);
 
 				return this;
 			},
 
 			numberText : function(value) {
 				var text  = t.formatNumber(value);
-				this.text(text == '' ? '0' : text);
+				this.text(text === '' ? '0' : text);
 
 				return this;
 			},
@@ -169,15 +167,16 @@ var app = {
 			},
 			
 			durationVal : function(months_duration){
+				var text;
 				if (!isFinite(months_duration)) {
-					var text = "";
+					text = "";
 				}
 				else {
 					var sign = (months_duration < 0 ? '-' : '');
 					var years = Math.floor(Math.abs(months_duration)/12);
 					var months = Math.abs(months_duration) - 12*years;
-					text = sign + (years == 0 ? '' : (years == 1 ? $.app._("YEARD").replace('%{years}', years) : $.app._("YEARSD").replace('%{years}', years)) + ' ') +
-							(months == 0 ? '' : (months == 1 ? $.app._("MONTHD").replace('%{months}', months) : $.app._("MONTHSD").replace('%{months}', months)));
+					text = sign + (years === 0 ? '' : (years == 1 ? $.app._("YEARD").replace('%{years}', years) : $.app._("YEARSD").replace('%{years}', years)) + ' ') +
+							(months === 0 ? '' : (months == 1 ? $.app._("MONTHD").replace('%{months}', months) : $.app._("MONTHSD").replace('%{months}', months)));
 				}
 				this.val(text);
 				
@@ -234,10 +233,12 @@ var app = {
 					var val = $.app.parseFloat(this.val());
 
 					if($(this).hasClass('positive') && $(this).hasClass('number')) {
-						if(val < 0)
+						if(val < 0) {
 							return 0;
-						else
+						}
+						else {
 							return val;
+						}
 					}
 					else {
 						return val;
@@ -270,10 +271,12 @@ var app = {
 					if ($(this).hasClass('money')) {
 						var val = $(this).data('val');
 
-						if($(this).hasClass('positive') && val < 0)
+						if($(this).hasClass('positive') && val < 0) {
 							return 0;
-						else
+						}
+						else {
 							return val;
+						}
 					}
 					else {
 						return $.app.parseFloat($(this).val().replace("$", ""));
@@ -294,11 +297,12 @@ var app = {
 					});
 					$(this).click(function() {
 						$(this).select();
-					})
+					});
 					$(this).blur(function() {
+						var val;
 						var value = $(this).val();
 						if (opts && opts.canBeNull && (value === '' || value === null)){
-							var val = '';
+							val = '';
 						}
 						else {
 							val = $.app.parseFloat(value.replace("$", ""));
@@ -315,7 +319,7 @@ var app = {
 						$(this).val($.app.formatMoney(val, opts));
 						return this;
 					});
-					if($t.val() != '') {
+					if($t.val() !== '') {
 						$t.blur();
 					}
 				});
@@ -329,10 +333,12 @@ var app = {
 					var val = $.app.parseFloat(this.val().replace("%", ""));
 
 					if($(this).hasClass('positive') && $(this).hasClass('percent')) {
-						if(val < 0)
+						if(val < 0) {
 							return 0;
-						else
+						}
+						else {
 							return val;
+						}
 					}
 					else {
 						return val;
@@ -365,7 +371,7 @@ var app = {
 				return $(this).each(function(){
 					var $this = $(this);
 					var $calendar_button = $this.next('.btn.calendar');
-					if($this.next('.btn.calendar').length == 0){
+					if($this.next('.btn.calendar').length === 0){
 						$calendar_button = $('<a href="javascript:void(0);" class="btn calendar" tabindex=-1><span class="icon"></span></a>');
 					}
 					$this.after($calendar_button);
@@ -430,13 +436,15 @@ var app = {
 					var t = this;
 					t._focus_timeout = setTimeout(function() {$(t).next('.hint').fadeIn();}, 1000);
 				}).blur(function() {
-					if(this._focus_timeout)
+					if(this._focus_timeout) {
 						clearTimeout(this._focus_timeout);
+					}
 
 					$(this).next('.hint').fadeOut();
 				}).keypress(function() {
-					if(this._focus_timeout)
+					if(this._focus_timeout) {
 						clearTimeout(this._focus_timeout);
+					}
 
 					$(this).next('.hint').fadeOut();
 				});
@@ -455,10 +463,11 @@ var app = {
 			},
 
 			hintError : function(text, width, dont_show) {
+				var blurFocusTarget;
 				var target = $(this);
 				var t = this;
 				if(target.data('blur-field')){
-					var blurFocusTarget = $('#'+target.data('blur-field'));
+					blurFocusTarget = $('#'+target.data('blur-field'));
 				}
 				else{
 					blurFocusTarget = target;
@@ -482,10 +491,10 @@ var app = {
 				target.unhint();
 				target.addClass('save_warning');
 				if(!target.data('no-hinted-span')){
-					target.wrap('<span class="'+hintedWrapperClasses.join(' ')+'"></span>')
+					target.wrap('<span class="'+hintedWrapperClasses.join(' ')+'"></span>');
 				}
 				
-				target.after('<span class="hint">'+text+'<span class="hint-pointer sprite">&nbsp;</span></span>')
+				target.after('<span class="hint">'+text+'<span class="hint-pointer sprite">&nbsp;</span></span>');
 
 				blurFocusTarget.blur(function(e) {
 					target.next('.hint').fadeOut();
@@ -512,8 +521,9 @@ var app = {
 						$(this).fadeOut();
 					});
 
-				if(!dont_show)
+				if(!dont_show){
 					target.data('hint').fadeIn();
+				}
 				
 				return target;
 			},
@@ -527,7 +537,7 @@ var app = {
 
 				$(this).next('.hint').css({
 					width: w
-				})
+				});
 
 				return $(this);
 			},
@@ -537,7 +547,7 @@ var app = {
 
 				$(this).data('hint').css({
 					right: r
-				})
+				});
 
 				return $(this);
 			},
@@ -554,8 +564,9 @@ var app = {
 
 			signal : function(length) {
 				length = parseInt(length);
-				if(length <= 0)
+				if(length <= 0) {
 					length = 500;
+				}
 
 				return $(this).each(function () {
 					$(this).addClass('signal');
@@ -569,14 +580,16 @@ var app = {
 			checkVal : function() {
 				if(arguments.length > 0) {
 					var checked = false;
-					if(arguments[0] == 'YES' || arguments[0] === true)
+					if(arguments[0] == 'YES' || arguments[0] === true) {
 						checked = true;
+					}
 
 					this.prop('checked', checked);
 					return this;
 				}
-				else
+				else {
 					return this.val();
+				}
 			},
 
 			getClasses : function() {
@@ -629,7 +642,7 @@ var app = {
 
 								for(i = 0; i < pop; i++) {
 									for(var j = 0; j < results.length - 1; j++) {
-										if(results[j] == false) {
+										if(results[j] === false) {
 											results[j] = results[j+1];
 											results[j+1] = false;
 										}
@@ -637,16 +650,19 @@ var app = {
 									results.pop();
 								}
 
-								if(results.length > 1)
+								if(results.length > 1) {
 									callback('ERROR', 'MULTIPLE', 0, 0, results);
-								else if(results.length == 0)
+								}
+								else if(results.length === 0) {
 									callback('ERROR', 'ZERO_RESULTS', 0, 0, results);
+								}
 								else {
 									callback('SUCCESS', status, results[0].geometry.location.lat(), results[0].geometry.location.lng(), results);
 								}
 							}
-							else if(results[0].geometry.location_type == 'APPROXIMATE' || results[0].geometry.location_type == 'GEOMETRIC_CENTER')
+							else if(results[0].geometry.location_type == 'APPROXIMATE' || results[0].geometry.location_type == 'GEOMETRIC_CENTER') {
 								callback('ERROR', 'INACCURATE', 0, 0, results);
+							}
 							else {
 								callback('SUCCESS', status, results[0].geometry.location.lat(), results[0].geometry.location.lng(), results);
 							}
@@ -687,13 +703,29 @@ var app = {
 	 */
 	configure : function(config) {
 		// Error configs
-		if(config['debug'])				this.debug = true;
-		if(config['sendError'])			this.sendErrors = true;
-		if(config['sendErrorsOnUnload'])	this.sendErrorsOnUnload = true;
-		if(config['silent'])				this.silent = true;
-		if(config['trace_retirement'])	this.trace_retirement = true;
+		if(config['debug'])	{
+			this.debug = true;
+		}
 		
-		if(config['jqueryui'] && config['jqueryui']['startingday']) this.startingDay = config['jqueryui']['startingday'];
+		if(config['sendError'])	{	
+			this.sendErrors = true;
+		}
+		
+		if(config['sendErrorsOnUnload']) {
+			this.sendErrorsOnUnload = true;
+		}
+		
+		if(config['silent']) {
+			this.silent = true;
+		}
+		
+		if(config['trace_retirement']) {
+			this.trace_retirement = true;
+		}
+		
+		if(config['jqueryui'] && config['jqueryui']['startingday']) {
+			this.startingDay = config['jqueryui']['startingday'];
+		}
 
 		// Application configurations
 		this.JS_PATH = config.JS_PATH;
@@ -701,11 +733,14 @@ var app = {
 		this.VIRTUALPATH = config.VIRTUALPATH;
 		this.SESSION_KEY = config.SESSION_KEY;
 
-		if(!config['application_version']) throw this._throw('Applicaiton version not defined in configuration', true);
+		if(!config['application_version']) {
+			throw this._throw('Applicaiton version not defined in configuration', true);
+		}
 		this._application_version = config.application_version;
 
-		if(typeof config['user'] != 'object')
+		if(typeof config['user'] != 'object') {
 			throw "No user info in application configuration";
+		}
 
 		this._configure(config);
 		this.setUserConfig(config['user']);
@@ -872,16 +907,19 @@ var app = {
 	 * @param line Line number where the error occured
 	 */
 	_onError : function(description, page, line) {
-		if(this.debug) console.debug(description + ' (' + page + ':' + line + ')');
+		if(this.debug) {
+			console.debug(description + ' (' + page + ':' + line + ')');
+		}
+		
 		try {
 			var error = $.secureEvalJSON(description.replace('uncaught exception: ', ''));
 
-			if(error.type == 'fatal')
+			if(error.type == 'fatal') {
 				this._showFatalError(error.message);
+			}
 
 			description = error.message;
-
-			delete(error);
+			error = null;
 		}
 		catch(e) {
 			// That was not JSON ... but we don't care
@@ -890,8 +928,9 @@ var app = {
 		if(this.sendErrors) {
 			this._errors.push({description:description, page:page, line:line});
 
-			if(this._errors.length > 10)
+			if(this._errors.length > 10) {
 				this._sendErrors();
+			}
 		}
 
 		return this.silent;
@@ -960,8 +999,9 @@ var app = {
 	 * Start the hash observation loop
 	 */
 	_observe : function() {
-		if(this.debug)
+		if(this.debug) {
 			console.debug('Observing hash from now on');
+		}
 
 		var t = this;
 		this._observerInterval = setInterval(function() {
@@ -976,8 +1016,9 @@ var app = {
 	 */
 	_stopObservation : function() {
 		if(this._observerInterval) {
-			if(this.debug)
+			if(this.debug) {
 				console.debug('Stopped hash observation');
+			}
 
 			clearInterval(this._observerInterval);
 			this._observerInterval = 0;
@@ -988,17 +1029,21 @@ var app = {
 	 * Get location hash and check if it changed
 	 */
 	_checkHash : function() {
+		var view;
+		var object;
+		
 		if(!this.view_fetching && this.hash !== location.hash){
 			//Store the new hash before the loop starts again
 
-			if(this.debug)
+			if(this.debug) {
 				console.debug('Hash changed');
+			}
 
 			this.hash = location.hash;
 
 			// Get the requested view
 			if(!this.hash || this.hash == '#') {
-				var view = this.default_view;
+				view = this.default_view;
 			}
 			else {
 				var splits = this.hash.substring(1).split('&');
@@ -1015,9 +1060,9 @@ var app = {
 					}
 				}
 
-				delete(splits);
+				splits = null;
 
-				if(view == '') {
+				if(view === '' || view === null) {
 					view = this.default_view;
 				}
 			}
@@ -1034,13 +1079,14 @@ var app = {
 			}
 			// If we where in a view and we're not resuming navigation (see Test form for more detail) we can ask to view to close;
 			if(fetch && this.currentView && !this._resume_hash) {
-				var object = this._getViewObject(this.currentView);
+				object = this._getViewObject(this.currentView);
 
 				// No object to manage the view, why bother ?
 				if(object) {
 					if(!object.close(this.hash)) { // Can we continue ?
-						if(this.debug)
+						if(this.debug) {
 							console.debug('View coulnd\'t close');
+						}
 
 						// Temporarily stop the hash observation loop so we can ...
 						this._stopObservation();
@@ -1054,8 +1100,9 @@ var app = {
 
 						return; // We don't want to anything else until the hash changes again or the view tells us to resume
 					}
-					else if(this.debug)
+					else if(this.debug) {
 						console.debug('Closed view');
+					}
 				}
 			}
 
@@ -1067,12 +1114,14 @@ var app = {
 				this.addHistory(this.hash);
 				this._force_clear = false;
 			}
-			else if(!this._detectStepBack(this.hash))
+			else if(!this._detectStepBack(this.hash)) {
 				this.addHistory(this.hash);
+			}
 
 			if(fetch) {
-				if(this.debug)
+				if(this.debug) {
 					console.debug('View : '+view);
+				}
 
 				// Just to be sure we leave nothing behind
 				this.hideModalDialogNow();
@@ -1087,11 +1136,13 @@ var app = {
 	},
 
 	goTo :  function(hash, force_clear) {
-		if(this.debug)
+		if(this.debug) {
 			console.debug('Go To "'+hash+'"');
+		}
 
-		if(force_clear)
+		if(force_clear) {
 			this._force_clear = true;
+		}
 		
 		location.hash = hash;
 	},
@@ -1120,13 +1171,15 @@ var app = {
 	forceGoTo : function(hash, force_clear) {
 		this._stopObservation();
 
-		if(this.debug)
+		if(this.debug) {
 			console.debug('Force Go To "'+hash+'"');
+		}
 
-		if(force_clear)
+		if(force_clear) {
 			this._force_clear = true;
+		}
 
-		location = hash;
+		location.hash = hash;
 		location.reload();
 	},
 
@@ -1144,8 +1197,9 @@ var app = {
 
 				location.hash = hash;
 
-				if(this.debug)
+				if(this.debug) {
 					console.debug('View closed, resuming');
+				}
 			}
 			else if(this.debug) {
 				this._resume_hash = false;
@@ -1334,7 +1388,9 @@ var app = {
 		this._getViewObject(this.currentView)._validateable = data.validateable;
 
 		if(data.html) {
-			if(this.debug) console.debug('Using recieved html');
+			if(this.debug) {
+				console.debug('Using recieved html');
+			}
 
 			this._loadContent(data.html);
 			this._loadParams(data.params);
@@ -1344,7 +1400,9 @@ var app = {
 
 		}
 		else if(this._isViewCached(this.currentView)) {
-			if(this.debug) console.debug('Using cached html');
+			if(this.debug) {
+				console.debug('Using cached html');
+			}
 
 			// Get no html/params but the sent version is the same as the one we have, we can use it.
 			this._loadContent(this._getViewCachedHTML(this.currentView));
@@ -1361,8 +1419,9 @@ var app = {
 		this._checkAnchor();
 	
 		$('input').each(function(index, element) {
-			if (!$(element).attr('maxlength')) 
+			if (!$(element).attr('maxlength')) {
 				$(element).attr('maxlength', 255); 
+			}
 		});
 	},
 	
@@ -1372,7 +1431,7 @@ var app = {
 			var anchor_name = params.params.anchor;
 			var view = this._getViewObject(this.currentView);
 			var $element = $('[anchor='+anchor_name+']');
-			if($element.length == 0){
+			if($element.length === 0){
 				if(this.debug) {
 					console.warn('GET parameter "anchor" found but there is no element associated with it!');
 				}
@@ -1463,7 +1522,7 @@ var app = {
 		else {
 			//Try not to catch fields not expected to be float like SIN, Date and addresses.
 			if(typeof model == "string" && model.match(/^\d+\.\d+$/i)) {
-				var p = parseFloat(model)
+				var p = parseFloat(model);
 				if(!isNaN(p)) {
 					model = p;
 				}
@@ -1479,7 +1538,9 @@ var app = {
 		if(object) {
 			model = $.app.recursiveCleanFloats(model);
 
-			if(this.debug) console.debug(model);
+			if(this.debug) {
+				console.debug(model);
+			}
 
 			object.inject(model);
 			if(typeof object._postInject == 'function'){ object._postInject(); }
@@ -1497,7 +1558,9 @@ var app = {
 	 * Clear all cached view html and params
 	 */
 	clearViewCache : function() {
-		if(this.debug) console.log('Clearing view cache');
+		if(this.debug) {
+			console.log('Clearing view cache');
+		}
 		
 		delete(this._view_cache);
 		this._view_cache = [];
@@ -1573,11 +1636,14 @@ var app = {
 			clearTimeout(this._loadingTimeout);
 			this._loadingTimeout = 0;
 
-			if(this.debug)
+			if(this.debug){
 				console.debug('Show loading overlay');
+			}
 
-			if($('#loading-overlay').length > 0) // Loading is already shown
+			if($('#loading-overlay').length > 0) {
+				// Loading is already shown
 				return;
+			}
 
 			// Whole page cover
 			this.showOverlay();
@@ -1623,8 +1689,9 @@ var app = {
 		clearTimeout(this._loadingTimeout);
 		this._loadingTimeout = 0;
 
-		if(this.debug)
+		if(this.debug) {
 			console.debug('Hide loading overlay');
+		}
 
 		$('#loading-overlay').remove();
 		$('#loading-overlay-image').remove();
@@ -1712,19 +1779,21 @@ var app = {
 	 * Go back to previous hash
 	 */
 	stepBack : function(redirect) {
-		do{
-			if(this._history.length == 0){
-				var hash = '';
+		var hash;
+		
+		do{	
+			if(this._history.length === 0){
+				hash = '';
 				break;
 			}
 
-			hash = this._history.pop().hash
+			hash = this._history.pop().hash;
 
 			if(typeof hash == 'undefined'){
 				hash = '';
 				break;
 			}
-		}while(hash == location.hash)
+		}while(hash == location.hash);
 				
 		if(this.debug)
 			console.debug('Step back to : '+hash);
@@ -1753,8 +1822,8 @@ var app = {
 	
 		var hash = this.stepBack(false);
 
-		if(hash != '') {
-			location = hash;
+		if(hash !== '') {
+			location.hash = hash;
 			location.reload();
 		}
 		else {
@@ -1764,10 +1833,11 @@ var app = {
 	},
 
 	goBack : function() {
+		var hash;
 		if(this._history.length < 2)
-			var hash = '';
+			hash = '';
 		else {
-			this._history.pop().hash; // Pop current page;
+			this._history.pop(); // Pop current page;
 			hash = this._history.pop().hash; // Previous page;
 		}
 
@@ -1778,12 +1848,13 @@ var app = {
 	},
 
 	forceGoBack : function() {
+		var hash;
 		this._stopObservation();
 
 		if(this._history.length < 2)
-			var hash = '';
+			hash = '';
 		else {
-			this._history.pop().hash; // Pop current page;
+			this._history.pop(); // Pop current page;
 			hash = this._history.pop().hash; // Previous page;
 		}
 
@@ -1847,7 +1918,7 @@ var app = {
 			if(this.debug)
 				console.debug('Google Gears is not installed');
 
-			return false
+			return false;
 		}
 		else {
 			if(this.debug)
@@ -2002,9 +2073,9 @@ var app = {
 	},
 
 	showMessage : function(title, message, content) {
-		if(title == '')
+		if(title === '')
 			this._throw('Missing title', true);
-		if(message == '')
+		if(message === '')
 			this._throw('Missing message', true);
 
 		$.app.showModalDialog('<h2>'+title+'</h2>\
@@ -2136,6 +2207,7 @@ var app = {
 
 	sleep : function(milliseconds) {
 		var d = new Date();
+		var n;
 		do {
 			n = new Date();
 		} while(n - d < milliseconds);
@@ -2150,7 +2222,7 @@ var app = {
 	 * Replace NaN by 0
 	 */
 	parseFloat : function(value){
-		if(typeof value == 'float'){
+		if(typeof value == 'number'){
 			return value;
 		}
 
@@ -2188,8 +2260,9 @@ var app = {
 			return '';
 		}
 		
+		var currency_pos;
 		if(this.lang == 'fr'){
-			var currency_pos = 'right';
+			currency_pos = 'right';
 		}
 		else {
 			currency_pos = 'left';
@@ -2215,13 +2288,15 @@ var app = {
 	 * Format percent according to locale
 	 */
 	formatPercent: function(value, opts) {
+		var separator;
+		
 		if (opts && opts.canBeNull && !value){
 			return '';
 		}
 		
 		if(this.lang == 'fr'){
 			if (opts && opts.nbsp) 
-				var separator = '&nbsp';
+				separator = '&nbsp';
 			else
 				separator=' ';
 		}
@@ -2243,7 +2318,7 @@ var app = {
 	 */
 	formatNumber: function(value, opts) {
 
-		if(arguments.length == 0) return '';
+		if(arguments.length === 0) return '';
 		else if(!value && value !== 0) return '';
 
 		var default_options={precision: 2, facultative_decimals:true, positive:false, nbsp:false, rounded:true};
@@ -2279,7 +2354,7 @@ var app = {
 			}
 		}
 
-		if(value == ''){
+		if(value === ''){
 			value = '0';
 		}
 
@@ -2289,9 +2364,11 @@ var app = {
 		if(value == Number.NaN)
 			value = '';
 
-		if(options.precision==0){
-			var rounded = $.app.parseFloat(value).toFixed(0);
-			var tmp = rounded;
+		var rounded;
+		var tmp;
+		if(options.precision===0){
+			rounded = $.app.parseFloat(value).toFixed(0);
+			tmp = rounded;
 		}
 		else {
 			if (options.rounded){
@@ -2315,7 +2392,7 @@ var app = {
 					pos = 0;
 				}
 
-				if(integer != '')
+				if(integer !== '')
 				integer = tmp.substr(pos, size) + options.thousand_separator + integer;
 				else
 				integer = tmp.substr(pos, size);
@@ -2325,9 +2402,10 @@ var app = {
 		else {
 			integer = tmp;
 		}
-
-		if(options.precision==0 || (options.facultative_decimals && parseInt(rounded.substr(rounded.indexOf('.')+1)) == 0 )){
-			var result = integer;
+		
+		var result;
+		if(options.precision===0 || (options.facultative_decimals && parseInt(rounded.substr(rounded.indexOf('.')+1)) === 0 )){
+			result = integer;
 		}
 		else {
 			integer += options.decimal_separator;
@@ -2360,7 +2438,7 @@ var app = {
 
 	isSINValid : function(sin) {
 
-		if(sin == '')
+		if(sin === '')
 			return true;
 		
 		if(sin == '*** *** ***')
@@ -2382,7 +2460,7 @@ var app = {
 		}
 
 		total += parseInt(sin.charAt(8));
-		if((total%10) != 0)
+		if((total%10) !== 0)
 			return false;
 		else {
 			return true;
@@ -2413,6 +2491,7 @@ var app = {
 	},
 
 	parsePhone : function(phone) {
+		var extension;
 		if(/(,|ext|poste|#)/.test(phone)) {
 			var coma =  phone.indexOf(',');
 			var ext =  phone.indexOf('ext');
@@ -2421,7 +2500,7 @@ var app = {
 
 			var pos = Math.max(coma, ext, poste, square);
 			if(pos != -1) {
-				var extension = phone.substr(pos).replace(/[^\d]/g, '');
+				extension = phone.substr(pos).replace(/[^\d]/g, '');
 				phone = phone.substr(0, pos);
 			}
 		}
@@ -2431,8 +2510,9 @@ var app = {
 
 		phone = phone.replace(/[^\d]/g, '');
 
+		var formatted;
 		if(phone[0] == '1' && phone.length >= 11) {
-			var formatted = '1 '+phone.substr(1,3)+' '+phone.substr(4, 3)+'-'+phone.substr(7,4);
+			formatted = '1 '+phone.substr(1,3)+' '+phone.substr(4, 3)+'-'+phone.substr(7,4);
 
 			if(phone.length > 11)
 				extension = phone.substr(11);
@@ -2444,7 +2524,7 @@ var app = {
 				extension = phone.substr(10);
 		}
 		else if(phone.length == 7) {
-			formatted = phone.substr(0, 3)+'-'+phone.substr(3);s
+			formatted = phone.substr(0, 3)+'-'+phone.substr(3);
 		}
 		else {
 			formatted = phone;
@@ -2524,11 +2604,12 @@ var app = {
 				if(button)
 					$(button).prop('disabled', false);
 				
+				var data;
 				if(typeof response.data != 'undefined'){
-					var data = response.data;
+					data = response.data;
 				}
 				else {
-					var data = response;
+					data = response;
 				}
 				
 				if(response.status && response.status == 'error') {
@@ -2609,8 +2690,9 @@ var app = {
 				if(button)
 					$(button).prop('disabled', false);
 				
+				var data;
 				if(typeof response.data != 'undefined'){
-					var data = response.data;
+					data = response.data;
 				}
 				else {
 					data = response;
@@ -2762,47 +2844,35 @@ var app = {
 		},
 
 		getMonthName: function(month) {
-			if(typeof month == 'undefined' && arguments.length == 0) {
+			if(typeof month == 'undefined' && arguments.length === 0) {
 				month = (new Date()).getMonth();
 			}
 
 			switch (month) {
 				case 0:
 					return $.app._('JANUARY');
-					break;
 				case 1:
 					return $.app._('FEBRUARY');
-					break;
 				case 2:
 					return $.app._('MARCH');
-					break;
 				case 3:
 					return $.app._('APRIL');
-					break;
 				case 4:
 					return $.app._('MAY');
-					break;
 				case 5:
 					return $.app._('JUNE');
-					break;
 				case 6:
 					return $.app._('JULY');
-					break;
 				case 7:
 					return $.app._('AUGUST');
-					break;
 				case 8:
 					return $.app._('SEPTEMBER');
-					break;
 				case 9:
 					return $.app._('OCTOBER');
-					break;
 				case 10:
 					return $.app._('NOVEMBER');
-					break;
 				case 11:
 					return $.app._('DECEMBER');
-					break;
 				default:
 					$.app._throw('Unknown month "'+month+'"');
 					break;
@@ -2820,7 +2890,7 @@ var app = {
 				if((now.getMonth() < date.getMonth()) || (now.getMonth() == date.getMonth() && now.getDate() < date.getDate()))
 					age--;
 
-				delete(date);
+				date = null;
 
 				return age;
 			}
@@ -2861,12 +2931,12 @@ var app = {
 				nextBirthday.setFullYear(lastBirthday.getFullYear() + 1);
 
 				if (Math.abs(now - nextBirthday) < Math.abs(now - lastBirthday)) {
-					age ++
+					age ++;
 				}
-				delete(date_obj);
-				delete(lastBirthday);
-				delete(now);
-				delete(nextBirthday);
+				date_obj = null;
+				lastBirthday = null;
+				now = null;
+				nextBirthday = null;
 
 				return age;
 			}
@@ -2893,38 +2963,38 @@ var app = {
 		var address = '';
 
 		var f=true;
-		if(line1 != ''){
+		if(line1 !== '' && line1 !== false){
 			f=false;
 			address+= this.htmlEntity(line1);
 		}
 
-		if(line2 != ''){
+		if(line2 !== '' && line2 !== false){
 			if(!f) address += ', ';
 			f=false;
 			address+= this.htmlEntity(line2);
 		}
 
-		if(city != ''){
+		if(city !== '' && city !== false){
 			if(!f) address += ', ';
 			f=false;
 			address+= this.htmlEntity(city);
 		}
 
 		//TODO: Check with locallization
-		if(state != '' && state !="QC"){
+		if(state !== '' && state !="QC"){
 			if(!f) address += ', ';
 			f=false;
 			address+= this.htmlEntity(state);
 		}
 
-		if(postalCode != ''){
+		if(postalCode !== '' && postalCode !== false){
 			if(!f) address += ', ';
 			f=false;
 			address+= this.htmlEntity(postalCode);
 		}
 
 		//TODO: Check with locallization
-		if(country != '' && country != 'Canada'){
+		if(country !== '' && country !== false && country != 'Canada'){
 			if(!f) address += ', ';
 			f=false;
 			address+= this.htmlEntity(country);
@@ -2973,8 +3043,8 @@ var app = {
 
 			var string = arguments[0];
 			var exp = new RegExp(/(%([%]|(\-)?(\+|\x20)?(0)?(\d+)?(\.(\d)?)?([bcdfosxX])))/g);
-			var matches = new Array();
-			var strings = new Array();
+			var matches = [];
+			var strings = [];
 			var convCount = 0;
 			var stringPosStart = 0;
 			var stringPosEnd = 0;
@@ -3004,7 +3074,7 @@ var app = {
 			}
 			strings[strings.length] = string.substring(matchPosEnd);
 
-			if (matches.length == 0) {return string;}
+			if (matches.length === 0) {return string;}
 			if ((arguments.length - 1) < convCount) {return null;}
 
 			var code = null;
@@ -3012,9 +3082,9 @@ var app = {
 			var i = null;
 
 			for (i=0; i<matches.length; i++) {
-
+				var substitution;
 				if (matches[i].code == '%') {
-					var substitution = '%';
+					substitution = '%';
 				}
 				else if (matches[i].code == 'b') {
 					matches[i].argument = String(Math.abs(parseInt(matches[i].argument, 10)).toString(2));
@@ -3056,11 +3126,10 @@ var app = {
 				newString += substitution;
 
 			}
-				newString += strings[i];
-
-				return newString;
-
-			},
+			
+			newString += strings[i];
+			return newString;
+		},
 
 		convert : function(match, nosign){
 			if (nosign) {
@@ -3091,23 +3160,14 @@ var app = {
 	 */
 	downloadFile : function(url){
 		var t = this;
-
+		
 		if(!t._iPad){
-
 			var frameId =  'download_iframe';
 			var io = document.getElementById(frameId);
 			if(!io){
-//				if(window.ActiveXObject) {
-//					var io = document.createElement('<iframe id="' + frameId + '" name="' + frameId + '" />');
-//					io.src = 'javascript:false';
-//
-//				}
-//				else {
-					var io = document.createElement('iframe');
-					io.id = frameId;
-					io.name = frameId;
-//				}
-
+				io = document.createElement('iframe');
+				io.id = frameId;
+				io.name = frameId;
 				io.style.position = 'absolute';
 				io.style.top = '-1000px';
 				io.style.left = '-1000px';
@@ -3138,7 +3198,7 @@ var app = {
 		var rv = 999;
 		if (navigator.appName == 'Microsoft Internet Explorer') {
 			var ua = navigator.userAgent;
-			var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+			var re  = new RegExp("MSIE ([0-9]{1,}[.0-9]{0,})");
 			if (re.exec(ua) != null)
 				rv = parseFloat( RegExp.$1 );
 		}
@@ -3216,7 +3276,7 @@ var app = {
 				if(typeof config.selectorIsDomRef == 'boolean')
 					this.selectorIsDomRef = config.selectorIsDomRef;
 
-				if(typeof config.query_string_param_name == 'string' && $.trim(config.query_string_param_name) != '')
+				if(typeof config.query_string_param_name == 'string' && $.trim(config.query_string_param_name) !== '')
 					this.queryStringParamName = config.query_string_param_name;
 
 				if(config.params)
@@ -3250,8 +3310,9 @@ var app = {
 				if(this._filtered(data[2]))
 					return false; // Was asked not to show this one
 
+				var label;
 				if(typeof this._customItemFormat == 'function')
-					var label = this._customItemFormat(data, position, length, term);
+					label = this._customItemFormat(data, position, length, term);
 				else
 					label = data[2];
 
@@ -3351,7 +3412,7 @@ var app = {
 
 				return false;
 			}
-		}
+		};
 
 		autocompleter._init(selector, view, command, callback, config);
 
@@ -3425,7 +3486,7 @@ Function.prototype.inherits = function(parent){
 	}
 
 	return this;
-}
+};
 
 Function.prototype.extend = function(object) {
 	for(var k in object) {
@@ -3435,46 +3496,46 @@ Function.prototype.extend = function(object) {
 
 if (!Array.prototype.reduce)
 {
-  Array.prototype.reduce = function(fun)
-  {
-    var len = this.length;
-    if (typeof fun != "function")
-      throw new TypeError();
+	Array.prototype.reduce = function(fun) {
+		var len = this.length;
+		if (typeof fun != "function")
+			throw new TypeError();
 
-    // no value to return if no initial value and an empty array
-    if (len == 0 && arguments.length == 1)
-      throw new TypeError();
+		// no value to return if no initial value and an empty array
+		if (len === 0 && arguments.length == 1)
+			throw new TypeError();
 
-    var i = 0;
-    if (arguments.length >= 2)
-    {
-      var rv = arguments[1];
-    }
-    else
-    {
-      do
-      {
-        if (i in this)
-        {
-          rv = this[i++];
-          break;
-        }
+		var i = 0;
+		var rv;
+		if (arguments.length >= 2)
+		{
+			rv = arguments[1];
+		}
+		else
+		{
+			do
+			{
+				if (i in this)
+				{
+					rv = this[i++];
+					break;
+				}
 
-        // if array contains no values, no initial value to return
-        if (++i >= len)
-          throw new TypeError();
-      }
-      while (true);
-    }
+				// if array contains no values, no initial value to return
+				if (++i >= len)
+					throw new TypeError();
+			}
+			while (true);
+		}
 
-    for (; i < len; i++)
-    {
-      if (i in this)
-        rv = fun.call(null, rv, this[i], i, this);
-    }
+		for (; i < len; i++)
+		{
+			if (i in this)
+				rv = fun.call(null, rv, this[i], i, this);
+		}
 
-    return rv;
-  };
+		return rv;
+	};
 }
 
 Function.prototype.method = function(name, func) {
@@ -3482,7 +3543,7 @@ Function.prototype.method = function(name, func) {
 	  this.prototype[name] = func;
 	  return this;
   }
-}
+};
 
 Array.method('sum', function()
 {
@@ -3492,8 +3553,8 @@ Array.method('sum', function()
 Array.prototype.extend = function(a)
 {
 	var t = this;
-	return a.map(function(e,i) {return t.hasOwnProperty(i) ? t[i] : e})
-}
+	return a.map(function(e,i) {return t.hasOwnProperty(i) ? t[i] : e;});
+};
 
 // Add ECMA262-5 Array methods if not supported natively
 //
@@ -3508,6 +3569,7 @@ if (!('indexOf' in Array.prototype)) {
         return -1;
     };
 }
+
 if (!('lastIndexOf' in Array.prototype)) {
     Array.prototype.lastIndexOf= function(find, i /*opt*/) {
         if (i===undefined) i= this.length-1;
@@ -3561,8 +3623,7 @@ if (!('some' in Array.prototype)) {
     };
 }
 
-$.range = function(a,b)
-{
+$.range = function(a,b) {
 	var r = [];
 	var i = 0;
 	if (a <= b) {
@@ -3576,12 +3637,11 @@ $.range = function(a,b)
 		}
 	}
 	return r;
-}
+};
 
-$.zeros = function(a)
-{
+$.zeros = function(a) {
 	return $.range(1,a).map(function() {return 0;});
-}
+};
 
 /**
 * Base class for Views
@@ -3675,7 +3735,7 @@ View.prototype = {
 				}
 			}
 
-			delete(selectors);
+			selectors = null;
 
 			if(can_redraw) {
 				this._redrawn = true;
@@ -3998,10 +4058,10 @@ EditView.prototype = {
 
 			if(typeof success_callback == 'function') {
 				success_callback({}, false);
-				delete(success_callback);
+				success_callback = null;
 			}
 
-			this._saveRedirect(hash, stay)
+			this._saveRedirect(hash, stay);
 
 			return true;
 		}
@@ -4023,7 +4083,10 @@ EditView.prototype = {
 			dataType:'json',
 			success: function(data) {
 				if(!data) data = {};
-				if(data.data){data = data.data} // backward compatibility with communicable.
+				if(data.data){ 
+					// backward compatibility with communicable.
+					data = data.data; 
+				} 
 				$.app.hideOverlay();
 				$('input[type=submit],input[type=button]').prop('disabled', false);
 				
@@ -4042,7 +4105,7 @@ EditView.prototype = {
 
 					if(typeof error_callback == 'function') {
 						error_callback(data);
-						delete(error_callback);
+						error_callback = null;
 					}
 					else {
 						$.app.showError($.app._('SAVE_ERROR_OCCURED'));
@@ -4057,7 +4120,7 @@ EditView.prototype = {
 
 				if(typeof success_callback == 'function') {
 					success_callback(data, true);
-					delete(success_callback);
+					success_callback = null;
 				}
 
 				t._saveRedirect(hash, stay);
@@ -4089,7 +4152,7 @@ EditView.prototype = {
 
 		if(typeof error_callback == 'function') {
 			error_callback(false);
-			delete(error_callback);
+			error_callback = null;
 		}
 
 		$.app.hideOverlay();
@@ -4162,22 +4225,27 @@ EditView.prototype = {
 	},
 	
 	alternateCreateModel: function(model) {
-	 var alternateModel = {};
-	 for (var key in model) {
-		if (model.hasOwnProperty(key)) {
-		 var path = key.split('[').map(function(t) {
-			return t.replace(']', '')
-		 });
-		 var element = path.reduceRight(function(previous, current) {
+		var alternateModel = {};
+	 
+		var replaceBracket = function(t) {
+			return t.replace(']', '');
+		};
+	
+		var reduceFunc = function(previous, current) {
 			var n = {};
 			n[current] = previous;
 			return n;
-		 }, model[key]);
-		 $.extend(true, alternateModel, element);
+		};
+	 
+		for (var key in model) {
+			if (model.hasOwnProperty(key)) {
+				var path = key.split('[').map(replaceBracket);
+				var element = path.reduceRight(reduceFunc, model[key]);
+				$.extend(true, alternateModel, element);
+			}
 		}
-	 }
 
-	 return alternateModel;
+		return alternateModel;
 	},
 
 	_removeNullValue : function(model){

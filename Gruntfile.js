@@ -29,7 +29,8 @@ module.exports = function(grunt) {
           'js/jquery.pseudo.min.js': 'js/jquery.pseudo.js',
           'js/jquery.BetterGrow.min.js': 'js/jquery.BetterGrow.js',
           'js/html5shiv.min.js': 'js/html5shiv.js',
-          'js/prototype.min.js': 'js/prototype.js'
+          'js/prototype.min.js': 'js/prototype.js',
+          'js/placeholder.min.js': 'js/placeholder.js'
         }
       }
     },

@@ -139,7 +139,7 @@
 			var t = e.data.t;
 			e.preventDefault();
 			var $row = methods.add_row.apply(t);
-			$row.find('input:tabbable,select:tabbable,textarea:tabbable').first().focus();
+			$row.find('input:tabbable,select:tabbable,textarea:tabbable').not('.mto-nofocus').first().focus();
 		},
 
 		each_row: function(fn){

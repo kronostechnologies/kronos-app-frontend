@@ -5,6 +5,8 @@ function AsyncTask(options) {
 
 	this.options.pollDelay = Math.max(this.options.pollDelay, 100);
 
+	this._ajaxTimeoutId = 0;
+	
 	this.retryCount = 0;
 	this._reset();
 
@@ -15,11 +17,11 @@ function AsyncTask(options) {
 	this._onAjaxUpdate = function(statusUpdate, httpStatus, xhr) {
 		self._ajaxTimeoutId = 0;
 		self._update(statusUpdate);
-		if(xhr.status != 201) { // 201 Created
+		if(self.isPending() || self.isProcessing()) { // 201 Created, the task is completed
 			self._pollServer();
 		}
 	};
-	this._onAjaxError = function(xhr, status, error) {
+	this._onAjaxError = function(xhr) {
 		self._ajaxTimeoutId = 0;
 		self.inError = true;
 		self._notifyError(xhr.status, xhr.responseText);
@@ -31,9 +33,6 @@ function AsyncTask(options) {
 			success : self._onAjaxUpdate
 		});
 	}
-	this._ajaxTimeoutId = 0;
-
-	this._start();
 }
 
 AsyncTask.prototype = {
@@ -53,7 +52,8 @@ AsyncTask.prototype = {
 			current : 0,
 			steps : 0
 		};
-		
+
+		this.started = false;
 		this.inError = false;
 		this.cancelled = false;
 		this.queueUrl = false;
@@ -70,6 +70,10 @@ AsyncTask.prototype = {
 	
 	isPending : function() {
 		return this.lastStatus.status == 'pending';
+	},
+	
+	isProcessing : function() {
+		return this.lastStatus.status == 'processing';
 	},
 	
 	isCancelled : function() {
@@ -126,7 +130,7 @@ AsyncTask.prototype = {
 		if(this.isCompleted() || this.isInError()) {
 			this.retryCount++;
 			this._reset();
-			this._start();
+			this.start();
 			
 			return true;
 		}
@@ -139,27 +143,35 @@ AsyncTask.prototype = {
 		return this.retryCount;
 	},
 	
-	_start : function() {
-		var self = this;
-		
-		$.ajax(this.options.url, {
-			error : this._onAjaxError,
-			headers : {
-				'Accept' : 'poll'
-			},
-			success : function(response, status, xhr) {
-				if(xhr.status == 202) {
-					// TODO : get the X-WebSocket-Channel header if we have a websocket opened
-					
-					self.queueUrl = response.data.location;
-					
-					self._pollServer();
+	start : function() {
+		if(!this.started) {
+			this.started = true;
+			
+			var self = this;
+			$.ajax(this.options.url, {
+				error : this._onAjaxError,
+				headers : {
+					'Accept' : 'poll' // TODO  : support websocket
+				},
+				success : function(response, status, xhr) {
+					if(xhr.status == 202) {
+						// TODO : get the X-WebSocket-Channel header if we have a websocket opened
+
+						self.queueUrl = response.data.location;
+
+						self._pollServer();
+					}
+					else {
+						self._notifyError(xhr.status, xhr.responseText);
+					}
 				}
-				else {
-					self._notifyError(xhr.status, xhr.responseText);
-				}
-			}
-		});
+			});
+			
+			return true;
+		}
+		else {
+			return false;
+		}
 	},
 	
 	_pollServer : function() {
@@ -167,29 +179,31 @@ AsyncTask.prototype = {
 	},
 	
 	_update : function(statusUpdate) {
-		if(this._statusChanged(statusUpdate)) {
-			this.lastStatus = statusUpdate;
-			
-			switch(statusUpdate.status) {
-				case 'pending':
-				case 'processing':
-					if($.isFunction(this.options.update)) {
-						this.options.update.call({}, this, statusUpdate.status, statusUpdate.data.percentage, statusUpdate.data.current, statusUpdate.data.steps);
-					}
-					break;
-				case 'completed':
-					if($.isFunction(this.options.success)) {
-						this.options.success.call({}, this, statusUpdate.data.location, statusUpdate.data.expires);
-					}
-					this._close();
-					break;
-				case 'cancelled':
-					this.cancelled = true;
-					this._close();
-					break;
-				default:
-					console.debug('Unknown task status : '.statusUpdate.status);
-					break;
+		if(this.isPending() || this.isProcessing()) {
+			if(this._statusChanged(statusUpdate)) {
+				this.lastStatus = statusUpdate;
+
+				switch(statusUpdate.status) {
+					case 'pending':
+					case 'processing':
+						if($.isFunction(this.options.update)) {
+							this.options.update.call({}, this, statusUpdate.status, statusUpdate.data.percentage, statusUpdate.data.current, statusUpdate.data.steps);
+						}
+						break;
+					case 'completed':
+						if($.isFunction(this.options.success)) {
+							this.options.success.call({}, this, statusUpdate.data.location, statusUpdate.data.expires);
+						}
+						this._close();
+						break;
+					case 'cancelled':
+						this.cancelled = true;
+						this._close();
+						break;
+					default:
+						console.debug('Unknown task status : '.statusUpdate.status);
+						break;
+				}
 			}
 		}
 	},
@@ -201,9 +215,6 @@ AsyncTask.prototype = {
 	_close : function() {
 		if(this.websocket) {
 			// stop listening
-		}
-		else {
-			
 		}
 	},
 	

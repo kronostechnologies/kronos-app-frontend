@@ -22,7 +22,7 @@ function AsyncTask(options) {
 	this._onAjaxError = function(xhr, status, error) {
 		self._ajaxTimeoutId = 0;
 		self.inError = true;
-		self._notifyError(xhr.statusCode(), xhr.responseText);
+		self._notifyError(xhr.status, xhr.responseText);
 	};
 	this._ajaxUpdate = function() {
 		$.ajax(self.queueUrl, {

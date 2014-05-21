@@ -41,6 +41,7 @@ AsyncTask.prototype = {
 		update : false,
 		error : false,
 		success : false,
+		cancel : false,
 		pollDelay : 500,
 		websocket : false
 	},
@@ -101,11 +102,18 @@ AsyncTask.prototype = {
 	},
 	
 	cancel : function() {
-		if(this.options.websocket) {
-			this.sendWebSocketCancel();
+		if(this.isPending() || this.isProcessing()) {
+			if(this.options.websocket) {
+				this.sendWebSocketCancel();
+			}
+			else {
+				this._ajaxCancel();
+			}
+			
+			return true;
 		}
 		else {
-			this._ajaxCancel();
+			return false;
 		}
 	},
 	
@@ -114,14 +122,14 @@ AsyncTask.prototype = {
 		this._ajaxTimeoutId = 0;
 		this.cancelled = true;
 		
+		var self = this;
 		$.ajax(this.queueUrl, {
 			type : 'DELETE',
-			error : function() {
-				console.debug('could not cancel task');
-			},
+			error : this._onAjaxError,
 			success : function(data) {
-				console.debug('cancelled');
-				console.debug(data);
+				if($.isFunction(self.options.cancel)) {
+					self.options.cancel.call({}, this);
+				}
 			}
 		});
 	},
@@ -198,7 +206,14 @@ AsyncTask.prototype = {
 						break;
 					case 'cancelled':
 						this.cancelled = true;
+						if($.isFunction(this.options.cancel)) {
+							this.options.cancel.call({}, this);
+						}
 						this._close();
+						break;
+					case 'error':
+						this.inError = true;
+						this._notifyError(500, '');
 						break;
 					default:
 						console.debug('Unknown task status : '.statusUpdate.status);

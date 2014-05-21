@@ -32,7 +32,7 @@ function AsyncTask(options) {
 			error : self._onAjaxError,
 			success : self._onAjaxUpdate
 		});
-	}
+	};
 }
 
 AsyncTask.prototype = {
@@ -223,4 +223,4 @@ AsyncTask.prototype = {
 			this.options.error.call({}, this, code, text);
 		}
 	}
-}
+};

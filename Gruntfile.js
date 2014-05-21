@@ -30,14 +30,15 @@ module.exports = function(grunt) {
           'js/jquery.BetterGrow.min.js': 'js/jquery.BetterGrow.js',
           'js/html5shiv.min.js': 'js/html5shiv.js',
           'js/prototype.min.js': 'js/prototype.js',
-          'js/placeholder.min.js': 'js/placeholder.js'
+          'js/placeholder.min.js': 'js/placeholder.js',
+          'js/async-api-task.min.js': 'js/async-api-task.js'
         }
       }
     },
 
     jshint: {
       all: {
-        src: ["Gruntfile.js", 'js/application.js', 'js/list.js'],
+        src: ["Gruntfile.js", 'js/application.js', 'js/list.js', 'js/async-api-task.js'],
         options: {
           jshintrc: true
         }

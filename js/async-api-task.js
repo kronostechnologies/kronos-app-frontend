@@ -90,11 +90,11 @@ AsyncTask.prototype = {
 	},
 	
 	getCurrentStep : function() {
-		return this.lastStatus.current;
+		return this.lastStatus.current_step;
 	},
 	
-	getSteps : function() {
-		return this.lastStatus.steps;
+	getStepCount : function() {
+		return this.lastStatus.step_count;
 	},
 	
 	getResult : function() {
@@ -195,12 +195,12 @@ AsyncTask.prototype = {
 					case 'pending':
 					case 'processing':
 						if($.isFunction(this.options.update)) {
-							this.options.update.call({}, this, statusUpdate.status, statusUpdate.data.percentage, statusUpdate.data.current, statusUpdate.data.steps);
+							this.options.update.call({}, this, statusUpdate.status, statusUpdate.data.percentage, statusUpdate.data.current_step, statusUpdate.data.step_count);
 						}
 						break;
 					case 'completed':
 						if($.isFunction(this.options.success)) {
-							this.options.success.call({}, this, statusUpdate.data.location, statusUpdate.data.expires);
+							this.options.success.call({}, this, statusUpdate.data.location, statusUpdate.data.expire_on);
 						}
 						this._close();
 						break;
@@ -224,7 +224,7 @@ AsyncTask.prototype = {
 	},
 	
 	_statusChanged : function(newStatus) {
-		return (this.lastStatus.status != newStatus.status || this.lastStatus.data.percentage != newStatus.data.percentage || this.lastStatus.data.current != newStatus.data.current);
+		return !this.lastStatus || !this.lastStatus.data || (this.lastStatus.status != newStatus.status || this.lastStatus.data.percentage != newStatus.data.percentage || this.lastStatus.data.current != newStatus.data.current);
 	},
 	
 	_close : function() {

@@ -163,11 +163,14 @@ AsyncTask.prototype = {
 				},
 				success : function(response, status, xhr) {
 					if(xhr.status == 202) {
-						// TODO : get the X-WebSocket-Channel header if we have a websocket opened
-
 						self.queueUrl = response.data.location;
-
-						self._pollServer();
+					
+						if(self.options.websocket && response.data['websocket-channel']) {
+							self.options.websocket.on(response.data['websocket-channel'], self._onWebSocketUpdate);
+						}
+						else {
+							self._pollServer();
+						}
 					}
 					else {
 						self._notifyError(xhr.status, xhr.responseText);

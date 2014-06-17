@@ -353,8 +353,8 @@ header {
 
 .has-ico,
 .ico {
-	&.mag-glass { @include before-content("🔍"); } // \1f50d
-	&.eye { @include before-content("👓"); } // \1F453
+	&.mag-glass { @include before-content("\1F50D"); }
+	&.eye { @include before-content("\1F453"); }
 	&.report { @include before-content("\2338"); }
 	&.new { @include before-content("\2295"); }
 }

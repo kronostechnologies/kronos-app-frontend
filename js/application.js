@@ -2574,6 +2574,76 @@ var app = {
 		return true;
 	},
 
+	getXHRRequest : function(url, successCallback, loading, errorCallback, button, skipOverlayHandling) {
+		var t = this;
+
+		var xhrRequest = $.ajax({
+			url: url,
+			type : 'GET',
+			dataType:'json',
+
+			success: function(response) {
+				if(!skipOverlayHandling){
+					t.hideOverlay();
+					t._hideLoading();
+				}
+
+				if(button)
+					$(button).prop('disabled', false);
+
+				var data;
+				if(typeof response.data != 'undefined'){
+					data = response.data;
+				}
+				else {
+					data = response;
+				}
+
+				if(response.status && response.status == 'error') {
+					if(typeof errorCallback == 'function'){
+						errorCallback(data );
+					}
+					else if(typeof data.message != 'undefined'){
+						$.app.showError(data.message);
+					}
+					else {
+						$.app.showError();
+					}
+				}
+				else if(typeof successCallback == 'function') {
+					successCallback(data);
+				}
+			},
+			error: function(xhr, status, error) {
+				if(!skipOverlayHandling) {
+					t.hideOverlay();
+					t._hideLoading();
+				}
+
+				console.debug(xhr);
+				if(status == 'abort' || !$.app.validateXHR(xhr)){
+					return false;
+				}
+				
+				if(button)
+					$(button).prop('disabled', false);
+
+				if(this.debug) {
+					console.debug('AJAX query error');
+					console.debug(status);
+					console.debug(error);
+				}
+
+				if(typeof errorCallback == 'function')
+					errorCallback();
+				else
+					$.app.showError();
+			}
+		});
+
+		return xhrRequest;
+	},
+
 	get : function(view, cmd, paramsString, callback, loading, errorCallback, button, skipOverlayHandling) {
 		if(!loading && !skipOverlayHandling) {
 			this.showOverlay();
@@ -2590,6 +2660,7 @@ var app = {
 			}
 		}
 
+		// Le bloc ci-dessous devrait/pourrait être remplacer par un call à getXHRRequest //
 		var xhrRequest = $.ajax({
 			url:'index.php?k=' + t.SESSION_KEY + '&view=' + view + '&cmd=' + cmd + paramsString ,
 			type : 'GET',

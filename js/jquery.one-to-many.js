@@ -92,7 +92,7 @@
 				});
 				$row.find('input, textarea').not('.no-clear').val('').trigger('change');
 				$row.find('select:not(.no-clear)').find('option:first').attr('selected', 'selected').trigger('change');
-				$row.find('input:tabbable,select:tabbable,textarea:tabbable').first().focus();
+				$row.find('input:tabbable,select:tabbable,textarea:tabbable').not('.mto-nofocus').first().focus();
 			}
 			else{
 				// This allow us ot trigger the bit event bitRemove properly.
@@ -102,8 +102,8 @@
 						$input.data('textboxlist_ref').removeList();
 					}
 				});
-				if ($row.next().length) $row.next().find('input:tabbable,select:tabbable,textarea:tabbable').first().focus();
-				else if ($row.prev().length) $row.prev().find('input:tabbable,select:tabbable,textarea:tabbable').first().focus();
+				if ($row.next().length) $row.next().find('input:tabbable,select:tabbable,textarea:tabbable').not('.mto-nofocus').first().focus();
+				else if ($row.prev().length) $row.prev().find('input:tabbable,select:tabbable,textarea:tabbable').not('.mto-nofocus').first().focus();
 				$row.remove();
 				methods.update_altrow.call(this);
 				methods.ensure_radio_checked.call(this);
@@ -139,7 +139,7 @@
 			var t = e.data.t;
 			e.preventDefault();
 			var $row = methods.add_row.apply(t);
-			$row.find('input:tabbable,select:tabbable,textarea:tabbable').first().focus();
+			$row.find('input:tabbable,select:tabbable,textarea:tabbable').not('.mto-nofocus').first().focus();
 		},
 
 		each_row: function(fn){

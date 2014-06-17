@@ -59,6 +59,7 @@ AsyncTask.prototype = {
 		this.cancelled = false;
 		this.queueUrl = false;
 		this.result = false;
+		this.websocket_channel = false;
 	},
 	
 	getStatus : function() {
@@ -155,18 +156,25 @@ AsyncTask.prototype = {
 		if(!this.started) {
 			this.started = true;
 			
+			var headers = {
+				'Accept' : 'poll'+(this.options.websocket ? ', websocket' : '')
+			};
+			
+			if(this.options.websocket) {
+				headers['X-WebSocket-Token'] = this.options.websocket.getToken()
+			}
+			
 			var self = this;
 			$.ajax(this.options.url, {
 				error : this._onAjaxError,
-				headers : {
-					'Accept' : 'poll' // TODO  : support websocket
-				},
+				headers : headers,
 				success : function(response, status, xhr) {
 					if(xhr.status == 202) {
 						self.queueUrl = response.data.location;
 					
-						if(self.options.websocket && response.data['websocket-channel']) {
-							self.options.websocket.on(response.data['websocket-channel'], self._onWebSocketUpdate);
+						if(self.options.websocket && response.data.websocket_channel) {
+							self.websocket_channel = response.data.websocket_channel;
+							self.options.websocket.on(self.websocket_channel, self._onWebSocketUpdate);
 						}
 						else {
 							self._pollServer();
@@ -231,8 +239,9 @@ AsyncTask.prototype = {
 	},
 	
 	_close : function() {
-		if(this.websocket) {
-			// stop listening
+		if(this.options.websocket && this.websocket_channel) {
+			this.options.websocket.off(this.websocket_channel, this._onWebSocketUpdate);
+			this.websocket_channel = false;
 		}
 	},
 	

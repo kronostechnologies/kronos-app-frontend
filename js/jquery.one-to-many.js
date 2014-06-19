@@ -90,8 +90,10 @@
 						$input.data('textboxlist_ref').removeList();
 					}
 				});
-				$row.find('input, textarea').not('.no-clear').val('').trigger('change');
-				$row.find('select:not(.no-clear)').find('option:first').attr('selected', 'selected').trigger('change');
+
+				var eventParams = ['mto'];
+				$row.find('input, textarea').not('.no-clear').val('').trigger('change', eventParams).trigger('blur', eventParams);
+				$row.find('select:not(.no-clear)').find('option:first').attr('selected', 'selected').trigger('change', eventParams);
 				$row.find('input:tabbable,select:tabbable,textarea:tabbable').not('.mto-nofocus').first().focus();
 			}
 			else{

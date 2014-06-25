@@ -2056,7 +2056,7 @@ var app = {
 	showError : function(message) {
 		$.app.showModalDialog('<h2>'+$.app._('ERROR')+'</h2>\
 						<p>\
-							<strong>'+(message ? message : $.app._('FATAL_ERROR_OCCURED'))+'</strong>\
+							<strong>'+(message ? $.app._(message) : $.app._('FATAL_ERROR_OCCURED'))+'</strong>\
 							<br />\
 							'+$.app._('ERROR_TRY_AGAIN')+'\
 							<br />\

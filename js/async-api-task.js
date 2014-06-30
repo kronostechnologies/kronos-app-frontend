@@ -38,6 +38,7 @@ function AsyncTask(options) {
 AsyncTask.prototype = {
 	defaults : {
 		url : '',
+        postData : false,
 		update : false,
 		error : false,
 		success : false,
@@ -161,11 +162,18 @@ AsyncTask.prototype = {
 			};
 			
 			if(this.options.websocket) {
-				headers['X-WebSocket-Token'] = this.options.websocket.getToken()
+				headers['X-WebSocket-Token'] = this.options.websocket.getToken();
+			}
+
+			var type = 'GET';
+			if(this.options.postData) {
+				type = 'POST';
 			}
 			
 			var self = this;
 			$.ajax(this.options.url, {
+				type : type,
+				data : this.options.postData,
 				error : this._onAjaxError,
 				headers : headers,
 				success : function(response, status, xhr) {

@@ -2875,7 +2875,7 @@ var app = {
 			}
 		},
 
-		format: function(date, format) {
+    format: function(date, format) {
 
 			if(typeof format == 'undefined'){
 				format = 'long';
@@ -2891,13 +2891,13 @@ var app = {
 				return date.getFullYear() + '-' + $.app.pad(date.getMonth()+1, 2) + '-' + $.app.pad(date.getDate(), 2);
 			}
 			else if(format == 'long'){
-				return date.getDate() +' '+this.getMonthName(date.getMonth())+' '+ date.getFullYear();
+				return ($.app.lang === "en" ? this.getMonthName(date.getMonth()) +' ' + date.getDate() + ', ': date.getDate() +' '+this.getMonthName(date.getMonth()) +' ') + date.getFullYear();
 			}
 			else if(format == 'longtime'){
-				return date.getDate() +' '+this.getMonthName(date.getMonth())+' '+ date.getFullYear()+' '+$.app._('AT')+' '+date.getHours()+':' + $.app.pad(date.getMinutes(), 2);
+				return ($.app.lang === "en" ? this.getMonthName(date.getMonth()) + ' ' + date.getDate() + ', ': date.getDate() +' '+this.getMonthName(date.getMonth())+' ') + date.getFullYear()+' '+$.app._('AT')+' '+date.getHours()+':' + $.app.pad(date.getMinutes(), 2);
 			}
 			else if(format == 'short') {
-				return date.getDate() +' '+this.getMonthName(date.getMonth());
+				return $.app.lang === "en" ? this.getMonthName(date.getMonth()) + ' ' + date.getDate() : date.getDate() +' '+this.getMonthName(date.getMonth());
 			}
 			else if(format == 'longabbrmonth'){
 				var month = date.getMonth(),
@@ -2906,7 +2906,7 @@ var app = {
 
 				monthName = (rData) ? rData.monthNamesShort[month] : this.getMonthName(month).substring(0, 3);
 
-				return date.getDate() +' '+monthName+'. '+ date.getFullYear();
+				return ($.app.lang === "en" ? monthName + '. ' + date.getDate() + ', ' : date.getDate() +' '+monthName+'. ') + date.getFullYear();
 			}
 
 			if($.app.debug)

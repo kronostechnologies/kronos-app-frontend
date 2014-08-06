@@ -3942,6 +3942,15 @@ View.prototype = {
 		return views.pop();
 	},
 
+	getReturnURL : function(defaultReturn) {
+		var parentView = this.popParentView(false);
+		return parentView ? parentView : defaultReturn;
+	},
+
+	getParentViewParam: function(viewInfo) {
+		return '&parent_view=' + this.pushParentView(viewInfo);
+	},
+
 	updateReturnToParentView : function(){
 		var t = this;
 		var parent_view = t.getParentView();

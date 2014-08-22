@@ -3932,6 +3932,16 @@ View.prototype = {
 		return url;
 	},
 
+	getCurrentView: function() {
+		var fullView = this._view;
+
+		if (this._id !== undefined) {
+			fullView += '/' + this._id;
+		}
+
+		return fullView;
+	},
+
 	getParentView: function(){
 		var t = this;
 		if(!t._uri_params.parent_view){
@@ -3948,7 +3958,8 @@ View.prototype = {
 	},
 
 	getParentViewParam: function(viewInfo) {
-		return '&parent_view=' + this.pushParentView(viewInfo);
+		var parentViewValue = (viewInfo === undefined) ? this.pushParentView(this.getCurrentView()) : this.pushParentView(viewInfo);
+		return '&parent_view=' + parentViewValue;
 	},
 
 	updateReturnToParentView : function(){

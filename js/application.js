@@ -1336,7 +1336,7 @@ var app = {
 					return false;
 				}
 				t._onLoadView(t._getViewObject(t.currentView));
-				t._loadView(response.data);
+				t._loadView(response.data, hiddenParams);
 			},
 			error: function(xhr, status, error) {
 				t.view_fetching = false;
@@ -1366,8 +1366,7 @@ var app = {
 	/**
 	 *	Standard entry point for view data (html and model).
 	 */
-	_loadView : function(data) {
-		console.debug(data);
+	_loadView : function(data, hiddenParams) {
 		var t = this;
 
 		// Application version changed server side, we have to reload the application.
@@ -1391,9 +1390,10 @@ var app = {
 			if(this.debug) {
 				console.debug('Using recieved html');
 			}
-
 			this._loadContent(data.html);
-			this._loadParams(data.params);
+
+			var fullParams = $.extend({}, data.params, hiddenParams);
+			this._loadParams(fullParams);
 
 			// We store the html and json we received
 			this._setViewCache(this.currentView, data.html, data.params);
@@ -1404,9 +1404,11 @@ var app = {
 				console.debug('Using cached html');
 			}
 
+			var fullParams = $.extend({}, this._getViewCachedParams(this.currentView), hiddenParams);
+
 			// Get no html/params but the sent version is the same as the one we have, we can use it.
 			this._loadContent(this._getViewCachedHTML(this.currentView));
-			this._loadParams(this._getViewCachedParams(this.currentView));
+			this._loadParams(fullParams);
 		}
 		else {
 			throw this._throw('View not cached and not recieved from html...', true);

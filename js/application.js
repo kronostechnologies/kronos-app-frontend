@@ -69,10 +69,10 @@ var app = {
 				};
 			}
 		}
-		
+
 		$(document).ajaxStart(function(){t.ajaxQueryLoading = true;});
 		$(document).ajaxStop(function(){t.ajaxQueryLoading = false;});
-		
+
 		// if the ping interval is defined, we had the ping query interval to the document.
 		if(this.pingInterval){
 			// Ping interval
@@ -165,7 +165,7 @@ var app = {
 
 				return this;
 			},
-			
+
 			durationVal : function(months_duration){
 				var text;
 				if (!isFinite(months_duration)) {
@@ -179,7 +179,7 @@ var app = {
 							(months === 0 ? '' : (months == 1 ? $.app._("MONTHD").replace('%{months}', months) : $.app._("MONTHSD").replace('%{months}', months)));
 				}
 				this.val(text);
-				
+
 				return this;
 			},
 
@@ -389,7 +389,7 @@ var app = {
 					if(typeof interval != 'undefined') {
 						var config = $.extend(
 							{
-								dateFormat: 'yy-mm-dd', 
+								dateFormat: 'yy-mm-dd',
 								onClose: function(value){
 									try{
 										var parsed_date = $.datepicker.parseDate('yymmdd', value);
@@ -399,7 +399,7 @@ var app = {
 										$(this).val(value);
 									}
 								}
-							}, 
+							},
 							interval
 						);
 						$this.datepicker(config);
@@ -493,7 +493,7 @@ var app = {
 				if(!target.data('no-hinted-span')){
 					target.wrap('<span class="'+hintedWrapperClasses.join(' ')+'"></span>');
 				}
-				
+
 				target.after('<span class="hint">'+text+'<span class="hint-pointer sprite">&nbsp;</span></span>');
 
 				blurFocusTarget.blur(function(e) {
@@ -524,7 +524,7 @@ var app = {
 				if(!dont_show){
 					target.data('hint').fadeIn();
 				}
-				
+
 				return target;
 			},
 
@@ -706,23 +706,23 @@ var app = {
 		if(config['debug'])	{
 			this.debug = true;
 		}
-		
-		if(config['sendError'])	{	
+
+		if(config['sendError'])	{
 			this.sendErrors = true;
 		}
-		
+
 		if(config['sendErrorsOnUnload']) {
 			this.sendErrorsOnUnload = true;
 		}
-		
+
 		if(config['silent']) {
 			this.silent = true;
 		}
-		
+
 		if(config['trace_retirement']) {
 			this.trace_retirement = true;
 		}
-		
+
 		if(config['jqueryui'] && config['jqueryui']['startingday']) {
 			this.startingDay = config['jqueryui']['startingday'];
 		}
@@ -764,7 +764,7 @@ var app = {
 			}
 		}
 
-		
+
 	},
 
 	_configure : function() { },
@@ -910,7 +910,7 @@ var app = {
 		if(this.debug) {
 			console.debug(description + ' (' + page + ':' + line + ')');
 		}
-		
+
 		try {
 			var error = $.secureEvalJSON(description.replace('uncaught exception: ', ''));
 
@@ -1031,7 +1031,7 @@ var app = {
 	_checkHash : function() {
 		var view;
 		var object;
-		
+
 		if(!this.view_fetching && this.hash !== location.hash){
 			//Store the new hash before the loop starts again
 
@@ -1143,10 +1143,10 @@ var app = {
 		if(force_clear) {
 			this._force_clear = true;
 		}
-		
+
 		location.hash = hash;
 	},
-	
+
 	navigateBackTo : function(hash) {
 		if (this._history.length > 1 && this._history[this._history.length - 2].hash == hash) {
 			history.back();
@@ -1156,7 +1156,7 @@ var app = {
 			this.replace(hash);
 		}
 	},
-	
+
 	replace : function(hash) {
 		if (!hash) {
 			hash = '';
@@ -1201,12 +1201,14 @@ var app = {
 					console.debug('View closed, resuming');
 				}
 			}
-			else if(this.debug) {
+			else {
 				this._resume_hash = false;
 
 				this.addHistory(location.hash);
 
-				console.debug('View cancelled closing');
+				if(this.debug) {
+					console.debug('View cancelled closing');
+				}
 			}
 		}
 	},
@@ -1367,13 +1369,14 @@ var app = {
 	 *	Standard entry point for view data (html and model).
 	 */
 	_loadView : function(data, hiddenParams) {
-		var t = this;
+		var t = this,
+				fullParams;
 
 		// Application version changed server side, we have to reload the application.
 		if(this.getApplicationVersion() != data.version) {
 			location.reload();
 		}
-		
+
 		if(data.data){ //backward compatibility.
 			data = data.data;
 		}
@@ -1392,7 +1395,7 @@ var app = {
 			}
 			this._loadContent(data.html);
 
-			var fullParams = $.extend({}, data.params, hiddenParams);
+		 	fullParams = $.extend({}, data.params, hiddenParams);
 			this._loadParams(fullParams);
 
 			// We store the html and json we received
@@ -1404,7 +1407,7 @@ var app = {
 				console.debug('Using cached html');
 			}
 
-			var fullParams = $.extend({}, this._getViewCachedParams(this.currentView), hiddenParams);
+			fullParams = $.extend({}, this._getViewCachedParams(this.currentView), hiddenParams);
 
 			// Get no html/params but the sent version is the same as the one we have, we can use it.
 			this._loadContent(this._getViewCachedHTML(this.currentView));
@@ -1419,14 +1422,14 @@ var app = {
 		// NOTE : No offline support is required here. Everything is managed by {TODO: insert offline fetch method name}
 		this._loadModel(data.model);
 		this._checkAnchor();
-	
+
 		$('input').each(function(index, element) {
 			if (!$(element).attr('maxlength')) {
-				$(element).attr('maxlength', 255); 
+				$(element).attr('maxlength', 255);
 			}
 		});
 	},
-	
+
 	_checkAnchor: function(){
 		var params = this._getViewParameters(this.hash);
 		if(params.params['anchor']){
@@ -1487,7 +1490,7 @@ var app = {
 		if(!this.currentView) {
 			throw this._throw('No view to load parameters from.', true);
 		}
-		
+
 		var object = this._getViewObject(this.currentView);
 		if (object) {
 			object.load(params);
@@ -1550,7 +1553,7 @@ var app = {
 		else if(this.debug) {
 			console.debug('No view object, cannot inject model');
 		}
-		
+
 		if ($('.page-title').length) {
 			window.document.title = ($('.page-title').text());
 		}
@@ -1563,7 +1566,7 @@ var app = {
 		if(this.debug) {
 			console.log('Clearing view cache');
 		}
-		
+
 		delete(this._view_cache);
 		this._view_cache = [];
 	},
@@ -1701,7 +1704,7 @@ var app = {
 		this.hideOverlay();
 		this.afterHideLoading();
 	},
-	
+
 	/**
 	 * Happens whenever the _hideLoading function is finished.
 	 * This function is meant to be overriden by a child class.
@@ -1782,8 +1785,8 @@ var app = {
 	 */
 	stepBack : function(redirect) {
 		var hash;
-		
-		do{	
+
+		do{
 			if(this._history.length === 0){
 				hash = '';
 				break;
@@ -1796,7 +1799,7 @@ var app = {
 				break;
 			}
 		}while(hash == location.hash);
-				
+
 		if(this.debug)
 			console.debug('Step back to : '+hash);
 
@@ -1821,7 +1824,7 @@ var app = {
 
 		if(this.debug)
 			this._debugHistory();
-	
+
 		var hash = this.stepBack(false);
 
 		if(hash !== '') {
@@ -2214,11 +2217,11 @@ var app = {
 			n = new Date();
 		} while(n - d < milliseconds);
 	},
-	
+
 	isNumber : function(value) {
 		return typeof value === 'number' && isFinite(value);
 	},
-	
+
 	/**
 	 * Support localized numeric representation.
 	 * Replace NaN by 0
@@ -2261,7 +2264,7 @@ var app = {
 		if (opts && opts.canBeNull && (value === '' || value === null)){
 			return '';
 		}
-		
+
 		var currency_pos;
 		if(this.lang == 'fr'){
 			currency_pos = 'right';
@@ -2291,13 +2294,13 @@ var app = {
 	 */
 	formatPercent: function(value, opts) {
 		var separator;
-		
+
 		if (opts && opts.canBeNull && !value){
 			return '';
 		}
-		
+
 		if(this.lang == 'fr'){
-			if (opts && opts.nbsp) 
+			if (opts && opts.nbsp)
 				separator = '&nbsp';
 			else
 				separator=' ';
@@ -2404,7 +2407,7 @@ var app = {
 		else {
 			integer = tmp;
 		}
-		
+
 		var result;
 		if(options.precision===0 || (options.facultative_decimals && parseInt(rounded.substr(rounded.indexOf('.')+1)) === 0 )){
 			result = integer;
@@ -2413,7 +2416,7 @@ var app = {
 			integer += options.decimal_separator;
 			result = integer + rounded.substr(rounded.indexOf('.')+1);
 		}
-		
+
 		if(options.end_space) {
 		 result += ' ';
 		}
@@ -2442,7 +2445,7 @@ var app = {
 
 		if(sin === '')
 			return true;
-		
+
 		if(sin == '*** *** ***')
 			return true;
 
@@ -2626,7 +2629,7 @@ var app = {
 				if(status == 'abort' || !$.app.validateXHR(xhr)){
 					return false;
 				}
-				
+
 				if(button)
 					$(button).prop('disabled', false);
 
@@ -2667,7 +2670,7 @@ var app = {
 			url:'index.php?k=' + t.SESSION_KEY + '&view=' + view + '&cmd=' + cmd + paramsString ,
 			type : 'GET',
 			dataType:'json',
-			
+
 			success: function(response) {
 				if(!skipOverlayHandling){
 					t.hideOverlay();
@@ -2676,7 +2679,7 @@ var app = {
 
 				if(button)
 					$(button).prop('disabled', false);
-				
+
 				var data;
 				if(typeof response.data != 'undefined'){
 					data = response.data;
@@ -2684,7 +2687,7 @@ var app = {
 				else {
 					data = response;
 				}
-				
+
 				if(response.status && response.status == 'error') {
 					if(typeof errorCallback == 'function'){
 						errorCallback(data );
@@ -2710,7 +2713,7 @@ var app = {
 				if(status == 'abort' || !$.app.validateXHR(xhr)){
 					return false;
 				}
-				
+
 				if(button)
 					$(button).prop('disabled', false);
 
@@ -2733,13 +2736,13 @@ var app = {
 				t._showLoading();
 			}, this._loadingDelay);
 		}
-		
+
 		return xhrRequest;
 	},
 
 	post : function(view, cmd, paramsString, postString, callback, loading, errorCallback, button) {
 		var t = this;
-		
+
 		if(button)
 			$(button).prop('disabled', true);
 
@@ -2748,7 +2751,7 @@ var app = {
 				paramsString = '&'+paramsString;
 			}
 		}
-		
+
 		var xhrRequest = $.ajax({
 			url:'index.php?k=' + t.SESSION_KEY + '&view=' + view + '&cmd=' + cmd + paramsString ,
 			type: 'POST',
@@ -2762,7 +2765,7 @@ var app = {
 
 				if(button)
 					$(button).prop('disabled', false);
-				
+
 				var data;
 				if(typeof response.data != 'undefined'){
 					data = response.data;
@@ -2819,7 +2822,7 @@ var app = {
 				t._showLoading();
 			}, this._loadingDelay);
 		}
-		
+
 		return xhrRequest;
 	},
 
@@ -2857,7 +2860,7 @@ var app = {
 			}
 			else {
 				var obj = new Date();
-				
+
 				obj.setDate(1);
 				obj.setYear(m[1]);
 				obj.setMonth(parseInt(m[2], 10) -1);
@@ -2996,7 +2999,7 @@ var app = {
 
 				nextBirthday.setMonth(date_obj.getMonth());
 				nextBirthday.setDate(date_obj.getDate());
-				
+
 				if (now < lastBirthday) {
 						lastBirthday.setFullYear(lastBirthday.getFullYear() - 1);
 				}
@@ -3199,7 +3202,7 @@ var app = {
 				newString += substitution;
 
 			}
-			
+
 			newString += strings[i];
 			return newString;
 		},
@@ -3233,7 +3236,7 @@ var app = {
 	 */
 	downloadFile : function(url){
 		var t = this;
-		
+
 		if(!t._iPad){
 			var frameId =  'download_iframe';
 			var io = document.getElementById(frameId);
@@ -3278,7 +3281,7 @@ var app = {
 
 		return (rv < 8);
 	},
-	
+
 	isOpera : function() {
 		return navigator.appName == 'Opera';
 	},
@@ -3761,7 +3764,7 @@ View.prototype = {
 
 		return false; // Return true here if you want to handle the change and prevent the application from fetching data from the server
 	},
-	
+
 	onScrollToAnchor: function($element, anchor_name){
 		$element.focus();
 		var element_offset = $element.offset();
@@ -3912,7 +3915,7 @@ View.prototype = {
 	popParentView : function(include_id){
 		if(typeof include_id == "undefined")
 			include_id = true;
-		
+
 		var t = this;
 		if(!t._uri_params.parent_view){
 			return false;
@@ -3921,12 +3924,12 @@ View.prototype = {
 		var views = t._uri_params.parent_view.split('|');
 		var parent_view = views.pop();
 		var url = '';
-		
+
 		if (include_id)
 			url = '#' + parent_view + '/'+t._id;
 		else
 			url = '#' + parent_view;
-		
+
 		if(views.length>0){
 			url += '&parent_view=' + views.join('|');
 		}
@@ -4024,7 +4027,7 @@ EditView.prototype = {
 
 			// Prevent IE to prompt that a change occured when clicking on a link with href=javascript:
 			if (navigator.appName == 'Microsoft Internet Explorer') {
-				$(window).data('beforeunload',window.onbeforeunload);  
+				$(window).data('beforeunload',window.onbeforeunload);
 				$(document).on('mouseenter', 'a[href^="javascript:"]', function(){window.onbeforeunload=null;})
 				           .on('mouseleave', 'a[href^="javascript:"]', function(){window.onbeforeunload=$(window).data('beforeunload');});
 			}
@@ -4055,7 +4058,7 @@ EditView.prototype = {
 			this._wasClosing = true;
 
 			this.showSaveDialog();
-			
+
 			return false;
 		}
 		else {
@@ -4103,9 +4106,9 @@ EditView.prototype = {
 					t.stop();
 			}
 			else if(action == 'resume') {
-				
+
 				window.onbeforeunload = function (e) { return; };
-				
+
 				if(!t._canClose()) {
 					t._onCancelClose();
 
@@ -4166,7 +4169,7 @@ EditView.prototype = {
 		$.app.showOverlay();
 
 		var params = this._onSave();
-		
+
 		window.onbeforeunload = function (e) { return; };
 
 		$.ajax({
@@ -4176,18 +4179,18 @@ EditView.prototype = {
 			dataType:'json',
 			success: function(data) {
 				if(!data) data = {};
-				if(data.data){ 
+				if(data.data){
 					// backward compatibility with communicable.
-					data = data.data; 
-				} 
+					data = data.data;
+				}
 				$.app.hideOverlay();
 				$('input[type=submit],input[type=button]').prop('disabled', false);
-				
+
 				if(data.validation_errors && data.validation_errors.length){
 					$.each(data.validation_errors, function(i, err){
 						$('#' + err.field).hintError(err.message);
 					});
-					
+
 					return;
 				}
 
@@ -4316,20 +4319,20 @@ EditView.prototype = {
 	_onCreateModel : function(model) {
 		return model;
 	},
-	
+
 	alternateCreateModel: function(model) {
 		var alternateModel = {};
-	 
+
 		var replaceBracket = function(t) {
 			return t.replace(']', '');
 		};
-	
+
 		var reduceFunc = function(previous, current) {
 			var n = {};
 			n[current] = previous;
 			return n;
 		};
-	 
+
 		for (var key in model) {
 			if (model.hasOwnProperty(key)) {
 				var path = key.split('[').map(replaceBracket);
@@ -4357,7 +4360,7 @@ EditView.prototype = {
 	cancel : function(hash) {
 
 		$('input[type=submit],input[type=button]').prop('disabled', true);
-		
+
 		this._modified = false;
 
 		if(typeof hash == 'undefined') {
@@ -4365,7 +4368,7 @@ EditView.prototype = {
 		}
 
 		$('input[type=submit],input[type=button]').prop('disabled', false);
-		
+
 		if (hash) {
 			$.app.navigateBackTo(hash);
 		}

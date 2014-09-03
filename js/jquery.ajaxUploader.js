@@ -93,7 +93,7 @@
 					function createUploadIframe(id, uri){
 							//create frame
 							var frameId = 'jUploadFrame' + id;
-								if(window.ActiveXObject) {
+							if($.browser.msie && $.browser.version < 9.0) {
 								var io = document.createElement('<iframe id="' + frameId + '" name="' + frameId + '" />');
 								if(typeof uri== 'boolean'){
 									io.src = 'javascript:false';
@@ -193,6 +193,7 @@
 									status = isTimeout != "timeout" ? "success" : "error";
 									// Make sure that the request was successful or notmodified
 									if ( status != "error" ) {
+										console.log(io.contentWindow.document.body);
 										// process the data (runs the xml through httpData regardless of callback)
 										var data = uploadHttpData( xml, s.dataType );
 

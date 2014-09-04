@@ -1354,7 +1354,6 @@ var app = {
 					console.debug(error);
 				}
 
-				// Hopefuly this won't happen
 				t._showFatalError('An error occured while fetching view data "'+view+'" ('+status+')');
 			}
 		});
@@ -2566,13 +2565,17 @@ var app = {
 	 *
 	 */
 	validateXHR : function(xhr){
-		if(!xhr || typeof xhr == "undefined" || typeof xhr.getResponseHeader != 'function'){
+		if(!xhr || typeof xhr === 'undefined' || typeof xhr.getResponseHeader !== 'function' || typeof xhr.getAllResponseHeaders !== 'function'){
 			return true;
 		}
 
 		var redirect_to = xhr.getResponseHeader('X-Kronos-Ajax-Goto');
 		if(redirect_to){
 			document.location = redirect_to;
+			return false;
+		}
+		// Does not trigger any error handler if the page is reloading via user refresh
+		else if(!xhr.getAllResponseHeaders()){
 			return false;
 		}
 

@@ -3378,7 +3378,7 @@ var app = {
 				options.queryStringParamName = this.queryStringParamName;
 				options.formatItem = function(data, position, length, term) {return t._formatItem(data, position, length, term);};
 				options.highlight = function(label, term) {return t._highlight(label, term);};
-				options.extraParams = function() {return t._extraParams();};
+				options.extraParams = t._extraParams();
 				if(this.parse){options.parse = this.parse;}
 
 

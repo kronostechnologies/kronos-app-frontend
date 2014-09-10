@@ -1,0 +1,13 @@
+.sticky-header {
+    position: fixed;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.sticky-header table {
+    background-color: #fff;
+}
+
+.hidden {
+    display: none !important;
+}

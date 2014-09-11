@@ -374,14 +374,12 @@
     getCloneOfRow: function(rowObj) {
       var $rowCloneTd;
 
-      if (!rowObj.$clone) {
-        rowObj.$clone = rowObj.$row.clone();
-        $rowCloneTd = this.getRowCells(rowObj.$clone);
+      rowObj.$clone = rowObj.$row.clone();
+      $rowCloneTd = this.getRowCells(rowObj.$clone);
 
-        $.each(this.getRowCells(rowObj.$row), function(i, cell) {
-          $rowCloneTd.eq(i).css('width', $(cell).width());
-        });
-      }
+      $.each(this.getRowCells(rowObj.$row), function(i, cell) {
+        $rowCloneTd.eq(i).css('width', $(cell).width());
+      });
       return rowObj.$clone;
     }
   };

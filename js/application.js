@@ -4286,7 +4286,7 @@ EditView.prototype = {
 
 		$("form input[name],select[name],textarea[name]")
 			.each(function(index, element){
-				var value = element.value;
+				var value = $(element).val();
 
 				if(element.type == "radio" || element.type == "checkbox"){
 					if(element.checked){

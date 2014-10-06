@@ -362,7 +362,7 @@ var app = {
 					$(this).val($.app.formatSIN($(this).val()));
 
 					$(this).blur(function() {
-						$(this).val($.app.formatSIN($(this).val()));
+						this.value = $.app.formatSIN($(this).val());
 					});
 				});
 			},

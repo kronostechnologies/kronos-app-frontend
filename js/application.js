@@ -481,6 +481,15 @@ var app = {
 					else {
 						target = $(this).next('.textboxlist');
 					}
+					target.find('.textboxlist-bit-box-deletable').blur(function(e) {
+						target.next('.hint').fadeOut();
+					})
+					.focus(function(e) {
+						target.next('.hint').fadeIn();
+					}).change(function(){
+						console.log($(target));
+						t.handleHintErrorChange.apply(target);
+					});
 				}
 
 				if($(this).data('is-textbox') || target.hasClass('textboxlist'))

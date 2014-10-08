@@ -3935,6 +3935,7 @@ View.prototype = {
 
 		var views = t._uri_params.parent_view.split('|');
 		var parent_view = views.pop();
+		t._uri_params.parent_view = views.join('|');
 		var url = '';
 
 		if (include_id)

@@ -31,22 +31,25 @@
 			});
 		},
 
+		injectOnExistingRow: function(injectObj, $row) {
+			for(var i = 0; i < injectObj.length; i++){
+				var $form_elem = $row.find(injectObj[i].selector);
+				if($form_elem.length === 0 && $.app.debug){
+					console.error('No input found for selector "'+ injectObj[i].selector +'" in $.fn.manyToOneSelector.inject');
+				}
+
+				if(typeof injectObj[i].before === 'function'){ injectObj[i].before($row); }
+
+				$form_elem.val(injectObj[i].val);
+
+				if(typeof injectObj[i].after === 'function'){ injectObj[i].after($row); }
+			}
+		},
+
 		//Creates a new row from data.
 		inject : function(new_data){
 			var $new_row = methods.add_row.call(this);
-			for(var i = 0; i < new_data.length; i++){
-				var $form_elem = $new_row.find(new_data[i].selector);
-				if($form_elem.length === 0 && $.app.debug){
-					console.error('No input found for selector "'+ new_data[i].selector +'" in $.fn.manyToOneSelector.inject');
-				}
-				if(typeof new_data[i].before === 'function'){
-					new_data[i].before($new_row);
-				}
-				$form_elem.val(new_data[i].val);
-				if(typeof new_data[i].after === 'function'){
-					new_data[i].after($new_row);
-				}
-			}
+			methods.injectOnExistingRow(new_data, $new_row);
 			return $new_row;
 		},
 

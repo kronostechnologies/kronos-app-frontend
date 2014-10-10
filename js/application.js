@@ -290,9 +290,7 @@ var app = {
 					$t.addClass('money');
 
 					$t.focus(function() {
-						console.debug($(this).data('val'));
 						$(this).val($(this).data('val'));
-						console.debug($(this).val());
 						return this;
 					});
 					$(this).click(function() {

@@ -1107,8 +1107,12 @@ var app = {
 
 						return; // We don't want to anything else until the hash changes again or the view tells us to resume
 					}
-					else if(this.debug) {
-						console.debug('Closed view');
+					else {
+						this._onViewClose(object);
+
+						if(this.debug) {
+							console.debug('Closed view');
+						}
 					}
 				}
 			}
@@ -1140,6 +1144,10 @@ var app = {
 				this._fetchView(view);
 			}
 		}
+	},
+
+	_onViewClose : function(viewObject) {
+
 	},
 
 	goTo :  function(hash, force_clear) {
@@ -1516,8 +1524,12 @@ var app = {
 		if(object) {
 			if(typeof object._preHook == 'function'){ object._preHook(); }
 			object.hook();
+
+			this._onViewHook(object);
 		}
 	},
+
+	_onViewHook : function(viewObject) { },
 
 	recursiveCleanFloats : function(model) {
 		if($.isArray(model)) {
@@ -1555,6 +1567,7 @@ var app = {
 
 			object.inject(model);
 			if(typeof object._postInject == 'function'){ object._postInject(); }
+			this._onViewInject(object, model);
 		}
 		else if(this.debug) {
 			console.debug('No view object, cannot inject model');
@@ -1564,6 +1577,8 @@ var app = {
 			window.document.title = ($('.page-title').text());
 		}
 	},
+
+	_onViewInject : function(viewObject, model) { },
 
 	/**
 	 * Clear all cached view html and params

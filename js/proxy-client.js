@@ -144,10 +144,10 @@
         }
       };
     });
-    $.fn.ajaxProxy.defaults = {
-      uid: 0,
-      retryCount: 5,
-      log: false
-    };
   }
+  $.fn.ajaxProxy.defaults = {
+    uid: 0,
+    retryCount: 5,
+    log: false
+  };
 }(jQuery));

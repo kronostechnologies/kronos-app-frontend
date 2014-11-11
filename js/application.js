@@ -1841,6 +1841,10 @@ var app = {
 	 * Go back to the previous page and force it to reload
 	 */
 	forceStepBack : function() {
+		//* Cette fonction a été modifiée dans bo-application.js *//
+		//* Elle n'a pas été modifiée ici pour ne pas influencer d'autres applications. *//
+		//* Avec la certitude qu'elle est utilisée seulement dans le BO, elle pourrait être effacée d'ici. *//
+
 		this._stopObservation();
 
 		if(this.debug)
@@ -3938,6 +3942,10 @@ View.prototype = {
 	},
 
 	popParentView : function(include_id){
+		//* Cette fonction a été modifiée dans bo-application.js *//
+		//* Elle n'a pas été modifiée ici pour ne pas influencer d'autres applications. *//
+		//* Avec la certitude qu'elle est utilisée seulement dans le BO, elle pourrait être effacée d'ici. *//
+
 		if(typeof include_id == "undefined")
 			include_id = true;
 
@@ -3964,6 +3972,10 @@ View.prototype = {
 	},
 
 	getCurrentView: function() {
+		//* Cette fonction a été modifiée dans bo-application.js *//
+		//* Elle n'a pas été modifiée ici pour ne pas influencer d'autres applications. *//
+		//* Avec la certitude qu'elle est utilisée seulement dans le BO, elle pourrait être effacée d'ici. *//
+
 		var fullView = this._view;
 
 		if (this._id !== undefined) {

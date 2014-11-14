@@ -3995,6 +3995,22 @@ View.prototype = {
 		return views.pop();
 	},
 
+	getDeletionReturnURL: function(currentModule, itemID) {
+		var parentView = this.popParentView(false);
+		var defaultReturn = '#' + currentModule + '/Index';
+		var currentItemViewURL = '#' + currentModule + '/View/' + itemID;
+		var currentItemEditURL = '#' + currentModule + '/Edit/' + itemID;
+		var mustPop = ((parentView.match('^' + currentItemViewURL)) || (parentView.match('^' + currentItemEditURL)));
+
+		while (mustPop) {
+			parentView = this.popParentView(false);
+			mustPop = ((parentView.match('^' + currentItemViewURL)) || (parentView.match('^' + currentItemEditURL)));
+		}
+
+		parentView = (parentView == '#') ? '' : parentView;
+		return parentView ? parentView : defaultReturn;
+	},
+
 	getReturnURL : function(defaultReturn) {
 		var parentView = this.popParentView(false);
 		return parentView ? parentView : defaultReturn;

@@ -3917,6 +3917,8 @@ View.prototype = {
 
 		if(!canClose) {
 			this._onCancelClose();
+		} else {
+			this._onClose();
 		}
 
 		return canClose;
@@ -3930,6 +3932,8 @@ View.prototype = {
 		if($.app.debug)
 			$.app._throw('View does not implement _onCancelClose function');
 	},
+
+	_onClose : function() {},
 
 	pushParentView : function(view_name) {
 		var t = this;

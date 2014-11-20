@@ -26,7 +26,6 @@ module.exports = function(grunt) {
           'js/jquery.one-to-many.min.js': 'js/jquery.one-to-many.js',
           'js/jquery.pagination.min.js': 'js/jquery.pagination.js',
           'js/jquery.iphoneui.min.js': 'js/jquery.iphoneui.js',
-          'js/jquery.pseudo.min.js': 'js/jquery.pseudo.js',
           'js/jquery.BetterGrow.min.js': 'js/jquery.BetterGrow.js',
           'js/jquery.placeholder.min.js': 'js/jquery.placeholder.js',
           'js/html5shiv.min.js': 'js/html5shiv.js',

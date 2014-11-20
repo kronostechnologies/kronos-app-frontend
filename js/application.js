@@ -3990,10 +3990,11 @@ View.prototype = {
 	},
 
 	getParentView: function(){
+		//* Semble utilisée seulement dans le BO *//
+
 		var t = this;
-		if(!t._uri_params.parent_view){
-			return false;
-		}
+		if (t._uri_params.parent_view == undefined) { return false; }
+		if (t._uri_params.parent_view == '') { return t._uri_params.parent_view; }
 
 		var views = t._uri_params.parent_view.split('|');
 		return views.pop();

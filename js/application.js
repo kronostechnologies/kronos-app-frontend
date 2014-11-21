@@ -3936,6 +3936,8 @@ View.prototype = {
 	_onClose : function() {},
 
 	pushParentView : function(view_name) {
+		//* Utilisée dans FNA et BO. *//
+
 		var t = this;
 		var ret = '';
 		if(t._uri_params.parent_view){
@@ -3947,8 +3949,7 @@ View.prototype = {
 
 	popParentView : function(include_id){
 		//* Cette fonction a été modifiée dans bo-application.js *//
-		//* Elle n'a pas été modifiée ici pour ne pas influencer d'autres applications. *//
-		//* Avec la certitude qu'elle est utilisée seulement dans le BO, elle pourrait être effacée d'ici. *//
+		//* Elle n'a pas été modifiée ici pour ne pas influencer d'autres applications. ( Elle est utilisée dans FNA + BO ) *//
 
 		if(typeof include_id == "undefined")
 			include_id = true;
@@ -3975,22 +3976,8 @@ View.prototype = {
 		return url;
 	},
 
-	getCurrentView: function() {
-		//* Cette fonction a été modifiée dans bo-application.js *//
-		//* Elle n'a pas été modifiée ici pour ne pas influencer d'autres applications. *//
-		//* Avec la certitude qu'elle est utilisée seulement dans le BO, elle pourrait être effacée d'ici. *//
-
-		var fullView = this._view;
-
-		if (this._id !== undefined) {
-			fullView += '/' + this._id;
-		}
-
-		return fullView;
-	},
 
 	getParentView: function(){
-		//* Semble utilisée seulement dans le BO *//
 
 		var t = this;
 		if (t._uri_params.parent_view == undefined) { return false; }
@@ -4000,33 +3987,8 @@ View.prototype = {
 		return views.pop();
 	},
 
-	getDeletionReturnURL: function(currentModule, itemID) {
-		var parentView = this.popParentView(false);
-		var defaultReturn = '#' + currentModule + '/Index';
-		var currentItemViewURL = '#' + currentModule + '/View/' + itemID;
-		var currentItemEditURL = '#' + currentModule + '/Edit/' + itemID;
-		var mustPop = ((parentView.match('^' + currentItemViewURL)) || (parentView.match('^' + currentItemEditURL)));
-
-		while (mustPop) {
-			parentView = this.popParentView(false);
-			mustPop = ((parentView.match('^' + currentItemViewURL)) || (parentView.match('^' + currentItemEditURL)));
-		}
-
-		parentView = (parentView == '#') ? '' : parentView;
-		return parentView ? parentView : defaultReturn;
-	},
-
-	getReturnURL : function(defaultReturn) {
-		var parentView = this.popParentView(false);
-		return parentView ? parentView : defaultReturn;
-	},
-
-	getParentViewParam: function(viewInfo) {
-		var parentViewValue = (viewInfo === undefined) ? this.pushParentView(this.getCurrentView()) : this.pushParentView(viewInfo);
-		return '&parent_view=' + parentViewValue;
-	},
-
 	updateReturnToParentView : function(){
+
 		var t = this;
 		var parent_view = t.getParentView();
 		if(parent_view){

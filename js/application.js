@@ -3299,20 +3299,38 @@ var app = {
 
 	sprintf : function() { },
 
-	isIE7 : function() {
-		var rv = 999;
+	getIEVersion: function() {
+		var rv = null;
 		if (navigator.appName == 'Microsoft Internet Explorer') {
 			var ua = navigator.userAgent;
 			var re  = new RegExp("MSIE ([0-9]{1,}[.0-9]{0,})");
-			if (re.exec(ua) != null)
-				rv = parseFloat( RegExp.$1 );
+			if (re.exec(ua) != null) { rv = parseFloat( RegExp.$1 ); }
 		}
 
-		return (rv < 8);
+		return rv;
+	},
+
+	isIE7 : function() {
+
+		var ieVersion = this.getIEVersion();
+		ieVersion = (ieVersion !== null) ? ieVersion : 999; // for compatibility //
+
+		return (ieVersion < 8);
+	},
+
+	isIE9 : function() {
+
+		var ieVersion = this.getIEVersion();
+		return ((ieVersion >=9) && (ieVersion < 10));
 	},
 
 	isOpera : function() {
 		return navigator.appName == 'Opera';
+	},
+
+	forceElementRedraw: function($targetElement) {
+		// So ugly... fix pour IE9. //
+		$targetElement.hide().show();
 	},
 
 	autocompleter : function(selector, view, command, callback, config) {

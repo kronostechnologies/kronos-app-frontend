@@ -3998,8 +3998,8 @@ View.prototype = {
 	getParentView: function(){
 
 		var t = this;
-		if (t._uri_params.parent_view == undefined) { return false; }
-		if (t._uri_params.parent_view == '') { return t._uri_params.parent_view; }
+		if (t._uri_params.parent_view === undefined) { return false; }
+		if (t._uri_params.parent_view === '') { return t._uri_params.parent_view; }
 
 		var views = t._uri_params.parent_view.split('|');
 		return views.pop();

@@ -1204,6 +1204,8 @@ var app = {
 	resume : function(stay) {
 		if(this._resume_hash) {
 			if(!stay && typeof stay != 'undefined') {
+				this._onViewClose(this._getViewObject(this.currentView));
+
 				// We're going where the user wanted to before the view cancelled it
 				this.currentView = false;
 

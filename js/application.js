@@ -3971,11 +3971,11 @@ View.prototype = {
 
 		if (typeof include_id == "undefined") { include_id = true; }
 
-		if (this._uri_params.parent_view == undefined) { return false; }
+		if (this._uri_params.parent_view === undefined) { return false; }
 
 		var views = this._uri_params.parent_view.split('|');
 		var parent_view = views.pop();
-		if(views.length == 0){
+		if(views.length === 0){
 			this._uri_params.parent_view = undefined;
 		}
 		else{

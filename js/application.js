@@ -3968,24 +3968,25 @@ View.prototype = {
 	},
 
 	popParentView : function(include_id){
-		//* Cette fonction a été modifiée dans bo-application.js *//
-		//* Elle n'a pas été modifiée ici pour ne pas influencer d'autres applications. ( Elle est utilisée dans FNA + BO ) *//
+		debugger;
+		if (typeof include_id == "undefined") { include_id = true; }
 
-		if(typeof include_id == "undefined")
-			include_id = true;
+		if (this._uri_params.parent_view == undefined) { return false; }
 
-		var t = this;
-		if(!t._uri_params.parent_view){
-			return false;
-		}
-
-		var views = t._uri_params.parent_view.split('|');
+		var views = this._uri_params.parent_view.split('|');
 		var parent_view = views.pop();
-		t._uri_params.parent_view = views.join('|');
+		if(views.length == 0){
+			this._uri_params.parent_view = undefined;
+		}
+		else{
+			this._uri_params.parent_view = views.join('|');
+		}
 		var url = '';
 
-		if (include_id)
-			url = '#' + parent_view + '/'+t._id;
+		if(!parent_view)
+			url = '#';
+		else if (include_id)
+			url = '#' + parent_view + '/'+this._id;
 		else
 			url = '#' + parent_view;
 

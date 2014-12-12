@@ -7,7 +7,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
 
     copy: {
-	    build: { 
+	    build: {
 	      files: [
 	      ]
       }
@@ -31,14 +31,16 @@ module.exports = function(grunt) {
           'js/html5shiv.min.js': 'js/html5shiv.js',
           'js/prototype.min.js': 'js/prototype.js',
           'js/placeholder.min.js': 'js/placeholder.js',
-          'js/async-api-task.min.js': 'js/async-api-task.js'
+          'js/async-api-task.min.js': 'js/async-api-task.js',
+          'js/proxy-client.min.js': 'js/proxy-client.js',
+          'js/proxy-server.min.js': 'js/proxy-server.js'
         }
       }
     },
 
     jshint: {
       all: {
-        src: ["Gruntfile.js", 'js/application.js', 'js/list.js', 'js/async-api-task.js'],
+        src: ['Gruntfile.js', 'js/application.js', 'js/list.js', 'js/async-api-task.js'],
         options: {
           jshintrc: true
         }
@@ -48,7 +50,7 @@ module.exports = function(grunt) {
     bump: {
       options: {
         files: ['package.json', 'bower.json'],
-        commitFiles: ['package.json', 'bower.json'],
+        commitFiles: ['js/*.min.js', 'js/*.min.map', 'package.json', 'bower.json'],
         push: true,
 	      pushTo: 'origin'
       }
@@ -63,7 +65,7 @@ module.exports = function(grunt) {
     'copy',
     'uglify'
   ]);
-  
+
   grunt.registerTask('release', [
     'default',
     'bump',

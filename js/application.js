@@ -3968,7 +3968,7 @@ View.prototype = {
 	},
 
 	popParentView : function(include_id){
-		debugger;
+
 		if (typeof include_id == "undefined") { include_id = true; }
 
 		if (this._uri_params.parent_view == undefined) { return false; }

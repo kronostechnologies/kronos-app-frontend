@@ -3963,7 +3963,7 @@ View.prototype = {
 		if(t._uri_params.parent_view){
 			ret += t._uri_params.parent_view + '|';
 		}
-		ret += view_name;
+		ret += encodeURIComponent(view_name);
 		return ret;
 	},
 
@@ -3974,7 +3974,7 @@ View.prototype = {
 		if (this._uri_params.parent_view === undefined) { return false; }
 
 		var views = this._uri_params.parent_view.split('|');
-		var parent_view = views.pop();
+		var parent_view = decodeURIComponent(views.pop());
 		if(views.length === 0){
 			this._uri_params.parent_view = undefined;
 		}

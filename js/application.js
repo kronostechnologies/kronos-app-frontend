@@ -4400,23 +4400,9 @@ EditView.prototype = {
 	},
 
 	cancel : function(hash) {
-
-		$('input[type=submit],input[type=button]').prop('disabled', true);
-
 		this._modified = false;
-
-		if(typeof hash == 'undefined') {
-			hash = $.app.navigateBackTo("");
-		}
-
 		$('input[type=submit],input[type=button]').prop('disabled', false);
-
-		if (hash) {
-			$.app.navigateBackTo(hash);
-		}
-		else {
-			history.back();
-		}
+		$.app.goBack(hash)
 	},
 
 	resume : function() {

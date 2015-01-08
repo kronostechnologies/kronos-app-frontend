@@ -1163,13 +1163,8 @@ var app = {
 	},
 
 	navigateBackTo : function(hash) {
-		if (this._history.length > 1 && this._history[this._history.length - 2].hash == hash) {
-			history.back();
-		}
-		else {
-			this._history.pop();
-			this.replace(hash);
-		}
+		this._history.pop();
+		this.replace(hash);
 	},
 
 	replace : function(hash) {

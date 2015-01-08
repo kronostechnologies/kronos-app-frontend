@@ -1864,11 +1864,11 @@ var app = {
 		}
 	},
 
-	goBack : function() {
-		var hash;
-		if(this._history.length < 2)
+	goBack : function(hash) {
+		if(typeof hash === undefined){
 			hash = '';
-		else {
+		}
+		if(this._history.length >= 2){
 			this._history.pop(); // Pop current page;
 			hash = this._history.pop().hash; // Previous page;
 		}

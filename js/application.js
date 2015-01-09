@@ -4397,7 +4397,7 @@ EditView.prototype = {
 	cancel : function(hash) {
 		this._modified = false;
 		$('input[type=submit],input[type=button]').prop('disabled', false);
-		$.app.goBack(hash)
+		$.app.goBack(hash);
 	},
 
 	resume : function() {

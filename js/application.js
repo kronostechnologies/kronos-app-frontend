@@ -1860,7 +1860,7 @@ var app = {
 	},
 
 	goBack : function(hash) {
-		if(typeof hash === undefined){
+		if(hash === undefined){
 			hash = '';
 		}
 		if(this._history.length >= 2){

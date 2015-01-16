@@ -4000,7 +4000,7 @@ View.prototype = {
 		if (t._uri_params.parent_view === '') { return t._uri_params.parent_view; }
 
 		var views = t._uri_params.parent_view.split('|');
-		return views.pop();
+		return decodeURIComponent(views.pop());
 	},
 
 	updateReturnToParentView : function(){

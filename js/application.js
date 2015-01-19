@@ -1258,7 +1258,7 @@ var app = {
 		this._fetchView(this.currentView, hiddenParams);
 	},
 	_onFetchView : function(current_view){	},
-	_onLoadView : function(current_view) { },
+	_onLoadView : function(current_view, data, hiddenParams) { },
 
 	/**
 	 * Fetch view html and model from server
@@ -1349,7 +1349,7 @@ var app = {
 
 					return false;
 				}
-				t._onLoadView(t._getViewObject(t.currentView));
+				t._onLoadView(t._getViewObject(t.currentView), response.data, hiddenParams);
 				t._loadView(response.data, hiddenParams);
 			},
 			error: function(xhr, status, error) {

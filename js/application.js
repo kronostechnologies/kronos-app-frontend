@@ -2033,14 +2033,28 @@ var app = {
 
 		this.showOverlay('#000', 0.4);
 
-		$('body').append('\
-			<div id="modal_dialog" class="modal" style="display: none; top : '+$.app._scrollTop()+'px">\
-				<div class="modal-2" '+(width ? 'style="width: '+width+'px;"': '')+'>\
-					<div class="sprite modal-3">\
-						'+content+'\
-					</div>\
-				</div>\
-			</div>');
+		$('body').append(
+			$('<div></div>')
+				.addClass('modal')
+				.attr('id', 'modal_dialog')
+				.css({
+					'display': 'none',
+					'top': $.app._scrollTop() + 'px'
+				})
+				.append(
+					$('<div></div>')
+						.addClass('modal-2')
+						.append(
+							$('<div></div>')
+								.addClass('sprite modal-3')
+								.append(content)
+						)
+				)
+		);
+
+		if(width) {
+			$('#modal_dialog .modal-2').css('width', width);
+		}
 
 		if($.app.isIE7()) $('div.modal p.submit').prepend('<span style="width: 1px; display: inline-block;">&nbsp;</span>');
 		$('#modal_dialog').slideDown(speed, callback);

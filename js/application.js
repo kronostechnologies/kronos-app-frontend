@@ -18,9 +18,10 @@ var app = {
 	SESSION_KEY: false,
 
 	// Hash management
+	_is_observing_hash : false,
+	_hash_changed_while_not_observing : true,
 	hash : false,
 	_resume_hash : '',
-	_observerInterval : 0,
 	_history : [],
 
 	// User related informations
@@ -863,6 +864,16 @@ var app = {
 	start : function() {
 		this.hook();
 
+		var self = this;
+		window.onhashchange = function() {
+			if(self._is_observing_hash) {
+				self._checkHash();
+			}
+			else {
+				self._hash_changed_while_not_observing = true;
+			}
+		};
+
 		this._observe();
 
 		if(this._checkGears()) {
@@ -1010,26 +1021,24 @@ var app = {
 			console.debug('Observing hash from now on');
 		}
 
-		var t = this;
-		this._observerInterval = setInterval(function() {
-			t._checkHash();
-		}, 250);
+		this._is_observing_hash = true;
 
-		this._checkHash();
+		if(this._hash_changed_while_not_observing) {
+			this._hash_changed_while_not_observing = false;
+
+			this._checkHash();
+		}
 	},
 
 	/**
 	 * Stop the hash observation loop
 	 */
 	_stopObservation : function() {
-		if(this._observerInterval) {
-			if(this.debug) {
-				console.debug('Stopped hash observation');
-			}
-
-			clearInterval(this._observerInterval);
-			this._observerInterval = 0;
+		if(this.debug) {
+			console.debug('Stopped hash observation');
 		}
+
+		this._is_observing_hash = false;
 	},
 
 	/**

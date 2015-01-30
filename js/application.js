@@ -742,21 +742,7 @@ var app = {
 		this.SESSION_KEY = config.SESSION_KEY;
 		this.replaced_session_key = false;
 
-		if(this.canUseSessionStorage()) {
-			var session_key = sessionStorage.getItem('SESSION_KEY');
-
-			if(session_key) {
-				this.replaced_session_key = this.SESSION_KEY;
-				this.SESSION_KEY = session_key;
-				
-				if(this.debug) {
-					console.log('Replaced given session key "' + this.replaced_session_key + '" for stored session key "' + this.SESSION_KEY + '"');
-				}
-			}
-			else {
-				sessionStorage.setItem('SESSION_KEY', this.SESSION_KEY);
-			}
-		}
+		this.checkStoredSession();
 
 		if(!config['application_version']) {
 			throw this._throw('Applicaiton version not defined in configuration', true);
@@ -3369,10 +3355,52 @@ var app = {
 	isOpera : function() {
 		return navigator.appName == 'Opera';
 	},
+	
+	_getApplicationSessionCookieName : function() {
+		return 'KRONOS_SESSID';
+	},
+	
+	checkStoredSession : function() {
+		if(this.canUseSessionStorage()) {
+			if(window.parent) {
+				if(sessionStorage)
+				sessionStorage.clear();
+			}
+			
+			var cookie_name = this._getApplicationSessionCookieName();
+			var cookie_value = $.cookie(cookie_name);
+			var stored_cookie = sessionStorage.getItem(cookie_name);
+
+			if(!stored_cookie || stored_cookie != cookie_value) {
+				if(this.debug) {
+					console.log('Session cookie changed, clearing stored session');
+				}
+
+				sessionStorage.clear();
+				sessionStorage.setItem(cookie_name, cookie_value);
+			}
+			
+			var session_key = sessionStorage.getItem('SESSION_KEY');
+			
+			if(session_key) {
+				this.replaced_session_key = this.SESSION_KEY;
+				this.SESSION_KEY = session_key;
+				
+				if(this.debug) {
+					console.log('Replaced given session key "' + this.replaced_session_key + '" for stored session key "' + this.SESSION_KEY + '"');
+				}
+			}
+			else {
+				sessionStorage.setItem('SESSION_KEY', this.SESSION_KEY);
+			}
+			
+			// TODO : store pagecrumb here
+		}
+	},
 
 	canUseSessionStorage : function() {
 		try {
-			return !!sessionStorage.getItem;
+			return (!!sessionStorage.getItem) && (!!$.cookie);
 		} catch(e){
 			return false;
 		}

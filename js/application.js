@@ -3362,15 +3362,21 @@ var app = {
 	
 	checkStoredSession : function() {
 		if(this.canUseSessionStorage()) {
-			if(window.parent) {
-				sessionStorage.clear();
+			if(window.opener) {
+				if(sessionStorage.getItem('SESSION_KEY') == opener.sessionStorage.getItem('SESSION_KEY')) {
+					if(this.debug) {
+						console.debug('Opened from another tab, clearing stored session');
+					}
+					
+					sessionStorage.clear();
+				}
 			}
 			
 			var cookie_name = this._getApplicationSessionCookieName();
 			var cookie_value = $.cookie(cookie_name);
 			var stored_cookie = sessionStorage.getItem(cookie_name);
 
-			if(!stored_cookie || stored_cookie != cookie_value) {
+			if(stored_cookie && stored_cookie != cookie_value) {
 				if(this.debug) {
 					console.log('Session cookie changed, clearing stored session');
 				}

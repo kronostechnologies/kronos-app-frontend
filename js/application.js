@@ -3363,7 +3363,6 @@ var app = {
 	checkStoredSession : function() {
 		if(this.canUseSessionStorage()) {
 			if(window.parent) {
-				if(sessionStorage)
 				sessionStorage.clear();
 			}
 			

@@ -740,6 +740,23 @@ var app = {
 		this.IMG_PATH = config.IMG_PATH;
 		this.VIRTUALPATH = config.VIRTUALPATH;
 		this.SESSION_KEY = config.SESSION_KEY;
+		this.replaced_session_key = false;
+
+		if(this.canUseSessionStorage()) {
+			var session_key = sessionStorage.getItem('SESSION_KEY');
+
+			if(session_key) {
+				this.replaced_session_key = this.SESSION_KEY;
+				this.SESSION_KEY = session_key;
+				
+				if(this.debug) {
+					console.log('Replaced given session key "' + this.replaced_session_key + '" for stored session key "' + this.SESSION_KEY + '"');
+				}
+			}
+			else {
+				sessionStorage.setItem('SESSION_KEY', this.SESSION_KEY);
+			}
+		}
 
 		if(!config['application_version']) {
 			throw this._throw('Applicaiton version not defined in configuration', true);
@@ -1306,6 +1323,11 @@ var app = {
 		params.cached = cached;
 		params.version = this.getApplicationVersion();
 		params.uv = t.userVersion;
+		
+		if(this.replaced_session_key) {
+			params.rk = this.replaced_session_key;
+			this.replaced_session_key = false;
+		}
 
 		var param_string = $.param(params);
 
@@ -3346,6 +3368,14 @@ var app = {
 
 	isOpera : function() {
 		return navigator.appName == 'Opera';
+	},
+
+	canUseSessionStorage : function() {
+		try {
+			return !!sessionStorage.getItem;
+		} catch(e){
+			return false;
+		}
 	},
 
 	forceElementRedraw: function($targetElement) {

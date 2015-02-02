@@ -1062,7 +1062,8 @@ var app = {
 
 			// Get the requested view
 			if(!this.hash || this.hash == '#') {
-				view = this.default_view;
+				this.goTo(this.default_view);
+				return false;
 			}
 			else {
 				var splits = this.hash.substring(1).split('&');

@@ -3366,7 +3366,7 @@ var app = {
 			if(window.opener) {
 				if(sessionStorage.getItem('SESSION_KEY') == opener.sessionStorage.getItem('SESSION_KEY')) {
 					if(this.debug) {
-						console.debug('Opened from another tab, clearing stored session');
+						console.debug('Opened from another tab, clearing cloned stored session');
 					}
 					
 					sessionStorage.clear();

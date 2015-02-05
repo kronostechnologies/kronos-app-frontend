@@ -16,6 +16,7 @@ var app = {
 	IMG_PATH: '/',
 	VIRTUALPATH: '/',
 	SESSION_KEY: false,
+	PAGE_CRUMB: false,
 
 	// Hash management
 	_is_observing_hash : false,
@@ -740,6 +741,7 @@ var app = {
 		this.IMG_PATH = config.IMG_PATH;
 		this.VIRTUALPATH = config.VIRTUALPATH;
 		this.SESSION_KEY = config.SESSION_KEY;
+		this.PAGE_CRUMB = config.pc;
 		this.replaced_session_key = false;
 
 		this.checkStoredSession();
@@ -1400,6 +1402,8 @@ var app = {
 	_loadView : function(data, hiddenParams) {
 		var t = this,
 				fullParams;
+
+		this.PAGE_CRUMB = data.params.pc;
 
 		// Application version changed server side, we have to reload the application.
 		if(this.getApplicationVersion() != data.version) {
@@ -2725,7 +2729,7 @@ var app = {
 
 		// Le bloc ci-dessous devrait/pourrait être remplacer par un call à getXHRRequest //
 		var xhrRequest = $.ajax({
-			url:'index.php?k=' + t.SESSION_KEY + '&view=' + view + '&cmd=' + cmd + paramsString ,
+			url:'index.php?k=' + t.SESSION_KEY + '&view=' + view + '&pc=' + $.app.PAGE_CRUMB + '&cmd=' + cmd + paramsString ,
 			type : 'GET',
 			dataType:'json',
 
@@ -2811,7 +2815,7 @@ var app = {
 		}
 
 		var xhrRequest = $.ajax({
-			url:'index.php?k=' + t.SESSION_KEY + '&view=' + view + '&cmd=' + cmd + paramsString ,
+			url:'index.php?k=' + t.SESSION_KEY + '&view=' + view + '&pc=' + $.app.PAGE_CRUMB + '&cmd=' + cmd + paramsString ,
 			type: 'POST',
 			data: postString,
 			dataType:'json',
@@ -3377,10 +3381,7 @@ var app = {
 			var cookie_value = $.cookie(cookie_name);
 			var stored_cookie = sessionStorage.getItem(cookie_name);
 
-			if(!stored_cookie) {
-				sessionStorage.setItem(cookie_name, cookie_value);
-			}
-			else if(stored_cookie != cookie_value) {
+			if(!stored_cookie || stored_cookie != cookie_value) {
 				if(this.debug) {
 					console.log('Session cookie changed, clearing stored session');
 				}
@@ -3402,8 +3403,6 @@ var app = {
 			else {
 				sessionStorage.setItem('SESSION_KEY', this.SESSION_KEY);
 			}
-			
-			// TODO : store pagecrumb here
 		}
 	},
 
@@ -4318,7 +4317,7 @@ EditView.prototype = {
 		window.onbeforeunload = function (e) { return; };
 
 		$.ajax({
-			url:'index.php?k=' + $.app.SESSION_KEY + '&view=' + this._view + '&cmd=save&id=' + this._id+params,
+			url:'index.php?k=' + $.app.SESSION_KEY + '&view=' + this._view + '&pc=' + $.app.PAGE_CRUMB + '&cmd=save&id=' + this._id+params,
 			type: 'POST',
 			data: this._saveBuildPost(),
 			dataType:'json',

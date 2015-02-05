@@ -3377,7 +3377,10 @@ var app = {
 			var cookie_value = $.cookie(cookie_name);
 			var stored_cookie = sessionStorage.getItem(cookie_name);
 
-			if(stored_cookie && stored_cookie != cookie_value) {
+			if(!stored_cookie) {
+				sessionStorage.setItem(cookie_name, cookie_value);
+			}
+			else if(stored_cookie != cookie_value) {
 				if(this.debug) {
 					console.log('Session cookie changed, clearing stored session');
 				}

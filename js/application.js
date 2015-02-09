@@ -3584,6 +3584,7 @@ var app = {
 				params.view = this.view;
 				params.cmd = this.command;
 				params.k = $.app.SESSION_KEY;
+				params.pc = $.app.PAGE_CRUMB;
 
 				return params;
 			},

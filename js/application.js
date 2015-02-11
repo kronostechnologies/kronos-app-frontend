@@ -981,6 +981,31 @@ var app = {
 		}
 	},
 
+	_showNavigationError : function() {
+						$.app.showModalDialog('<h2>'+$.app._('NAVIGATION_ERROR')+'</h2>\
+										<p>\
+											<strong>'+$.app._('INVALID_PAGE_REQUEST')+'</strong>\
+											<br />\
+										</p>\
+										<p class="submit">\
+											<input type="submit" id="hook_create_error_close" value="'+$.app._('OK')+'" />\
+										</p>', 'fast', function() {
+							$('#hook_create_error_close').safeClick(function() {
+								$.app.hideModalDialog('fast');
+
+								// stop looking at the location for now ...
+								$.app._stopObservation();
+
+								// ... revert page change ...
+								$.app.hash = $.app.stepBack();
+								$.app._history.push($.app.hash);
+
+								// ... and then start to observe again
+								$.app._observe();
+							});
+						});
+	},
+
 	/**
 	 *	Show a modal dialog telling the user something bad happened. He can try again or go back to where he was before.
 	 */
@@ -1340,28 +1365,7 @@ var app = {
 						t._showFatalError('An error occured server side while fetching view data "'+view+'" (600)');
 					}
 					else if(info.code == 601 || info.code == 602) { // VIEW_ACL_ERROR or MODEL_ACL_ERROR
-						$.app.showModalDialog('<h2>'+$.app._('NAVIGATION_ERROR')+'</h2>\
-										<p>\
-											<strong>'+$.app._('INVALID_PAGE_REQUEST')+'</strong>\
-											<br />\
-										</p>\
-										<p class="submit">\
-											<input type="submit" id="hook_create_error_close" value="'+$.app._('OK')+'" />\
-										</p>', 'fast', function() {
-							$('#hook_create_error_close').safeClick(function() {
-								$.app.hideModalDialog('fast');
-
-								// stop looking at the location for now ...
-								$.app._stopObservation();
-
-								// ... revert page change ...
-								$.app.hash = $.app.stepBack();
-								$.app._history.push($.app.hash);
-
-								// ... and then start to observe again
-								$.app._observe();
-							});
-						});
+						t._showNavigationError();
 					}
 					else { // Unknown error
 						t._showFatalError('An unknwon error was sent from server while fetching view data "'+view+'" ('+info.error+')');

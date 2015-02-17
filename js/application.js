@@ -112,7 +112,11 @@ var app = {
 		window.onbeforeunload = function(event) {
 			return t._beforeUnload();
 		};
-
+		
+		if(!window.name.match(/^GUID-/)) {
+			window.name = 'GUID-' + $.app.generateGUID();
+		}
+ 
 		this.sprintf = this._sprintfWrapper.init;
 
 		Date.prototype.getDayOfYear = function() {
@@ -2279,6 +2283,28 @@ var app = {
 			n = new Date();
 		} while(n - d < milliseconds);
 	},
+	
+	generateGUID : function() {
+		// Taken from http://stackoverflow.com/questions/864942/in-javascript-how-can-i-uniquely-identify-one-browser-window-from-another-which
+		
+		//------------------
+		var S4 = function () {
+			return(
+				Math.floor(
+					Math.random() * 0x10000 /* 65536 */
+				).toString(16)
+			);
+		};
+		//------------------
+
+		return (
+			S4() + S4() + "-" +
+			S4() + "-" +
+			S4() + "-" +
+			S4() + "-" +
+			S4() + S4() + S4()
+		);
+	},
 
 	isNumber : function(value) {
 		return typeof value === 'number' && isFinite(value);
@@ -3371,20 +3397,21 @@ var app = {
 	
 	checkStoredSession : function() {
 		if(this.canUseSessionStorage()) {
+			var cookie_name = this._getApplicationSessionCookieName();
+			var cookie_value = $.cookie(cookie_name);
+			
 			if(window.opener) {
-				if(sessionStorage.getItem('SESSION_KEY') == opener.sessionStorage.getItem('SESSION_KEY')) {
+				if(sessionStorage.getItem('window-name') != window.name) {
 					if(this.debug) {
 						console.debug('Opened from another tab, clearing cloned stored session');
 					}
 					
 					sessionStorage.clear();
+					sessionStorage.setItem(cookie_name, cookie_value);
 				}
 			}
 			
-			var cookie_name = this._getApplicationSessionCookieName();
-			var cookie_value = $.cookie(cookie_name);
 			var stored_cookie = sessionStorage.getItem(cookie_name);
-
 			if(!stored_cookie || stored_cookie != cookie_value) {
 				if(this.debug) {
 					console.log('Session cookie changed, clearing stored session');
@@ -3392,6 +3419,10 @@ var app = {
 
 				sessionStorage.clear();
 				sessionStorage.setItem(cookie_name, cookie_value);
+			}
+			
+			if(!sessionStorage.getItem('window-name')) {
+				sessionStorage.setItem('window-name', window.name);
 			}
 			
 			var session_key = sessionStorage.getItem('SESSION_KEY');

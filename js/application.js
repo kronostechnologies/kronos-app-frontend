@@ -1428,7 +1428,13 @@ var app = {
 		}
 
 		this._initView();
-		this._getViewObject(this.currentView)._validateable = data.validateable;
+		var object = this._getViewObject(this.currentView);
+		if(!object) {
+			throw this._throw('View object not found : ' + this.currentView, true);
+		}
+		
+		object._validateable = (data.validateable || false);
+
 
 		if(data.html) {
 			if(this.debug) {

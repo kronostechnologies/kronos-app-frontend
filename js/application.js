@@ -1306,7 +1306,10 @@ var app = {
 		return infos;
 	},
 
-	reload : function(hiddenParams) {
+	reload : function(hiddenParams, force) {
+		if(force){
+			this._setViewCache(this.currentView, false, false);
+		}
 		this._fetchView(this.currentView, hiddenParams);
 	},
 	_onFetchView : function(current_view){	},

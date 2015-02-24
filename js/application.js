@@ -1206,6 +1206,14 @@ var app = {
 		location.hash = hash;
 	},
 
+	goToNoTriggerHashChange: function(hash){
+		$.app._stopObservation();
+		this.goTo(hash);
+		$.app._hash_changed_while_not_observing = false;
+    $.app.hash = hash;
+    $.app._observe();
+	},
+
 	navigateBackTo : function(hash) {
 		this._history.pop();
 		this.replace(hash);

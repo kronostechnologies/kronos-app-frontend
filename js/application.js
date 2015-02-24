@@ -47,7 +47,7 @@ var app = {
 	_messages : {},
 
 	// Validations
-	emailRegex : new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.(?:[a-zA-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)$"),
+	emailRegex : /^[a-zA-Z0-9-'+~_&\/]+(?:\.[a-zA-Z0-9-'+~_&\/]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/,
 
 	// Google Visualization API
 	_visualization_ready : false,

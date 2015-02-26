@@ -3064,11 +3064,13 @@ var app = {
 			}
 		},
 
-		getAge : function(date) {
+		getAge : function(date, now) {
 			date = this.parse(date);
 
 			if(date) {
-				var now = new Date();
+				if(typeof now === "undefined"){
+					var now = new Date();
+				}
 
 				var age = now.getFullYear() - date.getFullYear();
 

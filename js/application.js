@@ -2936,7 +2936,7 @@ var app = {
 	},
 
 	date : {
-		_date_regex : new RegExp(/^(\d{4})-{0,1}(\d{2})-{0,1}(\d{2})(| (\d{2}):(\d{2}):(\d{2})(|\.\d+))$/),
+		_date_regex : new RegExp(/^([1-9]{1}\d{3})-{0,1}([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-{0,1}([0-2]{1}[1-9]{1}|[1-2]{1}[0]{1}|[3]{1}[0-1]{1})(| (\d{2}):(\d{2}):(\d{2})(|\.\d+))$/),
 
 		isDate : function(date) {
 			var m = this._date_regex.exec(date);
@@ -3068,8 +3068,8 @@ var app = {
 			date = this.parse(date);
 
 			if(date) {
-				if(typeof now === "undefined"){
-					var now = new Date();
+				if(now === undefined){
+					now = new Date();
 				}
 
 				var age = now.getFullYear() - date.getFullYear();

@@ -321,7 +321,7 @@
 				var t = this;
 				var done = false;
 				
-				$.get("index.php?k=" + $.app.SESSION_KEY + "&apcStat&apcUID=" + progress_key, function(data) {
+				$.get("index.php?k=" + $.app.SESSION_KEY + "&pc=" + $.app.PAGE_CRUMB + "&apcStat&apcUID=" + progress_key, function(data) {
 					if (!data)
 						return;
 

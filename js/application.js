@@ -153,15 +153,15 @@ var app = {
 				return this;
 			},
 
-			numberText : function(value, opts) {
-				var text  = t.formatNumber(value, opts);
+			numberText : function(value) {
+				var text  = t.formatNumber(value);
 				this.text(text === '' ? '0' : text);
 
 				return this;
 			},
 
-			moneyText : function(value, opts){
-				this.text(t.formatMoney(value, opts));
+			moneyText : function(value){
+				this.text(t.formatMoney(value));
 
 				return this;
 			},

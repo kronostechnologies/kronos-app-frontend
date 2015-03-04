@@ -1447,33 +1447,34 @@ var app = {
 		object._validateable = (data.validateable || false);
 
 
+		//* BASED on kronos-lib/Kronos/Common/View.php -> function getContent *//
+
 		if(data.html) {
 			if(this.debug) {
 				console.debug('Using recieved html');
 			}
 			this._loadContent(data.html);
 
-		 	fullParams = $.extend({}, data.params, hiddenParams);
-			this._loadParams(fullParams);
-
 			// We store the html and json we received
-			this._setViewCache(this.currentView, data.html, data.params);
-
+			this._setViewCache(this.currentView, data.html, false);
 		}
 		else if(this._isViewCached(this.currentView)) {
 			if(this.debug) {
 				console.debug('Using cached html');
 			}
 
-			fullParams = $.extend({}, this._getViewCachedParams(this.currentView), hiddenParams);
-
 			// Get no html/params but the sent version is the same as the one we have, we can use it.
 			this._loadContent(this._getViewCachedHTML(this.currentView));
-			this._loadParams(fullParams);
 		}
 		else {
 			throw this._throw('View not cached and not recieved from html...', true);
 		}
+
+		if (data.params) {
+			fullParams = $.extend({}, data.params, hiddenParams);
+		}
+		else { fullParams = $.extend({}, hiddenParams); }
+		this._loadParams(fullParams);
 
 		this._hookView();
 

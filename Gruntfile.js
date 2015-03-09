@@ -33,7 +33,8 @@ module.exports = function(grunt) {
           'js/placeholder.min.js': 'js/placeholder.js',
           'js/async-api-task.min.js': 'js/async-api-task.js',
           'js/proxy-client.min.js': 'js/proxy-client.js',
-          'js/proxy-server.min.js': 'js/proxy-server.js'
+          'js/proxy-server.min.js': 'js/proxy-server.js',
+          'js/removeDiacritics.min.js': 'js/removeDiacritics.js'
         }
       }
     },

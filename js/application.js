@@ -4379,10 +4379,6 @@ EditView.prototype = {
 			dataType:'json',
 			success: function(data) {
 				if(!data) data = {};
-				if(data.data){
-					// backward compatibility with communicable.
-					data = data.data;
-				}
 				$.app.hideOverlay();
 				$('input[type=submit],input[type=button]').prop('disabled', false);
 

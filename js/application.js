@@ -1206,6 +1206,11 @@ var app = {
 		location.hash = hash;
 	},
 
+	goToOverwriteHistory : function(hash, force_clear) {
+		this._history.pop();
+		this.goTo(hash, force_clear);
+	},
+
 	goToNoTriggerHashChange: function(hash){
 		$.app._stopObservation();
 		this.goTo(hash);

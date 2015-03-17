@@ -4240,8 +4240,8 @@ EditView.prototype = {
 
 			var t = this;
 
-			$('#content form').delegate(':input[name]:not(.no-form-change)', 'change', function(){t.changed();});
-			$('#content form').delegate(':input[type=text]:not(.no-form-change)', 'keypress', function(){t.changed();});
+			$('#content form').on('change', ':input[name]:not(.no-form-change)', function(){t.changed();});
+			$('#content form').on('keypress', ':input[type=text]:not(.no-form-change)', function(){t.changed();});
 			$(".number:not(.positive)").number();
 			$(".number.positive").number({positive:true});
 

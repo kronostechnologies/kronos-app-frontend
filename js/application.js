@@ -4386,8 +4386,10 @@ EditView.prototype = {
 				$.app.hideOverlay();
 				$('input[type=submit],input[type=button]').prop('disabled', false);
 
-				if(data.validation_errors && data.validation_errors.length){
-					$.each(data.validation_errors, function(i, err){
+				var validationErrors = data.validation_errors;
+				if (validationErrors === undefined) { validationErrors = (data.data) ? data.data.validation_errors : validationErrors; }
+				if(validationErrors && validationErrors.length){
+					$.each(validationErrors, function(i, err){
 						$('#' + err.field).hintError(err.message);
 					});
 

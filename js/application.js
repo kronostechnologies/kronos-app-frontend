@@ -2148,7 +2148,7 @@ var app = {
 	},
 
 	showError : function(message) {
-		$.app.showModalDialog('<div class="error-dialog"><h2>'+$.app._('ERROR')+'</h2>\
+		$.app.showModalDialog('<div class="modal-dialog"><h2>'+$.app._('ERROR')+'</h2>\
 						<p>\
 							<strong>'+(message ? $.app._(message) : $.app._('FATAL_ERROR_OCCURED'))+'</strong>\
 							<br />\
@@ -2160,6 +2160,26 @@ var app = {
 							<input type="submit" id="hook_create_error_close" value="'+$.app._('OK')+'" />\
 						</p></div>', 'fast', function() {
 			$('#hook_create_error_close').safeClick(function() {
+				$.app.hideModalDialog('fast');
+			});
+		});
+	},
+
+	showConfirmation: function(title, message, yesCallback, noCallback) {
+		$.app.showModalDialog('<div class="modal-dialog"><h2>'+title+'</h2>\
+							<p>'+message+'</p>\
+						<p class="submit">\
+							<input type="button" id="hook_confirmation_yes" value="'+$.app._('YES')+'" />\
+							<input type="button" id="hook_confirmation_no" value="'+$.app._('NO')+'" />\
+						</p></div>', 'fast', function() {
+
+			$('#hook_confirmation_yes').safeClick(function() {
+				if (yesCallback) { yesCallback(); }
+				$.app.hideModalDialog('fast');
+			});
+
+			$('#hook_confirmation_no').safeClick(function() {
+				if (noCallback) { noCallback(); }
 				$.app.hideModalDialog('fast');
 			});
 		});
@@ -4282,7 +4302,7 @@ EditView.prototype = {
 	showSaveDialog : function() {
 		var t = this;
 
-		$.app.showModalDialog('<div class="save-dialog"><h2>'+$.app._('SAVE_CHANGES_TITLE')+'</h2><p>'+$.app._('SAVE_CHANGES_MESSAGE')+'</p><p class="submit"><input type="submit" id="hook_do_save_changes" value="'+$.app._('YES')+'" /> <input type="submit" id="hook_do_not_save_changes" value="'+$.app._('NO')+'" /> <a href="javascript:void(0);" id="hook_cancel_save_changes">'+$.app._('CANCEL')+'</a></p></div>', 'normal', function() {
+		$.app.showModalDialog('<div class="modal-dialog"><h2>'+$.app._('SAVE_CHANGES_TITLE')+'</h2><p>'+$.app._('SAVE_CHANGES_MESSAGE')+'</p><p class="submit"><input type="submit" id="hook_do_save_changes" value="'+$.app._('YES')+'" /> <input type="submit" id="hook_do_not_save_changes" value="'+$.app._('NO')+'" /> <a href="javascript:void(0);" id="hook_cancel_save_changes">'+$.app._('CANCEL')+'</a></p></div>', 'normal', function() {
 			$('#hook_do_save_changes').safeClick(function() {
 				t.hideSaveDialog('save');
 			});

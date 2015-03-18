@@ -4114,13 +4114,16 @@ View.prototype = {
 			$.app._throw('View does not implement _inject function');
 	},
 
-	close : function(hash) {
-		var canClose = this._canClose(hash);
+	close : function(callback) {
+		var canClose = this._canClose();
 
 		if(!canClose) {
 			this._onCancelClose();
 		} else {
 			this._onClose();
+		}
+		if(typeof callback === 'function'){
+			callback();
 		}
 
 		return canClose;
@@ -4276,73 +4279,64 @@ EditView.prototype = {
 		this._modified = false;
 	},
 
-	close : function(hash) {
+	close : function(callback) {
 		$("#edit_form").off('**');
 		if(this._modified && this._can_save) {
 			this._wasClosing = true;
 
-			this.showSaveDialog();
+			this.showSaveDialog(callback);
 
 			return false;
 		}
 		else {
-			var canClose = this._canClose(hash);
-
-			if(!canClose) {
-				this._onCancelClose();
-			}
-			else {
-				this._onClose();
-			}
-
-			return canClose;
+			return View.prototype.close.call(this, callback);
 		}
 	},
 
-	showSaveDialog : function() {
+	showSaveDialog : function(callback) {
 		var t = this;
-
-		$.app.showModalDialog('<div class="modal-dialog"><h2>'+$.app._('SAVE_CHANGES_TITLE')+'</h2><p>'+$.app._('SAVE_CHANGES_MESSAGE')+'</p><p class="submit"><input type="submit" id="hook_do_save_changes" value="'+$.app._('YES')+'" /> <input type="submit" id="hook_do_not_save_changes" value="'+$.app._('NO')+'" /> <a href="javascript:void(0);" id="hook_cancel_save_changes">'+$.app._('CANCEL')+'</a></p></div>', 'normal', function() {
+		if(typeof callback !== 'function'){
+			callback = function(action){};
+		}
+		$.app.showModalDialog('<div class="modal-dialog"><h2>'+$.app._('SAVE_CHANGES_TITLE')+'</h2><p>'+$.app._('SAVE_CHANGES_MESSAGE')+'</p><p class="submit"><a href="javascript:void(0);" id="hook_cancel_save_changes">'+$.app._('CANCEL')+'</a> <input type="submit" id="hook_do_not_save_changes" value="'+$.app._('NO')+'" /> <input type="submit" id="hook_do_save_changes" value="'+$.app._('YES')+'" /></p></div>', 'normal', function() {
 			$('#hook_do_save_changes').safeClick(function() {
-				t.hideSaveDialog('save');
+				$.app.hideModalDialog('normal', function() {
+					var saved = t.save(function() {
+						t.resume();
+						callback('save');
+					});
+
+					if(!saved){
+						t.stop();
+						callback('cancel');
+					}
+				});
 			});
 
 			$('#hook_do_not_save_changes').safeClick(function() {
-				t.hideSaveDialog('resume');
+				$.app.hideModalDialog('normal', function() {
+					window.onbeforeunload = function (e) { return; };
+
+					if(!t._canClose()) {
+						t._onCancelClose();
+
+						t.stop();
+						callback('cancel');
+					}
+					else{
+						t._modified = false; // We don't care about changes.
+						t.resume();
+						callback('resume');
+					}
+				});
 			});
 
 			$('#hook_cancel_save_changes').safeClick(function() {
-				t.hideSaveDialog();
-			});
-		});
-	},
-
-	hideSaveDialog: function(action) {
-		var t = this;
-
-		$.app.hideModalDialog('normal', function() {
-			if(action == 'save') {
-				var saved = t.save(function() {
-					t.resume();
+				$.app.hideModalDialog('normal', function() {
+					t.stop();
+					callback('cancel');
 				});
-
-				if(!saved)
-					t.stop();
-			}
-			else if(action == 'resume') {
-
-				window.onbeforeunload = function (e) { return; };
-
-				if(!t._canClose()) {
-					t._onCancelClose();
-
-					t.stop();
-				}
-				else
-					t.resume();
-			}
-			else
-				t.stop();
+			});
 		});
 	},
 

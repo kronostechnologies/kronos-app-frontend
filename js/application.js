@@ -4313,10 +4313,11 @@ EditView.prototype = {
 		$.app.showModalDialog(t.getSaveChangeDialogHtml(), 'normal', function() {
 			$('#hook_do_save_changes').safeClick(function() {
 				$.app.hideModalDialog('normal', function() {
-					var saved = t.save(function() {
-						t.resume();
-						callback('save');
-					});
+
+					var saved = t.save(	false,
+										function() {
+											callback('save');
+										}, false, true);
 
 					if(!saved){
 						t.stop();
@@ -4441,7 +4442,6 @@ EditView.prototype = {
 				t._modified = false;
 
 				t._afterSave();
-
 				if(typeof success_callback == 'function') {
 					success_callback(data, true);
 					success_callback = null;

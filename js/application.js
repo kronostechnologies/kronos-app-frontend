@@ -4293,12 +4293,24 @@ EditView.prototype = {
 		}
 	},
 
+	getSaveChangeDialogHtml: function(){
+		return '<div class="modal-dialog">' +
+			'<h2>'+$.app._('SAVE_CHANGES_TITLE')+'</h2>' +
+			'<p>'+$.app._('SAVE_CHANGES_MESSAGE')+'</p>' +
+			'<p class="submit">' +
+				'<a href="javascript:void(0);" id="hook_cancel_save_changes">'+$.app._('CANCEL')+'</a>' +
+				'<input type="submit" id="hook_do_not_save_changes" value="'+$.app._('NO')+'" />' +
+				'<input type="submit" id="hook_do_save_changes" value="'+$.app._('YES')+'" />' +
+			'</p>' +
+		'</div>';
+	},
+
 	showSaveDialog : function(callback) {
 		var t = this;
 		if(typeof callback !== 'function'){
 			callback = function(action){};
 		}
-		$.app.showModalDialog('<div class="modal-dialog"><h2>'+$.app._('SAVE_CHANGES_TITLE')+'</h2><p>'+$.app._('SAVE_CHANGES_MESSAGE')+'</p><p class="submit"><a href="javascript:void(0);" id="hook_cancel_save_changes">'+$.app._('CANCEL')+'</a> <input type="submit" id="hook_do_not_save_changes" value="'+$.app._('NO')+'" /> <input type="submit" id="hook_do_save_changes" value="'+$.app._('YES')+'" /></p></div>', 'normal', function() {
+		$.app.showModalDialog(t.getSaveChangeDialogHtml(), 'normal', function() {
 			$('#hook_do_save_changes').safeClick(function() {
 				$.app.hideModalDialog('normal', function() {
 					var saved = t.save(function() {

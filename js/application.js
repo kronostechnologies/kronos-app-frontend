@@ -4591,6 +4591,13 @@ EditView.prototype = {
 		$.app.goBack(hash);
 	},
 
+	cancelTo: function(hash){
+		this._modified = false;
+		$('input[type=submit],input[type=button]').prop('disabled', false);
+		hash = hash || '';
+		$.app.navigateBackTo(hash);
+	},
+
 	resume : function() {
 		$.app.resume(false);
 	},

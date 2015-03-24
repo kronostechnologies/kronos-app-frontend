@@ -4224,7 +4224,7 @@ EditView.prototype = {
 		View.prototype.init.call(this, hash);
 	},
 
-	changed : function() {
+	changed : function(element) {
 		if($.app.debug) console.debug('changed');
 		if(!this._modified)
 			this._modified = true;
@@ -4243,8 +4243,8 @@ EditView.prototype = {
 
 			var t = this;
 
-			$('#content form').on('change', ':input[name]:not(.no-form-change)', function(){t.changed();});
-			$('#content form').on('keypress', ':input[type=text]:not(.no-form-change)', function(){t.changed();});
+			$('#content form').on('change', ':input[name]:not(.no-form-change)', function(){t.changed(this);});
+			$('#content form').on('keypress', ':input[type=text]:not(.no-form-change)', function(){t.changed(this);});
 			$(".number:not(.positive)").number();
 			$(".number.positive").number({positive:true});
 

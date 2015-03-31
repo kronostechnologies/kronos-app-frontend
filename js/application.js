@@ -3964,6 +3964,10 @@ function View() {
 }
 
 View.prototype = {
+	changed: function(element){
+
+	},
+
 	parseHash : function(hash) {
 		var uri = $.app.parseHash(hash);
 

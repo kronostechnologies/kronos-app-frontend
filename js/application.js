@@ -1206,11 +1206,6 @@ var app = {
 		location.hash = hash;
 	},
 
-	goToOverwriteHistory : function(hash, force_clear) {
-		this._history.pop();
-		this.goTo(hash, force_clear);
-	},
-
 	goToNoTriggerHashChange: function(hash){
 		$.app._stopObservation();
 		this.goTo(hash);
@@ -4318,10 +4313,11 @@ EditView.prototype = {
 			$('#hook_do_save_changes').safeClick(function() {
 				$.app.hideModalDialog('normal', function() {
 
-					var saved = t.save(	false,
-										function() {
-											callback('save');
-										}, false, true);
+					var saved = t.save(false,
+						function() {
+							callback('save');
+							t.resume();
+						}, false, true);
 
 					if(!saved){
 						t.stop();
@@ -4374,6 +4370,7 @@ EditView.prototype = {
 		}
 
 		if(typeof hash == 'function') {
+			stay = error_callback;
 			if(typeof success_callback == 'function'){
 				error_callback = success_callback;
 			}

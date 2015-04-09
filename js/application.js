@@ -2142,8 +2142,8 @@ var app = {
 		$('#modal_dialog').remove();
 	},
 
-	showError : function(message) {
-		$.app.showModalDialog('<div class="modal-dialog"><h2>'+$.app._('ERROR')+'</h2>\
+	getShowErrorHTML: function(message) {
+		return '<div class="modal-dialog"><h2>'+$.app._('ERROR')+'</h2>\
 						<p>\
 							<strong>'+(message ? $.app._(message) : $.app._('FATAL_ERROR_OCCURED'))+'</strong>\
 							<br />\
@@ -2153,9 +2153,14 @@ var app = {
 						</p>\
 						<p class="submit">\
 							<input type="submit" id="hook_create_error_close" value="'+$.app._('OK')+'" />\
-						</p></div>', 'fast', function() {
+						</p></div>';
+	},
+
+	showError : function(message, onHideCallback) {
+		$.app.showModalDialog($.app.getShowErrorHTML(message), 'fast', function() {
 			$('#hook_create_error_close').safeClick(function() {
 				$.app.hideModalDialog('fast');
+				if (onHideCallback) { onHideCallback(); }
 			});
 		});
 	},
@@ -4268,8 +4273,7 @@ EditView.prototype = {
 	},
 
 	inject : function(model) {
-		if($.app.debug)
-			console.debug('Injecting model');
+		if($.app.debug) { console.debug('Injecting model'); }
 
 		this._soft_modified = false;
 
@@ -4354,7 +4358,10 @@ EditView.prototype = {
 	},
 
 	save : function(hash, success_callback, error_callback, stay) {
-		if(!this._can_save) return this._saveRedirect(hash, stay);
+
+		if(!this._can_save) {
+			return this._saveRedirect(hash, stay);
+		}
 
 		if(!this._canSave()){
 			this._onCancelSave();
@@ -4410,7 +4417,9 @@ EditView.prototype = {
 			data: this._saveBuildPost(),
 			dataType:'json',
 			success: function(data) {
+
 				if(!data) data = {};
+
 				$.app.hideOverlay();
 				$('input[type=submit],input[type=button]').prop('disabled', false);
 
@@ -4472,18 +4481,16 @@ EditView.prototype = {
 			return false;
 		}
 
-		if($.app.debug)
-			console.debug('error...');
+		if($.app.debug) { console.debug('error...'); }
+
+		$.app.hideOverlay();
+		$('input[type=submit]').prop('disabled', false);
 
 		if(typeof error_callback == 'function') {
 			error_callback(false);
 			error_callback = null;
 		}
-
-		$.app.hideOverlay();
-		$('input[type=submit]').prop('disabled', false);
-
-		$.app.showError($.app._('SAVE_ERROR_OCCURED'));
+		else { $.app.showError($.app._('SAVE_ERROR_OCCURED')); }
 	},
 
 	_saveBuildPost: function(){

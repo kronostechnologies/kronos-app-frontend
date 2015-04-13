@@ -2165,13 +2165,17 @@ var app = {
 		});
 	},
 
-	showConfirmation: function(title, message, yesCallback, noCallback) {
-		$.app.showModalDialog('<div class="modal-dialog"><h2>'+title+'</h2>\
+	getShowConfirmationHTML: function(title, message) {
+		return '<div class="modal-dialog"><h2>'+title+'</h2>\
 							<p>'+message+'</p>\
 						<p class="submit">\
 							<input type="button" id="hook_confirmation_yes" value="'+$.app._('YES')+'" />\
 							<input type="button" id="hook_confirmation_no" value="'+$.app._('NO')+'" />\
-						</p></div>', 'fast', function() {
+						</p></div>';
+	},
+
+	showConfirmation: function(title, message, yesCallback, noCallback) {
+		$.app.showModalDialog($.app.getShowConfirmationHTML(title, message), 'fast', function() {
 
 			$('#hook_confirmation_yes').safeClick(function() {
 				if (yesCallback) { yesCallback(); }

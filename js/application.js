@@ -565,16 +565,6 @@ var app = {
 				return $(this);
 			},
 
-			tooltip : function(text, width) {
-				var w = Math.max(parseInt(width,10), 200);
-
-				return $(this).wrap('<span class="hinted"></span>').after('<span class="hint" style="width: '+w+'px; right: -'+(w+50)+'px;">'+text+'<span class="hint-pointer sprite">&nbsp;</span></span>').mouseenter(function() {
-					$(this).next('.hint').fadeIn();
-				}).mouseleave(function() {
-					$(this).next('.hint').fadeOut();
-				});
-			},
-
 			signal : function(length) {
 				length = parseInt(length);
 				if(length <= 0) {

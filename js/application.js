@@ -1200,8 +1200,8 @@ var app = {
 		$.app._stopObservation();
 		this.goTo(hash);
 		$.app._hash_changed_while_not_observing = false;
-    $.app.hash = hash;
-    $.app._observe();
+		$.app.hash = hash;
+		$.app._observe();
 	},
 
 	navigateBackTo : function(hash) {
@@ -1213,6 +1213,11 @@ var app = {
 		if (!hash) {
 			hash = '';
 		}
+	
+		if(hash.charAt(0) != '#'){
+			hash = '#' + hash;
+		}
+		
 		if (this.isOpera()) {
 			location.replace(location.protocol + '//' + location.hostname + location.pathname + hash);
 			return;
@@ -1897,12 +1902,17 @@ var app = {
 		}
 	},
 
+	/**
+	 * Go back 2 record in history
+	 * @param string hash
+	 */
 	goBack : function(hash) {
 		if(hash === undefined){
 			hash = '';
 		}
+		
 		if(this._history.length >= 2){
-			this._history.pop(); // Pop current page;
+			this._history.pop(); // Pop current page.
 			hash = this._history.pop().hash; // Previous page;
 		}
 

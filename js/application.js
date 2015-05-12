@@ -3502,226 +3502,242 @@ var app = {
 		$targetElement.hide().show();
 	},
 
-	autocompleter : function(selector, view, command, callback, config) {
-		var autocompleter = {
-			selector : false,
-			selectorIsDomRef: false,
-			view : '',
-			command : '',
-			callback : false,
+    autocompleter : function(selector, view, command, callback, config) {
+        var autocompleter = {
+            selector : false,
+            selectorIsDomRef: false,
+            view : '',
+            command : '',
+            callback : false,
 
-			width : 300,
+            width : 300,
 
-			matchContains : false,
-			listSize : 10,
-			minChars : 2,
+            matchContains : false,
+            listSize : 10,
+            minChars : 2,
 
-			showAll : false,
-			showDescription : false,
+            showAll : false,
+            showDescription : false,
 
-			_doHighlight : false,
-			_customHighlight : false,
-			_customItemFormat : false,
-			_customDescriptionFormat : false,
+            _doHighlight : false,
+            _customHighlight : false,
+            _customItemFormat : false,
+            _customDescriptionFormat : false,
 
-			_filters : [],
+            _filters : [],
 
-			_init : function(selector, view, command, callback, config) {
-				this.selector = selector;
-				this.view = view;
-				this.command = command;
-				this.callback = callback;
+            _init : function(selector, view, command, callback, config) {
+                this.selector = selector;
+                this.view = view;
+                this.callback = callback;
 
-				if(config.width)
-					this.width = config.width;
+                if(command.constructor === Object) {
+                    this.command = command['command'];
+                    this.handler = command['handler'];
+                    this.action = command['action'];
+                }
+                else {
+                    this.command = command;
+                }
 
-				if(typeof config.matchContains == 'boolean')
-					this.matchContains = config.matchContains;
+                if(config.width)
+                    this.width = config.width;
 
-				if(config.listSize)
-					this.listSize = parseInt(config.listSize, 10);
+                if(typeof config.matchContains == 'boolean')
+                    this.matchContains = config.matchContains;
 
-				if(config.minChars)
-					this.minChars = parseInt(config.minChars, 10);
+                if(config.listSize)
+                    this.listSize = parseInt(config.listSize, 10);
 
-				if(typeof config.showAll == 'boolean')
-					this.showAll = config.showAll;
+                if(config.minChars)
+                    this.minChars = parseInt(config.minChars, 10);
 
-				if(typeof config.showDescription == 'boolean')
-					this.showDescription = config.showDescription;
+                if(typeof config.showAll == 'boolean')
+                    this.showAll = config.showAll;
 
-				if(typeof config.highlight == 'boolean')
-					this._doHighlight = config.highlight;
+                if(typeof config.showDescription == 'boolean')
+                    this.showDescription = config.showDescription;
 
-				if(typeof config.customHighlight == 'function')
-					this._customHighlight = config.customHighLight;
+                if(typeof config.highlight == 'boolean')
+                    this._doHighlight = config.highlight;
 
-				if(typeof config.itemFormat == 'function')
-					this._customItemFormat = config.itemFormat;
+                if(typeof config.customHighlight == 'function')
+                    this._customHighlight = config.customHighLight;
 
-				if(typeof config.descriptionFormat == 'function')
-					this._customDescriptionFormat = config.descriptionFormat;
+                if(typeof config.itemFormat == 'function')
+                    this._customItemFormat = config.itemFormat;
 
-				if(typeof config.parse == 'function')
-					this.parse = config.parse;
+                if(typeof config.descriptionFormat == 'function')
+                    this._customDescriptionFormat = config.descriptionFormat;
 
-				if(typeof config.selectorIsDomRef == 'boolean')
-					this.selectorIsDomRef = config.selectorIsDomRef;
+                if(typeof config.parse == 'function')
+                    this.parse = config.parse;
 
-				if(typeof config.query_string_param_name == 'string' && $.trim(config.query_string_param_name) !== '')
-					this.queryStringParamName = config.query_string_param_name;
+                if(typeof config.selectorIsDomRef == 'boolean')
+                    this.selectorIsDomRef = config.selectorIsDomRef;
 
-				if(config.params)
-					this.params = config.params;
+                if(typeof config.query_string_param_name == 'string' && $.trim(config.query_string_param_name) !== '')
+                    this.queryStringParamName = config.query_string_param_name;
 
-			},
+                if(config.params)
+                    this.params = config.params;
 
-			_build : function() {
-				var t = this;
+            },
 
-				var options = {};
+            _build : function() {
+                var t = this;
 
-				options.width = this.width;
-				options.position = 'fixed';
-				options.max = this.listSize;
-				options.matchContains = this.matchContains;
-				options.minChars = this.minChars;
-				options.selectFirst = false;
-				options.scrollHeight = 450;
-				options.queryStringParamName = this.queryStringParamName;
-				options.formatItem = function(data, position, length, term) {return t._formatItem(data, position, length, term);};
-				options.highlight = function(label, term) {return t._highlight(label, term);};
-				options.extraParams = t._extraParams();
-				if(this.parse){options.parse = this.parse;}
+                var options = {};
+
+                options.width = this.width;
+                options.position = 'fixed';
+                options.max = this.listSize;
+                options.matchContains = this.matchContains;
+                options.minChars = this.minChars;
+                options.selectFirst = false;
+                options.scrollHeight = 450;
+                options.queryStringParamName = this.queryStringParamName;
+                options.formatItem = function(data, position, length, term) {return t._formatItem(data, position, length, term);};
+                options.highlight = function(label, term) {return t._highlight(label, term);};
+                options.extraParams = t._extraParams();
+                if(this.parse){options.parse = this.parse;}
 
 
-				return options;
-			},
+                return options;
+            },
 
-			_formatItem : function(data, position, length, term) {
-				if(this._filtered(data[2]))
-					return false; // Was asked not to show this one
+            _formatItem : function(data, position, length, term) {
+                if(this._filtered(data[2]))
+                    return false; // Was asked not to show this one
 
-				var label;
-				if(typeof this._customItemFormat == 'function')
-					label = this._customItemFormat(data, position, length, term);
-				else
-					label = data[2];
+                var label;
+                if(typeof this._customItemFormat == 'function')
+                    label = this._customItemFormat(data, position, length, term);
+                else
+                    label = data[2];
 
-				if(this.showDescription) {
-					if(typeof this._customDescriptionFormat == 'function')
-						label += this._customDescriptionFormat(data, position, length, term);
-					else
-						label += '<br /><span class="description">'+data[3]+'</span>';
-				}
-				return label;
-			},
+                if(this.showDescription) {
+                    if(typeof this._customDescriptionFormat == 'function')
+                        label += this._customDescriptionFormat(data, position, length, term);
+                    else
+                        label += '<br /><span class="description">'+data[3]+'</span>';
+                }
+                return label;
+            },
 
-			_filtered : function(value) {
-				for(var i = 0; i < this._filters.length; i++) {
-					if(this._filters[i] == value)
-						return true;
-				}
+            _filtered : function(value) {
+                for(var i = 0; i < this._filters.length; i++) {
+                    if(this._filters[i] == value)
+                        return true;
+                }
 
-				return false;
-			},
+                return false;
+            },
 
-			_highlight : function(label, term) {
-				if(this._doHighlight) {
-					if(typeof this.custom_highlight == 'function')
-						return this.custom_highlight(label, term);
-					else
-						return label.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term.replace(/([\^\$\(\)\[\]\{\}\*\.\+\?\|\\])/gi, "\\$1") + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<span class=\"ac_match\">$1</span>");
-				}
-				else {
-					return label;
-				}
-			},
+            _highlight : function(label, term) {
+                if(this._doHighlight) {
+                    if(typeof this.custom_highlight == 'function')
+                        return this.custom_highlight(label, term);
+                    else
+                        return label.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term.replace(/([\^\$\(\)\[\]\{\}\*\.\+\?\|\\])/gi, "\\$1") + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<span class=\"ac_match\">$1</span>");
+                }
+                else {
+                    return label;
+                }
+            },
 
-			_extraParams : function() {
-				var params = {};
-				if(this.matchContains)
-					params.contains = 'true';
+            _extraParams : function() {
+                var params = {};
+                if(this.matchContains)
+                    params.contains = 'true';
 
-				if(this.params) {
-					if(typeof this.params == 'function') {
-						var url_params = this.params();
-						if(typeof url_params == 'object') {
-							$.each(url_params, function(key, param) {
-								params[key] = param;
-							});
-						}
-						else {
-							params.param = this.params;
-						}
-					}
-					else if(typeof this.params == 'object') {
-						$.each(this.params, function(key, param) {
-							params[key] = param;
-						});
-					}
-					else
-						params.param = this.params;
-				}
+                if(this.params) {
+                    if(typeof this.params == 'function') {
+                        var url_params = this.params();
+                        if(typeof url_params == 'object') {
+                            $.each(url_params, function(key, param) {
+                                params[key] = param;
+                            });
+                        }
+                        else {
+                            params.param = this.params;
+                        }
+                    }
+                    else if(typeof this.params == 'object') {
+                        $.each(this.params, function(key, param) {
+                            params[key] = param;
+                        });
+                    }
+                    else
+                        params.param = this.params;
+                }
 
-				params.view = this.view;
-				params.cmd = this.command;
-				params.k = $.app.SESSION_KEY;
-				params.pc = $.app.PAGE_CRUMB;
+                params.view = this.view;
+                params.cmd = this.command;
+                params.k = $.app.SESSION_KEY;
+                params.pc = $.app.PAGE_CRUMB;
 
-				return params;
-			},
+                if(this.handler != '') {
+                    params.handler = this.handler;
+                }
 
-			_result : function(event, data, label) {
-				if(typeof this.callback == 'function') {
-					this.callback(data);
-				}
-			},
+                if(this.action != '') {
+                    params.action = this.action;
+                }
 
-			filterValue : function(value, filter) {
-				var found = false;
+                return params;
+            },
 
-				for(var i = 0; i < this._filters.length; i++) {
-					if(value == this._filters[i]) {
-						if(filter || typeof filter == 'undefined')
-							found = true;
-						else {
-							delete(this._filters[i]);
+            _result : function(event, data, label) {
+                if(typeof this.callback == 'function') {
+                    this.callback(data);
+                }
+            },
 
-							for(var j = i+1; j < this._filters.length; j++) {
-								this._filters[j-1] = this._filters[j];
-							}
-							this._filters.pop();
+            filterValue : function(value, filter) {
+                var found = false;
 
-							return true;
-						}
-					}
-				}
+                for(var i = 0; i < this._filters.length; i++) {
+                    if(value == this._filters[i]) {
+                        if(filter || typeof filter == 'undefined')
+                            found = true;
+                        else {
+                            delete(this._filters[i]);
 
-				if((filter || typeof filter == 'undefined') && !found) {
-					this._filters.push(value);
-					return true;
-				}
+                            for(var j = i+1; j < this._filters.length; j++) {
+                                this._filters[j-1] = this._filters[j];
+                            }
+                            this._filters.pop();
 
-				return false;
-			}
-		};
+                            return true;
+                        }
+                    }
+                }
 
-		autocompleter._init(selector, view, command, callback, config);
+                if((filter || typeof filter == 'undefined') && !found) {
+                    this._filters.push(value);
+                    return true;
+                }
 
-		var options = autocompleter._build();
-		var mySelector = false;
-		if(!options.selectorIsDomRef){
-			mySelector = $(selector);
-		}
-		else {
-			mySelector = selector;
-		}
+                return false;
+            }
+        };
 
-		mySelector.autocomplete('index.php', options).bind('result', function(event, data, label) {autocompleter._result(event, data, label);});
+        autocompleter._init(selector, view, command, callback, config);
 
-		return autocompleter;
-	},
+        var options = autocompleter._build();
+        var mySelector = false;
+        if(!options.selectorIsDomRef){
+            mySelector = $(selector);
+        }
+        else {
+            mySelector = selector;
+        }
+
+        mySelector.autocomplete('index.php', options).bind('result', function(event, data, label) {autocompleter._result(event, data, label);});
+
+        return autocompleter;
+    },
 
 	visualizationReady : function() {
 		if(this.debug) console.debug('Google Visualization API ready');

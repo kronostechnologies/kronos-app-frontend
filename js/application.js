@@ -3677,11 +3677,11 @@ var app = {
                 params.k = $.app.SESSION_KEY;
                 params.pc = $.app.PAGE_CRUMB;
 
-                if(this.handler != '') {
+                if(this.handler !== '') {
                     params.handler = this.handler;
                 }
 
-                if(this.action != '') {
+                if(this.action !== '') {
                     params.action = this.action;
                 }
 

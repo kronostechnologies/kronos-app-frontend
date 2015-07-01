@@ -1,6 +1,6 @@
 {
   "name": "kronos-app-frontend",
-  "version": "0.1.54",
+  "version": "0.1.55",
   "description": "Javascript application framework by Kronos Technologies",
   "main": "Gruntfile.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "grunt-contrib-copy": "^0.5.0",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-uglify": "^0.4.0",
-    "grunt-kronos-release": "^0.2.0",
+    "grunt-kronos-release": "^0.3.8",
     "grunt-neuter": "~0.5.0"
   },
   "dependencies": {

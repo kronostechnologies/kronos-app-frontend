@@ -52,6 +52,9 @@ var app = {
 	// Google Visualization API
 	_visualization_ready : false,
 
+	// List of all ongoing ajax requests. Allow abort on view change.
+	_ongoing_xhrs : [],
+
 	/**
 	 * Initialize application
 	 */
@@ -1321,6 +1324,9 @@ var app = {
 		// TODO : Branch here to lookup data from gears instead doing a ajax query.
 
 		var t = this;
+
+		t._hideLoading();
+		t.abortOngoingXHR();
 
 		var cached = this._isViewCached(view);
 		if(cached && this.debug) {
@@ -2787,6 +2793,24 @@ var app = {
 		return xhrRequest;
 	},
 
+	registerXHR : function(xhr) {
+		this._ongoing_xhrs.push(xhr);
+	},
+
+	unregisterXHR : function(xhr) {
+		var index = this._ongoing_xhrs.indexOf(xhr);
+		if(index >= 0) {
+			this._ongoing_xhrs.splice(index, 1);
+		}
+	},
+
+	abortOngoingXHR : function() {
+		$.each(this._ongoing_xhrs, function(index, xhr) {
+			xhr.abort();
+		});
+		this._ongoing_xhrs = [];
+	},
+
 	get : function(view, cmd, paramsString, callback, loading, errorCallback, button, skipOverlayHandling) {
 		if(!loading && !skipOverlayHandling) {
 			this.showOverlay();
@@ -2866,6 +2890,13 @@ var app = {
 				else
 					$.app.showError();
 			}
+		});
+
+		t.registerXHR(xhrRequest);
+		xhrRequest.done(function(data, textStatus, jqXHR) {
+			t.unregisterXHR(jqXHR);
+		}).fail(function(jqXHR) {
+			t.unregisterXHR(jqXHR);
 		});
 
 		if(loading) {
@@ -2952,6 +2983,13 @@ var app = {
 			ajaxStop: function(){
 				t.ajaxQueryLoading = false;
 			}
+		});
+
+		t.registerXHR(xhrRequest);
+		xhrRequest.done(function(data, textStatus, jqXHR) {
+			t.unregisterXHR(jqXHR);
+		}).fail(function(jqXHR) {
+			t.unregisterXHR(jqXHR);
 		});
 
 		if(loading) {

@@ -1422,72 +1422,81 @@ var app = {
 	_loadView : function(data, hiddenParams) {
 		var t = this,
 				fullParams;
-
-		this.PAGE_CRUMB = data.params.pc;
-
-		// Application version changed server side, we have to reload the application.
-		if(this.getApplicationVersion() != data.version) {
-			location.reload();
-		}
-
-		if(data.data){ //backward compatibility.
-			data = data.data;
-		}
-
-		if(data.user && t.userVersion != data.user.version){
-			t.clearViewCache();
-			t.setUserConfig(data.user);
-		}
-
-		this._initView();
-		var object = this._getViewObject(this.currentView);
-		if(!object) {
-			throw this._throw('View object not found : ' + this.currentView, true);
-		}
 		
-		object._validateable = (data.validateable || false);
+		
+		try {
+			this.PAGE_CRUMB = data.params.pc;
 
-
-		//* BASED on kronos-lib/Kronos/Common/View.php -> function getContent *//
-
-		if(data.html) {
-			if(this.debug) {
-				console.debug('Using recieved html');
-			}
-			this._loadContent(data.html);
-
-			// We store the html and json we received
-			this._setViewCache(this.currentView, data.html, false);
-		}
-		else if(this._isViewCached(this.currentView)) {
-			if(this.debug) {
-				console.debug('Using cached html');
+			// Application version changed server side, we have to reload the application.
+			if (this.getApplicationVersion() != data.version) {
+				location.reload();
 			}
 
-			// Get no html/params but the sent version is the same as the one we have, we can use it.
-			this._loadContent(this._getViewCachedHTML(this.currentView));
-		}
-		else {
-			throw this._throw('View not cached and not recieved from html...', true);
-		}
-
-		if (data.params) {
-			fullParams = $.extend({}, data.params, hiddenParams);
-		}
-		else { fullParams = $.extend({}, hiddenParams); }
-		this._loadParams(fullParams);
-
-		this._hookView();
-
-		// NOTE : No offline support is required here. Everything is managed by {TODO: insert offline fetch method name}
-		this._loadModel(data.model);
-		this._checkAnchor();
-
-		$('input').each(function(index, element) {
-			if (!$(element).attr('maxlength')) {
-				$(element).attr('maxlength', 255);
+			if (data.data) { //backward compatibility.
+				data = data.data;
 			}
-		});
+
+			if (data.user && t.userVersion != data.user.version) {
+				t.clearViewCache();
+				t.setUserConfig(data.user);
+			}
+
+			this._initView();
+			var object = this._getViewObject(this.currentView);
+			if (!object) {
+				throw this._throw('View object not found : ' + this.currentView, true);
+			}
+
+			object._validateable = (data.validateable || false);
+
+
+			//* BASED on kronos-lib/Kronos/Common/View.php -> function getContent *//
+
+			if (data.html) {
+				if (this.debug) {
+					console.debug('Using recieved html');
+				}
+				this._loadContent(data.html);
+
+				// We store the html and json we received
+				this._setViewCache(this.currentView, data.html, false);
+			}
+			else if (this._isViewCached(this.currentView)) {
+				if (this.debug) {
+					console.debug('Using cached html');
+				}
+
+				// Get no html/params but the sent version is the same as the one we have, we can use it.
+				this._loadContent(this._getViewCachedHTML(this.currentView));
+			}
+			else {
+				throw this._throw('View not cached and not recieved from html...', true);
+			}
+
+			if (data.params) {
+				fullParams = $.extend({}, data.params, hiddenParams);
+			}
+			else {
+				fullParams = $.extend({}, hiddenParams);
+			}
+			this._loadParams(fullParams);
+
+			this._hookView();
+
+			// NOTE : No offline support is required here. Everything is managed by {TODO: insert offline fetch method name}
+			this._loadModel(data.model);
+			this._checkAnchor();
+
+			$('input').each(function (index, element) {
+				if (!$(element).attr('maxlength')) {
+					$(element).attr('maxlength', 255);
+				}
+			});
+		}
+		catch(error) {
+			this._stopObservation();
+			this._showFatalError(error);
+		}
 	},
 
 	_checkAnchor: function(){

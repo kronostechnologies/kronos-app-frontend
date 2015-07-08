@@ -1496,6 +1496,8 @@ var app = {
 		catch(error) {
 			this._stopObservation();
 			this._showFatalError(error);
+
+			throw error;
 		}
 	},
 

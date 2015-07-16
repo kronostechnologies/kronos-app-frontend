@@ -1383,6 +1383,9 @@ var app = {
 					else if(info.code == 601 || info.code == 602) { // VIEW_ACL_ERROR or MODEL_ACL_ERROR
 						t._showNavigationError();
 					}
+					else if(info.code == 605) { // IMAP ERROR // TODO find a generic way to handle other client exceptions
+						t._showCustomError(info);
+					}
 					else { // Unknown error
 						t._showFatalError('An unknwon error was sent from server while fetching view data "'+view+'" ('+info.error+')');
 					}

@@ -2244,6 +2244,11 @@ var app = {
 		<dd><input type="text" id="hook_question_comment_from" style="width:350px" disabled="disabled" /></dd>\
 		<dt><label style="width:100px">' + $.app._('COMMENT_SUBJECT') + '</label></dt>\
 		<dd><input type="text" id="hook_question_comment_subject" style="width:350px" /></dd>\
+		<div id="hook_question_comment_attachement_div">\
+		<dt><label style="width:100px">' + $.app._('ATTACHMENT') + '</label></dt>\
+		<div id="hook_file_upload_div"><input id="file_upload" class="input" type="file" size="45" name="file_upload" hidden></div>\
+		<dd><label class="icon-add"></label><span class="link" id="hook_question_comment_attachement">'+ $.app._('JOIN_FILE')+'</span><dd>\
+		</div>\
 		<br />\
 		<dd><textarea id="hook_question_comment_textarea" style="width:500px;height:150px"></textarea></dd>\
 		</dl>\
@@ -2258,6 +2263,51 @@ var app = {
 			if(comment_type) $('#hook_question_comment_type').val(comment_type);
 
 			$('#hook_question_comment_from').val($.app.userEmail);
+
+			$('#hook_question_comment_attachement').safeClick(function(){
+				$('#file_upload').show();
+
+				console.log($.app.SESSION_KEY);
+				console.log($.app.PAGE_CRUMB);
+
+				// CALQUÉ SUR LE USERPROFILE, MÉGA WIP!!!
+				$('#file_upload').ajaxUploader({
+						url:'index.php?k=' + $.app.SESSION_KEY + '&pc=' + $.app.PAGE_CRUMB + '&view=Settings/UserProfile&cmd=uploadFile',
+						uploadFileName : 'uploaded_file',
+						autoUpload : true,
+						progressBarConfig: {
+							barImage: ''
+						},
+						validateFileName : function(fileName){
+							if(! fileName.match(/\.(gif|jpg|jpeg|png|tiff|tif|bmp|eps|pdf)$/i)){
+								$('#file_upload').addClass('save_warning');
+								$.app.showMessage($.app._('ERROR'), '', $.app._('FILE_MUST_BE_IMAGE'));
+								return false;
+							}
+							
+							return true;
+						},
+						success: function (data, status){
+
+							console.log(data);
+						/*if(data.image_uid){
+								$('#hook_photo_image').attr('src', 'index.php?image=' + data.image_uid);
+								$('#hook_photo_href').attr('href', 'index.php?image=' + data.image_uid).show();
+								
+								$('#hook_update_photo_div').show();
+								$('#hook_file_upload_div').hide();	
+							}
+							else if(data.error){
+								console.debug(data.error);
+								$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'), $.app._('UPLOAD_IMAGE_FILE_ERROR_DETAIL'));
+							}*/
+						},
+						error: function (data, status, e){
+							console.debug('Error uploading attachment.');
+							$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'), $.app._('UPLOAD_IMAGE_FILE_ERROR_DETAIL'));
+						}
+				});
+			});
 
 			$('#hook_send_question_comment').safeClick(function() {
 

@@ -2817,7 +2817,9 @@ var app = {
 
 	abortOngoingXHR : function() {
 		$.each(this._ongoing_xhrs, function(index, xhr) {
-			xhr.abort();
+			if(xhr !== undefined) {
+				xhr.abort();
+			}
 		});
 		this._ongoing_xhrs = [];
 	},

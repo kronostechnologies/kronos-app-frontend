@@ -2249,6 +2249,7 @@ var app = {
 		<div id="file_upload"></div>\
 		<div id="hook_file_upload_div"><input id="file_uploader" class="input" type="file" size="45" name="file_uploader" hidden></div>\
 		<dd><label class="icon-add"></label><span class="link" id="hook_question_comment_attachement">'+ $.app._('JOIN_FILE')+'</span>&nbsp&nbsp<input type="submit" id ="hook_question_comment_attachement_btn"><dd>\
+		<dd><div id="uploaded_file_name" hidden></div><dd>\
 		</div>\
 		<br />\
 		<dd><textarea id="hook_question_comment_textarea" style="width:500px;height:150px"></textarea></dd>\
@@ -2267,16 +2268,10 @@ var app = {
 
 			$('#hook_question_comment_attachement').safeClick(function(){
 				$('#file_uploader').show();
-
-				/*console.log($.app.SESSION_KEY);
-				console.log($.app.PAGE_CRUMB);*/
 			});
 
 			$('#hook_question_comment_attachement_btn').safeClick(function(){
 
-				console.log('allo');
-
-				// CALQUÉ SUR LE USERPROFILE, MÉGA WIP!!!
 				$('#file_upload').ajaxUploader({
 						url:'index.php?k=' + t.SESSION_KEY + '&uploadFile',
 						uploadFileName : 'uploaded_file',
@@ -2285,19 +2280,19 @@ var app = {
 							barImage: ''
 						},
 						success: function (data, status){
-
-							console.log(data.image_uid);
-					/*	if(data.image_uid){
-								$('#hook_photo_image').attr('src', 'index.php?image=' + data.image_uid);
-								$('#hook_photo_href').attr('href', 'index.php?image=' + data.image_uid).show();
-								
-								$('#hook_update_photo_div').show();
-								$('#hook_file_upload_div').hide();	
-							}
-							else if(data.error){
-								console.debug(data.error);
-								$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'), $.app._('UPLOAD_IMAGE_FILE_ERROR_DETAIL'));
-							}*/
+							console.log(status);
+							console.log(data.file_url);
+							if(data.file_url){
+									//$('#uploaded_file_name').attr('src', 'index.php?image=' + data.file_url);
+									//$('#uploaded_file_name').attr('href', 'index.php?image=' + data.file_url).show();
+									//$('#file_uploader').attr('value', data.file_url);
+									
+									$('#uploaded_file_name').show();	
+								}
+								else if(data.error){
+									console.debug(data.error);
+									$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
+								}
 						},
 						error: function (data, status, e){
 							console.debug('Error uploading attachment.');

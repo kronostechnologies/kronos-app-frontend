@@ -2246,8 +2246,9 @@ var app = {
 		<dd><input type="text" id="hook_question_comment_subject" style="width:350px" /></dd>\
 		<div id="hook_question_comment_attachement_div">\
 		<dt><label style="width:100px">' + $.app._('ATTACHMENT') + '</label></dt>\
-		<div id="hook_file_upload_div"><input id="file_upload" class="input" type="file" size="45" name="file_upload" hidden></div>\
-		<dd><label class="icon-add"></label><span class="link" id="hook_question_comment_attachement">'+ $.app._('JOIN_FILE')+'</span><dd>\
+		<div id="file_upload"></div>\
+		<div id="hook_file_upload_div"><input id="file_uploader" class="input" type="file" size="45" name="file_uploader" hidden></div>\
+		<dd><label class="icon-add"></label><span class="link" id="hook_question_comment_attachement">'+ $.app._('JOIN_FILE')+'</span>&nbsp&nbsp<input type="submit" id ="hook_question_comment_attachement_btn"><dd>\
 		</div>\
 		<br />\
 		<dd><textarea id="hook_question_comment_textarea" style="width:500px;height:150px"></textarea></dd>\
@@ -2265,32 +2266,28 @@ var app = {
 			$('#hook_question_comment_from').val($.app.userEmail);
 
 			$('#hook_question_comment_attachement').safeClick(function(){
-				$('#file_upload').show();
+				$('#file_uploader').show();
 
-				console.log($.app.SESSION_KEY);
-				console.log($.app.PAGE_CRUMB);
+				/*console.log($.app.SESSION_KEY);
+				console.log($.app.PAGE_CRUMB);*/
+			});
+
+			$('#hook_question_comment_attachement_btn').safeClick(function(){
+
+				console.log('allo');
 
 				// CALQUÉ SUR LE USERPROFILE, MÉGA WIP!!!
 				$('#file_upload').ajaxUploader({
-						url:'index.php?k=' + $.app.SESSION_KEY + '&pc=' + $.app.PAGE_CRUMB + '&view=Settings/UserProfile&cmd=uploadFile',
+						url:'index.php?k=' + t.SESSION_KEY + '&uploadFile',
 						uploadFileName : 'uploaded_file',
 						autoUpload : true,
 						progressBarConfig: {
 							barImage: ''
 						},
-						validateFileName : function(fileName){
-							if(! fileName.match(/\.(gif|jpg|jpeg|png|tiff|tif|bmp|eps|pdf)$/i)){
-								$('#file_upload').addClass('save_warning');
-								$.app.showMessage($.app._('ERROR'), '', $.app._('FILE_MUST_BE_IMAGE'));
-								return false;
-							}
-							
-							return true;
-						},
 						success: function (data, status){
 
-							console.log(data);
-						/*if(data.image_uid){
+							console.log(data.image_uid);
+					/*	if(data.image_uid){
 								$('#hook_photo_image').attr('src', 'index.php?image=' + data.image_uid);
 								$('#hook_photo_href').attr('href', 'index.php?image=' + data.image_uid).show();
 								
@@ -2307,8 +2304,9 @@ var app = {
 							$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'), $.app._('UPLOAD_IMAGE_FILE_ERROR_DETAIL'));
 						}
 				});
-			});
 
+			});
+			
 			$('#hook_send_question_comment').safeClick(function() {
 
 				var dlg = this;

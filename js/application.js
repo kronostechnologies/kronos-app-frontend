@@ -2246,12 +2246,11 @@ var app = {
 		<dd><input type="text" id="hook_question_comment_subject" style="width:350px" /></dd>\
 		<div id="hook_question_comment_attachement_div">\
 		<dt><label style="width:100px">' + $.app._('ATTACHMENT') + '</label></dt>\
-		<div id="file_upload"></div>\
-		<div id="hook_file_upload_div"><input id="file_uploader" class="input" type="file" size="45" name="file_uploader" hidden></div>\
-		<dd><label class="icon-add"></label><span class="link" id="hook_question_comment_attachement">'+ $.app._('JOIN_FILE')+'</span>&nbsp&nbsp<input type="submit" id ="hook_question_comment_attachement_btn"><dd>\
-		<dd><div id="uploaded_file_path" hidden></div><dd>\
-		</div>\
+		<dd><div id="file_upload"></div></dd>\
+		<dd><div id="uploaded_files_path" hidden></div><dd>\
 		<br />\
+		<dd><label id="uploaded_files_names" margin-left:50px"></label><dd>\
+		</div>\
 		<dd><textarea id="hook_question_comment_textarea" style="width:500px;height:150px"></textarea></dd>\
 		</dl>\
 		<p class="submit">\
@@ -2262,58 +2261,19 @@ var app = {
 
 		$.app.showModalDialog(content, 'normal', function(){
 
+			var dlg = this;
+
 			if(comment_type) $('#hook_question_comment_type').val(comment_type);
 
 			$('#hook_question_comment_from').val($.app.userEmail);
-
-			$('#hook_question_comment_attachement').safeClick(function(){
-				$('#file_uploader').show();
-			});
-
-			$('#hook_question_comment_attachement_btn').safeClick(function(){
-
-				$('#file_upload').ajaxUploader({
-						url:'index.php?k=' + t.SESSION_KEY + '&uploadFile',
-						uploadFileName : 'uploaded_file',
-						autoUpload : true,
-						progressBarConfig: {
-							barImage: 'a'
-						},
-						success: function (data, status){
-							var t = this;
-							console.log(status);
-							console.log(data.file_url);
-							if(data.file_url){
-
-								t.file = data.file_url;
-									$('#uploaded_file_path').val(data.file_url);
-									//$('#uploaded_file_name').attr('href', 'index.php?image=' + data.file_url).show();
-									//$('#file_uploader').attr('value', data.file_url);
-									
-									$('#uploaded_file_path').show();	
-								}
-								else if(data.error){
-									console.debug(data.error);
-									$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
-								}
-						},
-						error: function (data, status, e){
-							console.debug('Error uploading attachment.');
-							$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'), $.app._('UPLOAD_IMAGE_FILE_ERROR_DETAIL'));
-						}
-				});
-
-			});
 			
 			$('#hook_send_question_comment').safeClick(function() {
-
-				var dlg = this;
 
 				var type = $('#hook_question_comment_type').val();
 				var subject = $('#hook_question_comment_subject').val();
 				var from = $('#hook_question_comment_from').val();
 				var message = $('#hook_question_comment_textarea').val();
-				var attachment = $('#uploaded_file_path').val();
+				var attachment = $('#uploaded_files_path').val();
 
 				if(!subject){
 					$('#hook_question_comment_subject').hintError($.app._('FIELD_REQUIRED')).focus();
@@ -2372,6 +2332,40 @@ var app = {
 				});
 
 			});
+
+			dlg.QCS_uploader = new Array();
+
+			dlg.QCS_uploader.push(
+				$('#file_upload').ajaxUploader({
+					url:'index.php?k=' + t.SESSION_KEY + '&uploadFile',
+					uploadFileName : 'uploaded_file',
+					autoUpload : true,
+					progressBarConfig: {
+						barImage: 'img/progressbg_orange.gif'
+					},
+					success: function (data, status){
+						if(data.file_url){
+							var t = this;
+							var filename = data.file_url.split('/');
+
+							$('#uploaded_files_path').val(data.file_url);
+							$('#uploaded_files_names').append(filename[filename.length-1] + '<br/>');
+
+							dlg.QCS_uploader.push(dlg.QCS_uploader[0].clone());
+							dlg.QCS_uploader[dlg.QCS_uploader.length-1].show();
+							console.log(dlg.QCS_uploader);
+						}
+						else if(data.error){
+							console.debug(data.error);
+							$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
+						}
+					},
+					error: function (data, status, e){
+						console.debug('Error uploading attachment.');
+						$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'), $.app._('UPLOAD_IMAGE_FILE_ERROR_DETAIL'));
+					}
+				})
+			);
 
 			$('#hook_cancel_question_comment').safeClick(function() {
 				$.app.hideModalDialog('fast');

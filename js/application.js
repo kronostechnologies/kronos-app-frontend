@@ -2249,7 +2249,7 @@ var app = {
 		<div id="file_upload"></div>\
 		<div id="hook_file_upload_div"><input id="file_uploader" class="input" type="file" size="45" name="file_uploader" hidden></div>\
 		<dd><label class="icon-add"></label><span class="link" id="hook_question_comment_attachement">'+ $.app._('JOIN_FILE')+'</span>&nbsp&nbsp<input type="submit" id ="hook_question_comment_attachement_btn"><dd>\
-		<dd><div id="uploaded_file_name" hidden></div><dd>\
+		<dd><div id="uploaded_file_path" hidden></div><dd>\
 		</div>\
 		<br />\
 		<dd><textarea id="hook_question_comment_textarea" style="width:500px;height:150px"></textarea></dd>\
@@ -2277,17 +2277,20 @@ var app = {
 						uploadFileName : 'uploaded_file',
 						autoUpload : true,
 						progressBarConfig: {
-							barImage: ''
+							barImage: 'a'
 						},
 						success: function (data, status){
+							var t = this;
 							console.log(status);
 							console.log(data.file_url);
 							if(data.file_url){
-									//$('#uploaded_file_name').attr('src', 'index.php?image=' + data.file_url);
+
+								t.file = data.file_url;
+									$('#uploaded_file_path').val(data.file_url);
 									//$('#uploaded_file_name').attr('href', 'index.php?image=' + data.file_url).show();
 									//$('#file_uploader').attr('value', data.file_url);
 									
-									$('#uploaded_file_name').show();	
+									$('#uploaded_file_path').show();	
 								}
 								else if(data.error){
 									console.debug(data.error);
@@ -2310,6 +2313,7 @@ var app = {
 				var subject = $('#hook_question_comment_subject').val();
 				var from = $('#hook_question_comment_from').val();
 				var message = $('#hook_question_comment_textarea').val();
+				var attachment = $('#uploaded_file_path').val();
 
 				if(!subject){
 					$('#hook_question_comment_subject').hintError($.app._('FIELD_REQUIRED')).focus();
@@ -2324,7 +2328,10 @@ var app = {
 				var postString = '&type=' + encodeURIComponent(type) +
 								 '&subject=' + encodeURIComponent(subject) +
 								 '&from=' + encodeURIComponent(from) +
-								 '&message=' + encodeURIComponent(message);
+								 '&message=' + encodeURIComponent(message) + 
+								 '&attachment=' + encodeURIComponent(attachment);
+
+				console.log(postString);
 
 				$.ajax({
 					url:'index.php?k=' + t.SESSION_KEY + '&sendComment' ,

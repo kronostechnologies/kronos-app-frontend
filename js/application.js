@@ -2288,8 +2288,6 @@ var app = {
 								 '&from=' + encodeURIComponent(from) +
 								 '&message=' + encodeURIComponent(message);
 
-				console.log(postString);
-
 				$.ajax({
 					url:'index.php?k=' + t.SESSION_KEY + '&sendComment' ,
 					type: 'POST',
@@ -2341,17 +2339,25 @@ var app = {
 		this.QCS_uploader = new Array();
 		this.QCS_uploader.push(generateQCSAjaxUploader());
 
+		var i = 1;
+		var tmp_dir;
+
 		function generateQCSAjaxUploader(){
 			return $('#file_upload').ajaxUploader({
-						url:'index.php?k=' + t.SESSION_KEY + '&uploadFile',
+						url:'index.php?k=' + t.SESSION_KEY + '&uploadFile&tmp_dir=' + t.tmp_dir,
 						autoUpload : true,
 						progressBarConfig: {
 							barImage: 'img/progressbg_orange.gif'
 						},
 						success: function (data, status){
 							if(data.ajax_filename){
+								var element_number = i++;
 								var filename = data.ajax_filename;
-								$('#uploaded_files_names').append('<li style="list-style:none;">' + filename + '</li>');
+								t.tmp_dir = data.tmp_dir;
+								$('#uploaded_files_names').append('<li style="list-style:none;">' + filename + '&nbsp&nbsp<span class="ico icon-cross" id="ajax_file_remove_' + element_number + '" style="position: absolute; margin-bottom:10px;"></span></li>');
+								$('#ajax_file_remove_'+ element_number).on('click', function(){
+									removeQCSAjaxFile(filename);
+								});
 								t.QCS_uploader.push(generateQCSAjaxUploader());
 							}
 							else if(data.error){
@@ -2364,6 +2370,42 @@ var app = {
 							$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
 						}
 					})
+		}
+
+		function removeQCSAjaxFile(filename){
+
+			console.log(filename);
+			/*var postString = '&file_uid=' + encodeURIComponent(uid);
+
+			$.ajax({
+				url:'index.php?k=' + t.SESSION_KEY + '&remove_ajax_file' ,
+				type: 'POST',
+				data: postString,
+				dataType:'json',
+				success: function(data) {
+
+					console.log(data.testOLI);
+
+					/*if(data.status && data.status == 'error') {
+						$.app.showError();
+						$.app.hideModalDialog('fast');
+						return false;
+					}
+
+					return true;
+
+				},
+				error: function(xhr, status, error) {
+					if(!$.app.validateXHR(xhr)){
+						$.app.hideModalDialog('fast');
+						return false;
+					}
+
+					$.app.showError();
+					$.app.hideModalDialog('fast');
+					return false;
+				}
+			});*/
 		}
 	},
 

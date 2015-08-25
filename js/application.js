@@ -2247,9 +2247,8 @@ var app = {
 		<div id="hook_question_comment_attachement_div">\
 		<dt><label style="width:100px">' + $.app._('ATTACHMENT') + '</label></dt>\
 		<dd><div id="file_upload"></div></dd>\
-		<dd><div id="uploaded_files_path" hidden></div><dd>\
+		<dd><ul style="margin-left:115px;" id="uploaded_files_names"></ul><dd>\
 		<br />\
-		<dd><label id="uploaded_files_names" margin-left:50px"></label><dd>\
 		</div>\
 		<dd><textarea id="hook_question_comment_textarea" style="width:500px;height:150px"></textarea></dd>\
 		</dl>\
@@ -2273,7 +2272,6 @@ var app = {
 				var subject = $('#hook_question_comment_subject').val();
 				var from = $('#hook_question_comment_from').val();
 				var message = $('#hook_question_comment_textarea').val();
-				var attachment = $('#uploaded_files_path').val();
 
 				if(!subject){
 					$('#hook_question_comment_subject').hintError($.app._('FIELD_REQUIRED')).focus();
@@ -2288,8 +2286,7 @@ var app = {
 				var postString = '&type=' + encodeURIComponent(type) +
 								 '&subject=' + encodeURIComponent(subject) +
 								 '&from=' + encodeURIComponent(from) +
-								 '&message=' + encodeURIComponent(message) + 
-								 '&attachment=' + encodeURIComponent(attachment);
+								 '&message=' + encodeURIComponent(message);
 
 				console.log(postString);
 
@@ -2333,40 +2330,6 @@ var app = {
 
 			});
 
-			dlg.QCS_uploader = new Array();
-
-			dlg.QCS_uploader.push(
-				$('#file_upload').ajaxUploader({
-					url:'index.php?k=' + t.SESSION_KEY + '&uploadFile',
-					uploadFileName : 'uploaded_file',
-					autoUpload : true,
-					progressBarConfig: {
-						barImage: 'img/progressbg_orange.gif'
-					},
-					success: function (data, status){
-						if(data.file_url){
-							var t = this;
-							var filename = data.file_url.split('/');
-
-							$('#uploaded_files_path').val(data.file_url);
-							$('#uploaded_files_names').append(filename[filename.length-1] + '<br/>');
-
-							dlg.QCS_uploader.push(dlg.QCS_uploader[0].clone());
-							dlg.QCS_uploader[dlg.QCS_uploader.length-1].show();
-							console.log(dlg.QCS_uploader);
-						}
-						else if(data.error){
-							console.debug(data.error);
-							$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
-						}
-					},
-					error: function (data, status, e){
-						console.debug('Error uploading attachment.');
-						$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'), $.app._('UPLOAD_IMAGE_FILE_ERROR_DETAIL'));
-					}
-				})
-			);
-
 			$('#hook_cancel_question_comment').safeClick(function() {
 				$.app.hideModalDialog('fast');
 
@@ -2374,6 +2337,34 @@ var app = {
 
 			$('#hook_question_comment_subject').focus();
 		}, 550);
+
+		this.QCS_uploader = new Array();
+		this.QCS_uploader.push(generateQCSAjaxUploader());
+
+		function generateQCSAjaxUploader(){
+			return $('#file_upload').ajaxUploader({
+						url:'index.php?k=' + t.SESSION_KEY + '&uploadFile',
+						autoUpload : true,
+						progressBarConfig: {
+							barImage: 'img/progressbg_orange.gif'
+						},
+						success: function (data, status){
+							if(data.ajax_filename){
+								var filename = data.ajax_filename;
+								$('#uploaded_files_names').append('<li style="list-style:none;">' + filename + '</li>');
+								t.QCS_uploader.push(generateQCSAjaxUploader());
+							}
+							else if(data.error){
+								console.debug(data.error);
+								$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
+							}
+						},
+						error: function (data, status, e){
+							console.debug('Error uploading attachment.');
+							$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
+						}
+					})
+		}
 	},
 
 	htmlEntity : function (value){

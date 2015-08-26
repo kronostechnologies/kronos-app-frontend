@@ -2258,6 +2258,9 @@ var app = {
 		</div>\
 		<div id="hook_question_comment_sent" style="display:none"><p>' + $.app._('THANK_YOU_FOR_YOUR_COMMENTS') + '</p></div>';
 
+		var i = 1;
+		var tmp_dir;
+
 		$.app.showModalDialog(content, 'normal', function(){
 
 			var dlg = this;
@@ -2286,7 +2289,8 @@ var app = {
 				var postString = '&type=' + encodeURIComponent(type) +
 								 '&subject=' + encodeURIComponent(subject) +
 								 '&from=' + encodeURIComponent(from) +
-								 '&message=' + encodeURIComponent(message);
+								 '&message=' + encodeURIComponent(message) + 
+								 '&tmp_dir=' + encodeURIComponent(t.tmp_dir);
 
 				$.ajax({
 					url:'index.php?k=' + t.SESSION_KEY + '&sendComment' ,
@@ -2338,9 +2342,6 @@ var app = {
 
 		this.QCS_uploader = new Array();
 		this.QCS_uploader.push(generateQCSAjaxUploader());
-
-		var i = 1;
-		var tmp_dir;
 
 		function generateQCSAjaxUploader(){
 			return $('#file_upload').ajaxUploader({

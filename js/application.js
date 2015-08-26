@@ -2305,12 +2305,12 @@ var app = {
 							return false;
 						}
 
-
-
 						setTimeout(function(){
 							$.app.hideModalDialog('fast');
 							}, 2000);
 
+						t.tmp_dir = '';
+						//removeQCSAjaxFolder(t.tmp_dir);
 						return true;
 
 					},
@@ -2407,6 +2407,22 @@ var app = {
 					return false;
 				}
 			});*/
+		}
+
+		function removeQCSAjaxFolder(folder){
+			$.ajax({
+				url:'index.php?k=' + t.SESSION_KEY + '&removeQCSAjaxFolder' ,
+				type: 'POST',
+				data: folder,
+				dataType:'json',
+				success: function(data) {
+					console.log(data);
+					return true;
+				}
+			});
+
+			console.log(folder);
+
 		}
 	},
 

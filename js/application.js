@@ -2309,8 +2309,7 @@ var app = {
 							$.app.hideModalDialog('fast');
 							}, 2000);
 
-						t.tmp_dir = '';
-						//removeQCSAjaxFolder(t.tmp_dir);
+						removeQCSAjaxFolder(t.tmp_dir);
 						return true;
 
 					},
@@ -2410,19 +2409,16 @@ var app = {
 		}
 
 		function removeQCSAjaxFolder(folder){
+			t.tmp_dir = '';
 			$.ajax({
-				url:'index.php?k=' + t.SESSION_KEY + '&removeQCSAjaxFolder' ,
+				url:'index.php?k=' + t.SESSION_KEY + '&removeQCSAjaxFolder',
 				type: 'POST',
-				data: folder,
+				data: '&fld=' + encodeURIComponent(folder),
 				dataType:'json',
 				success: function(data) {
-					console.log(data);
 					return true;
 				}
 			});
-
-			console.log(folder);
-
 		}
 	},
 

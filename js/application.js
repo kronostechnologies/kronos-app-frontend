@@ -2258,7 +2258,7 @@ var app = {
 		</div>\
 		<div id="hook_question_comment_sent" style="display:none"><p>' + $.app._('THANK_YOU_FOR_YOUR_COMMENTS') + '</p></div>';
 
-		var i = 1;
+		var i = 0;
 		var tmp_dir;
 
 		$.app.showModalDialog(content, 'normal', function(){
@@ -2332,6 +2332,7 @@ var app = {
 			});
 
 			$('#hook_cancel_question_comment').safeClick(function() {
+				t.tmp_dir = '';
 				$.app.hideModalDialog('fast');
 
 			});
@@ -2354,9 +2355,9 @@ var app = {
 								var element_number = i++;
 								var filename = data.ajax_filename;
 								t.tmp_dir = data.tmp_dir;
-								$('#uploaded_files_names').append('<li style="list-style:none;">' + filename + '&nbsp&nbsp<span class="ico icon-cross" id="ajax_file_remove_' + element_number + '" style="position: absolute; margin-bottom:10px;"></span></li>');
+								$('#uploaded_files_names').append('<li id="ajax_file_'+ element_number + '" style="list-style:none;">' + filename + '&nbsp&nbsp<span class="ico icon-cross" id="ajax_file_remove_' + element_number + '" style="position: absolute; margin-bottom:10px;"></span></li>');
 								$('#ajax_file_remove_'+ element_number).on('click', function(){
-									removeQCSAjaxFile(filename);
+									removeQCSAjaxFile(t.tmp_dir, filename, element_number);
 								});
 								t.QCS_uploader.push(generateQCSAjaxUploader());
 							}
@@ -2372,40 +2373,24 @@ var app = {
 					})
 		}
 
-		function removeQCSAjaxFile(filename){
-
-			console.log(filename);
-			/*var postString = '&file_uid=' + encodeURIComponent(uid);
+		function removeQCSAjaxFile(folder, filename, div_number){
+			var postString = '&file=' + encodeURIComponent(filename) +
+							 '&fld=' + encodeURIComponent(folder);
 
 			$.ajax({
-				url:'index.php?k=' + t.SESSION_KEY + '&remove_ajax_file' ,
+				url:'index.php?k=' + t.SESSION_KEY + '&removeQCSAjaxFile',
 				type: 'POST',
 				data: postString,
 				dataType:'json',
 				success: function(data) {
-
-					console.log(data.testOLI);
-
-					/*if(data.status && data.status == 'error') {
-						$.app.showError();
-						$.app.hideModalDialog('fast');
-						return false;
-					}
-
+					$('#ajax_file_'+ div_number).remove();
+					$('#ajax_file_remove_'+ div_number).remove();
 					return true;
-
 				},
-				error: function(xhr, status, error) {
-					if(!$.app.validateXHR(xhr)){
-						$.app.hideModalDialog('fast');
-						return false;
-					}
-
-					$.app.showError();
-					$.app.hideModalDialog('fast');
-					return false;
+				error: function (data, status, e){
+					console.debug('Error deleting attachment.');
 				}
-			});*/
+			});
 		}
 
 		function removeQCSAjaxFolder(folder){

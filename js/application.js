@@ -2340,9 +2340,7 @@ var app = {
 			$('#hook_question_comment_subject').focus();
 		}, 550);
 
-		this.QCS_uploader = new Array();
-		this.QCS_uploader.push(generateQCSAjaxUploader());
-
+		this.QCS_uploader = [];
 		function generateQCSAjaxUploader(){
 			return $('#file_upload').ajaxUploader({
 						url:'index.php?k=' + t.SESSION_KEY + '&uploadFile&tmp_dir=' + t.tmp_dir,
@@ -2370,8 +2368,10 @@ var app = {
 							console.debug('Error uploading attachment.');
 							$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
 						}
-					})
+					});
 		}
+
+		this.QCS_uploader.push(generateQCSAjaxUploader());
 
 		function removeQCSAjaxFile(folder, filename, div_number){
 			var postString = '&file=' + encodeURIComponent(filename) +

@@ -2855,7 +2855,6 @@ var app = {
 					t._hideLoading();
 				}
 
-				console.debug(xhr);
 				if(status == 'abort' || !$.app.validateXHR(xhr)){
 					return false;
 				}
@@ -2959,7 +2958,6 @@ var app = {
 					t._hideLoading();
 				}
 
-				console.debug(xhr);
 				if(status == 'abort' || !$.app.validateXHR(xhr)){
 					return false;
 				}

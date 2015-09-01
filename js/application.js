@@ -2182,6 +2182,27 @@ var app = {
 		});
 	},
 
+	getShowSessionExpiredError: function() {
+		return '<div class="modal-dialog"><h2>'+$.app._('INVALID_CREDENTIAL_ERROR_TITLE')+'</h2>\
+				<p>\
+					<strong>'+$.app._('INVALID_CREDENTIAL_ERROR_BODY')+'</strong>\
+					<br />\
+				</p>\
+				<p class="submit">\
+					<input type="submit" id="hook_session_expired_error_close" value="'+$.app._('OK')+'" />\
+				</p>\
+			</div>';
+	},
+
+	showSessionExpiredError: function(location) {
+		location = location || '/?logout';
+		$.app.showModalDialog($.app.getShowSessionExpiredError(), 'fast', function() {
+			$('#hook_session_expired_error_close').safeClick(function() {
+				document.location = location;
+			});
+		});
+	},
+
 	getShowConfirmationHTML: function(title, message) {
 		return '<div class="modal-dialog"><h2>'+title+'</h2>\
 							<p>'+message+'</p>\
@@ -2797,7 +2818,11 @@ var app = {
 		}
 
 		var redirect_to = xhr.getResponseHeader('X-Kronos-Ajax-Goto');
-		if(redirect_to){
+		if(xhr.status == 401) {
+			$.app.showSessionExpiredError(redirect_to);
+			return false;
+		}
+		else if(redirect_to){
 			document.location = redirect_to;
 			return false;
 		}

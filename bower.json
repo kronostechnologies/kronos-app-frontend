@@ -3,6 +3,9 @@
   "version": "0.1.61",
   "homepage": "https://github.com/kronostechnologies/kronos-app-frontend",
   "description": "Application Frontend by Kronos Technologies",
+  "main": [
+    "application.js" 
+  ],
   "ignore": [
     "**/.*",
     "src/*",

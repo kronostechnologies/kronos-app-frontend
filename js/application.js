@@ -108,6 +108,12 @@ var app = {
 
 		// Error catching function
 		window.onerror = function(description, page, line) {
+			// Support jsmonitor.io
+			if (typeof window.UEInfo != 'undefined') {
+				window.errors.push(arguments);
+				window.UEInfo.run();
+			}
+
 			return t._onError(description, page, line);
 		};
 

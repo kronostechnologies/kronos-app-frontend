@@ -2817,13 +2817,8 @@ var app = {
 			return true;
 		}
 
-		var redirect_to = xhr.getResponseHeader('X-Kronos-Ajax-Goto');
 		if(xhr.status == 401) {
-			$.app.showSessionExpiredError(redirect_to);
-			return false;
-		}
-		else if(redirect_to){
-			document.location = redirect_to;
+			$.app.showSessionExpiredError(xhr.responseJSON.view);
 			return false;
 		}
 		// Does not trigger any error handler if the page is reloading via user refresh

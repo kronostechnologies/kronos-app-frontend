@@ -2435,7 +2435,7 @@ var app = {
 	},
 
 	htmlEntity : function (value){
-		if(value)
+		if(value || this.isNumber(value))
 			return $('<div></div>').text(value).html();
 		else
 			return '';

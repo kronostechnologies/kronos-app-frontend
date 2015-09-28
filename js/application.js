@@ -4546,11 +4546,11 @@ EditView.prototype = {
 			}
 		}
 
-		if(!this._validate()) {
+		if(!this.validate()) {
             this._onValidateFail();
             return false;
         }
-
+       
 		if(typeof hash == 'function') {
 			stay = error_callback;
 			if(typeof success_callback == 'function'){
@@ -4575,6 +4575,8 @@ EditView.prototype = {
 
 			return true;
 		}
+        
+        this._onSaveStart();
 
 		$('input[type=submit],input[type=button]').prop('disabled', true);
 
@@ -4672,11 +4674,15 @@ EditView.prototype = {
 		return '&model=' + encodeURIComponent($.toJSON(this.createModel()));
 	},
 
-	_validate : function(){
+	validate : function(){
         return true;
     },
 
-    _onValidateFail : function() { },
+    _onValidateFail : function() { 
+    },
+
+    _onSaveStart : function() { 
+    },
 
 	_canSave : function() {
 		if($.app.debug)

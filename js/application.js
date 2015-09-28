@@ -4528,6 +4528,11 @@ EditView.prototype = {
 	},
 
 	save : function(hash, success_callback, error_callback, stay) {
+		
+		if(!this.validate()) {
+            this._onValidateFail();
+            return false;
+        }
 
 		if(!this._can_save) {
 			return this._saveRedirect(hash, stay);
@@ -4545,11 +4550,6 @@ EditView.prototype = {
 				return false;
 			}
 		}
-
-		if(!this.validate()) {
-            this._onValidateFail();
-            return false;
-        }
        
 		if(typeof hash == 'function') {
 			stay = error_callback;

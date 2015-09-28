@@ -4546,6 +4546,11 @@ EditView.prototype = {
 			}
 		}
 
+		if(!this._validate()) {
+            this._onValidateFail();
+            return false;
+        }
+
 		if(typeof hash == 'function') {
 			stay = error_callback;
 			if(typeof success_callback == 'function'){
@@ -4666,6 +4671,12 @@ EditView.prototype = {
 	_saveBuildPost: function(){
 		return '&model=' + encodeURIComponent($.toJSON(this.createModel()));
 	},
+
+	_validate : function(){
+        return true;
+    },
+
+    _onValidateFail : function() { },
 
 	_canSave : function() {
 		if($.app.debug)

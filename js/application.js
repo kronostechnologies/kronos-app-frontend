@@ -1492,6 +1492,7 @@ var app = {
 			// NOTE : No offline support is required here. Everything is managed by {TODO: insert offline fetch method name}
 			this._loadModel(data.model);
 			this._checkAnchor();
+			this._checkOnLoadScroll();
 
 			$('input').each(function (index, element) {
 				if (!$(element).attr('maxlength')) {
@@ -1528,6 +1529,29 @@ var app = {
 				}
 			}
 		}
+	},
+
+	_checkOnLoadScroll: function() {
+		var scroll = this.getOnLoadScroll();
+		if(scroll && this.isNumber(scroll.X) && this.isNumber(scroll.Y)) {
+			window.scrollTo(scroll.X, scroll.Y);
+			this.clearOnLoadScroll();
+		}
+	},
+
+	setOnLoadScroll: function(X, Y) {
+		this._onLoadScroll = {
+			X: this.parseInt(X),
+			Y: this.parseInt(Y)
+		};
+	},
+
+	getOnLoadScroll: function() {
+		return this._onLoadScroll;
+	},
+
+	clearOnLoadScroll: function() {
+		delete this._onLoadScroll;
 	},
 
 	_initView : function() {

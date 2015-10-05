@@ -49,9 +49,6 @@ var app = {
 	// Validations
 	emailRegex : /^[a-zA-Z0-9-'+~_&\/]+(?:\.[a-zA-Z0-9-'+~_&\/]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/,
 
-	// Google Visualization API
-	_visualization_ready : false,
-
 	// List of all ongoing ajax requests. Allow abort on view change.
 	_ongoing_xhrs : [],
 
@@ -627,72 +624,6 @@ var app = {
 			}
 		});
 
-		$.extend({
-			/**
-			 *	Fetch geocoding informations from google map api
-			 *
-			 *	Callback will receive four paramaters :
-			 *	status : Geocoding request status
-			 *	code : Geocoding request code
-			 *	latitude : Address latitude coordinate
-			 *	longitude : Address longitude coordinate
-			 */
-			geocoding : function(address, callback) {
-				if($.app.geolocation) {
-					var geocoder = new google.maps.Geocoder();
-
-					geocoder.geocode({address:address, language: $.app.lang}, function(results, status) {
-						if(status == 'OK') {
-							if(results.length > 1) {
-								var pop = 0;
-								for(var i = 0; i < results.length; i++) {
-									if(results[i].geometry.location_type == 'APPROXIMATE' || results[i].geometry.location_type == 'GEOMETRIC_CENTER') {
-										results[i] = false;
-										pop++;
-									}
-								}
-
-								for(i = 0; i < pop; i++) {
-									for(var j = 0; j < results.length - 1; j++) {
-										if(results[j] === false) {
-											results[j] = results[j+1];
-											results[j+1] = false;
-										}
-									}
-									results.pop();
-								}
-
-								if(results.length > 1) {
-									callback('ERROR', 'MULTIPLE', 0, 0, results);
-								}
-								else if(results.length === 0) {
-									callback('ERROR', 'ZERO_RESULTS', 0, 0, results);
-								}
-								else {
-									callback('SUCCESS', status, results[0].geometry.location.lat(), results[0].geometry.location.lng(), results);
-								}
-							}
-							else if(results[0].geometry.location_type == 'APPROXIMATE' || results[0].geometry.location_type == 'GEOMETRIC_CENTER') {
-								callback('ERROR', 'INACCURATE', 0, 0, results);
-							}
-							else {
-								callback('SUCCESS', status, results[0].geometry.location.lat(), results[0].geometry.location.lng(), results);
-							}
-						}
-						else if(status == 'ZERO_RESULTS') {
-							callback('ERROR', status, 0, 0, results);
-						}
-						else {
-							callback('TOPROCESS', status, 0, 0, results);
-						}
-					});
-				}
-				else {
-					callback('TOPROCESS', 'ZERO_RESULTS', 0, 0, false);
-				}
-			}
-		});
-
 		String.prototype.htmlEntity = function () {
 			return $.app.htmlEntity(this.toString());
 		};
@@ -760,17 +691,6 @@ var app = {
 
 		this._configure(config);
 		this.setUserConfig(config['user']);
-
-		//Init geolocation
-		if(config['geolocation']) {
-			this.geolocation = {};
-//			this.geolocation.key = config['geolocation']['key'];
-			this.geolocation.url = 'http://maps.google.com/maps/api/geocode/json?';
-		}
-		else {
-			this.geolocation = false;
-		}
-
 
 		//Find default view
 		for(var k in this.views) {
@@ -3912,22 +3832,6 @@ var app = {
 
         return autocompleter;
     },
-
-	visualizationReady : function() {
-		if(this.debug) console.debug('Google Visualization API ready');
-
-		this._visualization_ready = true;
-	},
-
-	isVisualizationReady : function() {
-		if(!this._visualization_ready) {
-			if(google && google.visualization) {
-				this._visualization_ready = true;
-			}
-		}
-
-		return this._visualization_ready;
-	},
 
 	// Access an object using dot notation
 	getByKey : function(obj, key){

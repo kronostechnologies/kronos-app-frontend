@@ -3124,17 +3124,17 @@ var app = {
 				return '';
 			}
 
-			if(format == 'input'){
-				return date.getFullYear() + '-' + $.app.pad(date.getMonth()+1, 2) + '-' + $.app.pad(date.getDate(), 2);
-			}
-			else if(format == 'long'){
-				return ($.app.lang === "en" ? this.getMonthName(date.getMonth()) +' ' + date.getDate() + ', ': date.getDate() +' '+this.getMonthName(date.getMonth()) +' ') + date.getFullYear();
-			}
-			else if(format == 'longtime'){
-				return ($.app.lang === "en" ? this.getMonthName(date.getMonth()) + ' ' + date.getDate() + ', ': date.getDate() +' '+this.getMonthName(date.getMonth())+' ') + date.getFullYear()+' '+$.app._('AT')+' '+date.getHours()+':' + $.app.pad(date.getMinutes(), 2);
-			}
-			else if(format == 'short') {
-				return $.app.lang === "en" ? this.getMonthName(date.getMonth()) + ' ' + date.getDate() : date.getDate() +' '+this.getMonthName(date.getMonth());
+		    if(format == 'input') {
+			    return date.getFullYear() + '-' + $.app.pad(date.getMonth() + 1, 2) + '-' + $.app.pad(date.getDate(), 2);
+		    }
+		    else if(format == 'long') {
+			    return ($.app.lang === "en" ? this.getMonthName(date.getMonth()) + ' ' + date.getDate() + ', ' : date.getDate() + ' ' + this.getMonthName(date.getMonth()).toLowerCase() + ' ') + date.getFullYear();
+		    }
+		    else if(format == 'longtime') {
+			    return ($.app.lang === "en" ? this.getMonthName(date.getMonth()) + ' ' + date.getDate() + ', ' : date.getDate() + ' ' + this.getMonthName(date.getMonth()).toLowerCase() + ' ') + date.getFullYear() + ' ' + $.app._('AT') + ' ' + date.getHours() + ':' + $.app.pad(date.getMinutes(), 2);
+		    }
+		    else if(format == 'short') {
+			    return $.app.lang === "en" ? this.getMonthName(date.getMonth()) + ' ' + date.getDate() : date.getDate() + ' ' + this.getMonthName(date.getMonth()).toLowerCase();
 			}
 			else if(format == 'longabbrmonth'){
 				var month = date.getMonth(),
@@ -3143,7 +3143,7 @@ var app = {
 
 				monthName = (rData) ? rData.monthNamesShort[month] : this.getMonthName(month).substring(0, 3);
 
-				return ($.app.lang === "en" ? monthName + '. ' + date.getDate() + ', ' : date.getDate() +' '+monthName+'. ') + date.getFullYear();
+			    return ($.app.lang === "en" ? monthName + '. ' + date.getDate() + ', ' : date.getDate() + ' ' + monthName.toLowerCase() + '. ') + date.getFullYear();
 			}
 
 			if($.app.debug)

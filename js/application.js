@@ -49,7 +49,7 @@ var app = {
 	// Validations
 	emailRegex : /^[a-zA-Z0-9-'+~_&\/]+(?:\.[a-zA-Z0-9-'+~_&\/]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/,
 	currencyRegex : /^[0-9.,\s]+$/,
-	percentageRegex : /^[0-9.]+$/,
+	percentageRegex : /^[0-9.,]+$/,
 
 	// List of all ongoing ajax requests. Allow abort on view change.
 	_ongoing_xhrs : [],

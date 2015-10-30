@@ -4,7 +4,7 @@
   "homepage": "https://github.com/kronostechnologies/kronos-app-frontend",
   "description": "Application Frontend by Kronos Technologies",
   "main": [
-    "application.js" 
+    "application.js"
   ],
   "ignore": [
     "**/.*",
@@ -17,6 +17,7 @@
   "dependencies": {
     "jquery": "1.11.0",
     "jquery-migrate": "1.2.1",
-    "jquery-ui": "1.11.4"
+    "jquery-ui": "1.11.4",
+    "moment": "~2.10.6"
   }
 }

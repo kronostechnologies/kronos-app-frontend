@@ -725,7 +725,6 @@ var app = {
 		t.cpanelUserName = user_config['cpanel_user_name'];
 
 		t.setLocale(user_config.locale);
-
 		t._setUserConfig(user_config);
 
 		this._buildHeader();
@@ -745,6 +744,8 @@ var app = {
 		else {
 			this.lang = 'en';
 		}
+
+		moment.locale(this.lang);
 
 		//Load language file
 		if(!this._messages[this.lang]){
@@ -3114,100 +3115,69 @@ var app = {
 			}
 		},
 
-    format: function(date, format) {
-
-			if(typeof format == 'undefined'){
-				format = 'long';
-			}
-
+		format: function(date, format) {
 			date = this.parse(date);
 
-			if(!date){
+			if(!date) {
 				return '';
 			}
 
-		    if(format == 'input') {
-			    return date.getFullYear() + '-' + $.app.pad(date.getMonth() + 1, 2) + '-' + $.app.pad(date.getDate(), 2);
-		    }
-		    else if(format == 'long') {
-			    return ($.app.lang === "en" ? this.getMonthName(date.getMonth()) + ' ' + date.getDate() + ', ' : date.getDate() + ' ' + this.getMonthName(date.getMonth()).toLowerCase() + ' ') + date.getFullYear();
-		    }
-		    else if(format == 'longtime') {
-			    return ($.app.lang === "en" ? this.getMonthName(date.getMonth()) + ' ' + date.getDate() + ', ' : date.getDate() + ' ' + this.getMonthName(date.getMonth()).toLowerCase() + ' ') + date.getFullYear() + ' ' + $.app._('AT') + ' ' + date.getHours() + ':' + $.app.pad(date.getMinutes(), 2);
-		    }
-		    else if(format == 'short') {
-			    return $.app.lang === "en" ? this.getMonthName(date.getMonth()) + ' ' + date.getDate() : date.getDate() + ' ' + this.getMonthName(date.getMonth()).toLowerCase();
-			}
-			else if(format == 'longabbrmonth'){
-				var month = date.getMonth(),
-					monthName,
-					rData = $.datepicker.regional[$.app.lang];
-
-				monthName = (rData) ? rData.monthNamesShort[month] : this.getMonthName(month).substring(0, 3);
-
-			    return ($.app.lang === "en" ? monthName + '. ' + date.getDate() + ', ' : date.getDate() + ' ' + monthName.toLowerCase() + '. ') + date.getFullYear();
+			if(typeof format == 'undefined') {
+				format = 'long';
 			}
 
-			if($.app.debug)
+			if(format == 'input') {
+				return moment(date).format('YYYY-MM-DD');
+			}
+			else if(format == 'long') {
+				return moment(date).format('LL');
+			}
+			else if(format == 'longtime') {
+				return moment(date).format('LLL');
+			}
+			else if(format == 'short') {
+				return $.app.lang === "en" ? moment(date).format('MMMM D') : moment(date).format('D MMMM');
+			}
+			else if(format == 'longabbrmonth') {
+				return moment(date).format('ll');
+			}
+			else if(format == 'time') {
+				var timeformat = 'LT';
+
+				if($.isPlainObject($.app.config) && typeof $.app.config.time_format === "string") {
+					timeformat = $.app.config.time_format === "24h" ? "HH:mm" : "hh:mm A";
+				}
+				return moment(date).format(timeformat);
+			}
+			else if(format == 'dashboard') {
+				return $.app.lang === "en" ? moment(date).format('dddd, MMMM D') : moment(date).format('dddd, D MMMM');
+			}
+			if($.app.debug) {
 				console.debug('Unknown date format "' + format + '"');
+			}
 			return '';
+
 		},
 
 		getMonthName: function(month) {
+
 			if(typeof month == 'undefined' && arguments.length === 0) {
-				month = (new Date()).getMonth();
+				month = moment().month();
 			}
 
-			switch (month) {
-				case 0:
-					return $.app._('JANUARY');
-				case 1:
-					return $.app._('FEBRUARY');
-				case 2:
-					return $.app._('MARCH');
-				case 3:
-					return $.app._('APRIL');
-				case 4:
-					return $.app._('MAY');
-				case 5:
-					return $.app._('JUNE');
-				case 6:
-					return $.app._('JULY');
-				case 7:
-					return $.app._('AUGUST');
-				case 8:
-					return $.app._('SEPTEMBER');
-				case 9:
-					return $.app._('OCTOBER');
-				case 10:
-					return $.app._('NOVEMBER');
-				case 11:
-					return $.app._('DECEMBER');
-				default:
-					$.app._throw('Unknown month "'+month+'"');
-					break;
-			}
+			var returnValue = moment.months(month);
+
+			if($.isArray(returnValue))
+				$.app._throw('Unknown month "'+month+'"');
+			else
+				return returnValue;
+
 		},
 
-		getAge : function(date, now) {
+		getAge: function(date, now) {
 			date = this.parse(date);
 
-			if(date) {
-				if(now === undefined){
-					now = new Date();
-				}
-
-				var age = now.getFullYear() - date.getFullYear();
-
-				if((now.getMonth() < date.getMonth()) || (now.getMonth() == date.getMonth() && now.getDate() < date.getDate()))
-					age--;
-
-				date = null;
-
-				return age;
-			}
-			else
-				return 0;
+			return parseInt(moment(now).diff(date, 'years'));
 		},
 
 		/**
@@ -3217,8 +3187,7 @@ var app = {
 			age = parseInt(age);
 			if(!age) return '';
 
-			var now = new Date();
-			return (now.getFullYear() - age) + '-01-01';
+			return moment().subtract(age, 'years').startOf('year').format('YYYY-MM-DD');
 		},
 
 		getInsuranceAge : function(date) {
@@ -3258,8 +3227,10 @@ var app = {
 
 		getYear : function(date) {
 			date = this.parse(date);
-			if(date)
-				return date.getFullYear();
+
+			if(date) {
+				return moment(date).year();
+			}
 			else
 				return 0;
 		}

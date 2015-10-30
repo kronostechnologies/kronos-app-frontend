@@ -19,7 +19,8 @@
   "scripturl": true,
   "globals": {
     "console": true,
-    "google": true
+    "google": true,
+    "moment": true
   }
 }
 

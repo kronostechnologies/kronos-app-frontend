@@ -31,7 +31,8 @@
 				progressBarConfig : {},
 				validateFileName : function(){return true;},
 				passedInput: false,
-				callbacks: defaultCallbacks
+				callbacks: defaultCallbacks,
+				data : {} // Additionnal data appended to the post request request
 			};
 
 			this.construct = function(config) {
@@ -121,7 +122,16 @@
 						var apcInputId = 'jApcProgress' + id;
 						var form = $('<form  action="" method="POST" name="' + formId + '" id="' + formId + '" enctype="multipart/form-data"></form>');
 						$('<input id="' + apcInputId + '" name="APC_UPLOAD_PROGRESS" value="' + id + '"></input>').appendTo(form);
-							var oldElement = $('#' + fileElementId);
+
+						if(typeof config.data == 'object'){
+							for (var key in config.data) {
+								if (config.data.hasOwnProperty(key)) {
+									$('<input></input>').attr('name', key).val(config.data[key]).appendTo(form);
+								}
+							}
+						}
+
+						var oldElement = $('#' + fileElementId);
 						var newElement = $(oldElement).clone();
 						$(oldElement).attr('id', fileId);
 						$(oldElement).before(newElement);
@@ -321,7 +331,7 @@
 				var t = this;
 				var done = false;
 				
-				$.get("index.php?k=" + $.app.SESSION_KEY + "&pc=" + $.app.PAGE_CRUMB + "&apcStat&apcUID=" + progress_key, function(data) {
+				$.get("index.php?k=" + $.app.SESSION_KEY + "&apcStat&apcUID=" + progress_key, function(data) {
 					if (!data)
 						return;
 

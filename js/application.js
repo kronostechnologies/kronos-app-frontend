@@ -16,7 +16,6 @@ var app = {
 	IMG_PATH: '/',
 	VIRTUALPATH: '/',
 	SESSION_KEY: false,
-	PAGE_CRUMB: false,
 
 	// Hash management
 	_is_observing_hash : false,
@@ -677,8 +676,10 @@ var app = {
 		this.IMG_PATH = config.IMG_PATH;
 		this.VIRTUALPATH = config.VIRTUALPATH;
 		this.SESSION_KEY = config.SESSION_KEY;
-		this.PAGE_CRUMB = config.pc;
 		this.replaced_session_key = false;
+
+		this._xsrf_cookie_name = config.xsrf_cookie_name;
+		this._xsrf_header_name = config.xsrf_header_name;
 
 		this.checkStoredSession();
 
@@ -709,6 +710,53 @@ var app = {
 
 	getApplicationVersion : function() {
 		return this._application_version;
+	},
+
+	/**
+	 * Get current XSRF cookie value
+	 * @returns {*}
+	 */
+	getXSRFToken : function() {
+		if(this._xsrf_cookie_name){
+			var cookie_value = $.cookie(this._xsrf_cookie_name);
+			if(typeof cookie_value != 'undefined'){
+				return cookie_value;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+	},
+
+	/**
+	 * Get XSRF headers to append to ajax requests
+	 * @returns {{}}
+	 */
+	getXSRFHeaders : function() {
+		var self = this;
+		var headers = {};
+		var xsrf_token = self.getXSRFToken();
+		if(self._xsrf_header_name){
+			headers[self._xsrf_header_name] = xsrf_token;
+		}
+		return headers;
+	},
+
+	/**
+	 * Get XSRF data to append to a post request (ex: in ajaxUploader)
+	 * @returns {{}}
+	 */
+	getXSRFData : function() {
+		var self = this;
+		var data = {};
+		var xsrf_token = self.getXSRFToken();
+		if(self._xsrf_cookie_name){
+			data[self._xsrf_cookie_name] = xsrf_token;
+		}
+		return data;
 	},
 
 	setUserConfig : function(user_config){
@@ -1354,7 +1402,6 @@ var app = {
 		
 		
 		try {
-			this.PAGE_CRUMB = data.params.pc;
 
 			// Application version changed server side, we have to reload the application.
 			if (this.getApplicationVersion() != data.version) {
@@ -2879,7 +2926,7 @@ var app = {
 		if(button)
 			$(button).prop('disabled', true);
 
-		var t = this;
+		var self = this;
 
 		if(paramsString.length > 0) {
 			if(paramsString[0] != '&') {
@@ -2889,14 +2936,14 @@ var app = {
 
 		// Le bloc ci-dessous devrait/pourrait être remplacer par un call à getXHRRequest //
 		var xhrRequest = $.ajax({
-			url:'index.php?k=' + t.SESSION_KEY + '&view=' + view + '&pc=' + $.app.PAGE_CRUMB + '&cmd=' + cmd + paramsString ,
+			url:'index.php?k=' + self.SESSION_KEY + '&view=' + view + '&cmd=' + cmd + paramsString ,
 			type : 'GET',
 			dataType:'json',
-
+			headers: self.getXSRFHeaders(),
 			success: function(response) {
 				if(!skipOverlayHandling){
-					t.hideOverlay();
-					t._hideLoading();
+					self.hideOverlay();
+					self._hideLoading();
 				}
 
 				if(button)
@@ -2927,8 +2974,8 @@ var app = {
 			},
 			error: function(xhr, status, error) {
 				if(!skipOverlayHandling) {
-					t.hideOverlay();
-					t._hideLoading();
+					self.hideOverlay();
+					self._hideLoading();
 				}
 
 				if(status == 'abort' || !$.app.validateXHR(xhr)){
@@ -2951,17 +2998,17 @@ var app = {
 			}
 		});
 
-		t.registerXHR(xhrRequest);
+		self.registerXHR(xhrRequest);
 		xhrRequest.done(function(data, textStatus, jqXHR) {
-			t.unregisterXHR(jqXHR);
+			self.unregisterXHR(jqXHR);
 		}).fail(function(jqXHR) {
-			t.unregisterXHR(jqXHR);
+			self.unregisterXHR(jqXHR);
 		});
 
 		if(loading) {
 			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
 			this._loadingTimeout = setTimeout(function() {
-				t._showLoading();
+				self._showLoading();
 			}, this._loadingDelay);
 		}
 
@@ -2969,7 +3016,7 @@ var app = {
 	},
 
 	post : function(view, cmd, paramsString, postString, callback, loading, errorCallback, button) {
-		var t = this;
+		var self = this;
 
 		if(button)
 			$(button).prop('disabled', true);
@@ -2981,14 +3028,15 @@ var app = {
 		}
 
 		var xhrRequest = $.ajax({
-			url:'index.php?k=' + t.SESSION_KEY + '&view=' + view + '&pc=' + $.app.PAGE_CRUMB + '&cmd=' + cmd + paramsString ,
+			url:'index.php?k=' + self.SESSION_KEY + '&view=' + view + '&cmd=' + cmd + paramsString ,
 			type: 'POST',
 			data: postString,
 			dataType:'json',
+			headers: self.getXSRFHeaders(),
 			success: function(response) {
 				if(loading) {
-					t.hideOverlay();
-					t._hideLoading();
+					self.hideOverlay();
+					self._hideLoading();
 				}
 
 				if(button)
@@ -3018,8 +3066,8 @@ var app = {
 				}
 			},
 			error: function(xhr, status, error) {
-				t.hideOverlay();
-				t._hideLoading();
+				self.hideOverlay();
+				self._hideLoading();
 
 				if(status == 'abort' || !$.app.validateXHR(xhr)){
 					return false;
@@ -3040,21 +3088,21 @@ var app = {
 					$.app.showError();
 			},
 			ajaxStop: function(){
-				t.ajaxQueryLoading = false;
+				self.ajaxQueryLoading = false;
 			}
 		});
 
-		t.registerXHR(xhrRequest);
+		self.registerXHR(xhrRequest);
 		xhrRequest.done(function(data, textStatus, jqXHR) {
-			t.unregisterXHR(jqXHR);
+			self.unregisterXHR(jqXHR);
 		}).fail(function(jqXHR) {
-			t.unregisterXHR(jqXHR);
+			self.unregisterXHR(jqXHR);
 		});
 
 		if(loading) {
 			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
 			this._loadingTimeout = setTimeout(function() {
-				t._showLoading();
+				self._showLoading();
 			}, this._loadingDelay);
 		}
 
@@ -3505,15 +3553,14 @@ var app = {
 	isOpera : function() {
 		return navigator.appName == 'Opera';
 	},
-	
-	_getApplicationSessionCookieName : function() {
-		return 'KRONOS_SESSID';
-	},
-	
+
 	checkStoredSession : function() {
+		var self = this;
 		if(this.canUseSessionStorage()) {
-			var cookie_name = this._getApplicationSessionCookieName();
-			var cookie_value = $.cookie(cookie_name);
+			var xsrf_token = self.getXSRFToken();
+			if(!xsrf_token || ! self._xsrf_cookie_name){
+				throw this._throw('Cannot check stored session without XSRF Token');
+			}
 			
 			if(window.opener) {
 				if(sessionStorage.getItem('window-name') != window.name) {
@@ -3522,18 +3569,18 @@ var app = {
 					}
 					
 					sessionStorage.clear();
-					sessionStorage.setItem(cookie_name, cookie_value);
+					sessionStorage.setItem(self._xsrf_cookie_name, xsrf_token);
 				}
 			}
 			
-			var stored_cookie = sessionStorage.getItem(cookie_name);
-			if(!stored_cookie || stored_cookie != cookie_value) {
+			var stored_token = sessionStorage.getItem(self._xsrf_cookie_name);
+			if(!stored_token || stored_token != xsrf_token) {
 				if(this.debug) {
 					console.log('Session cookie changed, clearing stored session');
 				}
 
 				sessionStorage.clear();
-				sessionStorage.setItem(cookie_name, cookie_value);
+				sessionStorage.setItem(self._xsrf_cookie_name, xsrf_token);
 			}
 			
 			if(!sessionStorage.getItem('window-name')) {
@@ -3742,7 +3789,6 @@ var app = {
                 params.view = this.view;
                 params.cmd = this.command;
                 params.k = $.app.SESSION_KEY;
-                params.pc = $.app.PAGE_CRUMB;
 
                 if(this.handler !== '') {
                     params.handler = this.handler;
@@ -4490,10 +4536,11 @@ EditView.prototype = {
 		window.onbeforeunload = function (e) { return; };
 
 		$.ajax({
-			url:'index.php?k=' + $.app.SESSION_KEY + '&view=' + this._view + '&pc=' + $.app.PAGE_CRUMB + '&cmd=save&id=' + this._id+params,
+			url:'index.php?k=' + $.app.SESSION_KEY + '&view=' + this._view + '&cmd=save&id=' + this._id+params,
 			type: 'POST',
 			data: this._saveBuildPost(),
 			dataType:'json',
+			headers: $.app.getXSRFHeaders(),
 			success: function(data) {
 
 				if(!data) data = {};

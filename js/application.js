@@ -1347,6 +1347,7 @@ var app = {
 				context : $.app.getContext()
 			},
 			dataType:'json',
+			headers: $.app.getXSRFHeaders(),
 			success: function(response) {
 				t.view_fetching = false;
 				t._hideLoading();
@@ -2318,6 +2319,7 @@ var app = {
 					type: 'POST',
 					data: postString,
 					dataType:'json',
+					headers: $.app.getXSRFHeaders(),
 					success: function(data) {
 
 						if(data.status && data.status == 'error') {
@@ -2403,6 +2405,7 @@ var app = {
 				type: 'POST',
 				data: postString,
 				dataType:'json',
+				headers: $.app.getXSRFHeaders(),
 				success: function(data) {
 					$('#ajax_file_'+ div_number).remove();
 					$('#ajax_file_remove_'+ div_number).remove();
@@ -2421,6 +2424,7 @@ var app = {
 				type: 'POST',
 				data: '&fld=' + encodeURIComponent(folder),
 				dataType:'json',
+				headers: $.app.getXSRFHeaders(),
 				success: function(data) {
 					return true;
 				}

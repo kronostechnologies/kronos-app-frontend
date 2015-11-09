@@ -2769,7 +2769,7 @@ var app = {
 			return true;
 		}
 
-		if(xhr.status == 401) {
+		if(xhr.status == 401 || ($.cookie('SMSESSION') === 'LOGGEDOFF')) {
 			$.app.showSessionExpiredError(xhr.responseJSON.view);
 			return false;
 		}

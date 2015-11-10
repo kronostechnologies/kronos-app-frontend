@@ -1253,6 +1253,10 @@ var app = {
 
 		var t = this;
 
+		if(!$.app.checkExpiredSiteminderSession()){
+			return false;
+		}
+
 		t._hideLoading();
 		t.abortOngoingXHR();
 
@@ -2155,6 +2159,19 @@ var app = {
 		});
 	},
 
+	/**
+	 * Check if Siteminder Session is expired.  It must be done before any xhr requests.
+	 * @param view
+	 * @returns {boolean}
+	 */
+	checkExpiredSiteminderSession: function() {
+		if(($.cookie('SMSESSION') === 'LOGGEDOFF')) {
+			this.showSessionExpiredError(this.VIRTUALPATH);
+			return false;
+		}
+		return true;
+	},
+
 	getShowConfirmationHTML: function(title, message) {
 		return '<div class="modal-dialog"><h2>'+title+'</h2>\
 							<p>'+message+'</p>\
@@ -2202,6 +2219,10 @@ var app = {
 	showQuestionCommentDialog : function(comment_type){
 
 		var t = this;
+
+		if(!$.app.checkExpiredSiteminderSession()){
+			return false;
+		}
 
 		var content = '<h2>'+$.app._('QUESTION_COMMENT_SUGGESTION')+'</h2>\
 		<div class="header_line"></div>\
@@ -2347,6 +2368,11 @@ var app = {
 		this.QCS_uploader.push(generateQCSAjaxUploader());
 
 		function removeQCSAjaxFile(folder, filename, div_number){
+
+			if(!$.app.checkExpiredSiteminderSession()){
+				return false;
+			}
+
 			var postString = '&file=' + encodeURIComponent(filename) +
 							 '&fld=' + encodeURIComponent(folder);
 
@@ -2367,6 +2393,11 @@ var app = {
 		}
 
 		function removeQCSAjaxFolder(folder){
+
+			if(!$.app.checkExpiredSiteminderSession()){
+				return false;
+			}
+
 			t.tmp_dir = '';
 			$.ajax({
 				url:'index.php?k=' + t.SESSION_KEY + '&removeQCSAjaxFolder',
@@ -2784,6 +2815,10 @@ var app = {
 	getXHRRequest : function(url, successCallback, loading, errorCallback, button, skipOverlayHandling) {
 		var t = this;
 
+		if(!$.app.checkExpiredSiteminderSession()){
+			return false;
+		}
+
 		var xhrRequest = $.ajax({
 			url: url,
 			type : 'GET',
@@ -2871,6 +2906,11 @@ var app = {
 	},
 
 	get : function(view, cmd, paramsString, callback, loading, errorCallback, button, skipOverlayHandling) {
+
+		if(!this.checkExpiredSiteminderSession()){
+			return false;
+		}
+
 		if(!loading && !skipOverlayHandling) {
 			this.showOverlay();
 		}
@@ -2969,6 +3009,10 @@ var app = {
 
 	post : function(view, cmd, paramsString, postString, callback, loading, errorCallback, button) {
 		var t = this;
+
+		if(!this.checkExpiredSiteminderSession()){
+			return false;
+		}
 
 		if(button)
 			$(button).prop('disabled', true);
@@ -4458,7 +4502,11 @@ EditView.prototype = {
 	},
 
 	save : function(hash, success_callback, error_callback, stay) {
-		
+
+		if(!$.app.checkExpiredSiteminderSession()){
+			return false;
+		}
+
 		if(!this.validate()) {
             this._onValidateFail();
             return false;

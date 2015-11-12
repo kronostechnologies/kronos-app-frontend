@@ -67,9 +67,11 @@ module.exports = function(grunt) {
     'uglify'
   ]);
 
-  grunt.registerTask('release', [
-    'default',
-    'bump',
-  ]);
+
+  grunt.registerTask('release', 'Release', function(versionType){
+    grunt.task.run('default');
+    grunt.task.run('bump:' + versionType);
+  });
+
 
 };

@@ -2204,18 +2204,27 @@ var app = {
 		});
 	},
 
-	/**
-	 * Check if Siteminder Session is expired.  It must be done before any xhr requests.
-	 * @param view
-	 * @returns {boolean}
-	 */
-	checkExpiredSiteminderSession: function() {
-		if(($.cookie('SMSESSION') === 'LOGGEDOFF')) {
-			this.showSessionExpiredError(this.VIRTUALPATH);
-			return false;
-		}
-		return true;
+	getShowXHRNetworkError: function() {
+		return '<div class="modal-dialog"><h2>'+$.app._('XHR_NETWORK_ERROR_TITLE')+'</h2>\
+				<p>\
+					<strong>'+$.app._('XHR_NETWORK_ERROR_BODY')+'</strong>\
+					<br />\
+				</p>\
+				<p class="submit">\
+					<input type="submit" id="hook_xhr_network_error_close" value="'+$.app._('OK')+'" />\
+				</p>\
+			</div>';
 	},
+
+	showXHRNetworkErrorError: function(location) {
+		location = location || '/?logout';
+		$.app.showModalDialog($.app.getShowXHRNetworkError(), 'fast', function() {
+			$('#hook_xhr_network_error_close').safeClick(function() {
+				document.location = location;
+			});
+		});
+	},
+
 
 	getShowConfirmationHTML: function(title, message) {
 		return '<div class="modal-dialog"><h2>'+title+'</h2>\
@@ -2840,13 +2849,21 @@ var app = {
 	 *
 	 */
 	validateXHR : function(xhr){
+		var self = this;
 
 		if(!xhr || typeof xhr === 'undefined' || typeof xhr.getResponseHeader !== 'function' || typeof xhr.getAllResponseHeaders !== 'function'){
 			return true;
 		}
 
-		if(xhr.status == 401 || ($.cookie('SMSESSION') === 'LOGGEDOFF')) {
-			$.app.showSessionExpiredError(xhr.responseJSON ? xhr.responseJSON.view : false);
+		if(xhr.status ===  0){
+			// Probably due tu a CORS error caused by a redirection to Siteminder sso login page.
+			// Could also be caused by a sever network or dns error.
+			self.showXHRNetworkErrorError(xhr.responseJSON ? xhr.responseJSON.view : false);
+			return false;
+		}
+
+		if(xhr.status == 401) {
+			self.showSessionExpiredError(xhr.responseJSON ? xhr.responseJSON.view : false);
 			return false;
 		}
 		// Does not trigger any error handler if the page is reloading via user refresh

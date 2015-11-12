@@ -2196,7 +2196,8 @@ var app = {
 	},
 
 	showSessionExpiredError: function(location) {
-		location = location || '/?logout';
+		var self = this;
+		location = location || self.VIRTUALPATH || '/?logout';
 		$.app.showModalDialog($.app.getShowSessionExpiredError(), 'fast', function() {
 			$('#hook_session_expired_error_close').safeClick(function() {
 				document.location = location;
@@ -2217,8 +2218,9 @@ var app = {
 	},
 
 	showXHRNetworkErrorError: function(location) {
-		location = location || '/?logout';
-		$.app.showModalDialog($.app.getShowXHRNetworkError(), 'fast', function() {
+		var self = this;
+		location = location || self.VIRTUALPATH || '/?logout';
+		self.showModalDialog(self.getShowXHRNetworkError(), 'fast', function() {
 			$('#hook_xhr_network_error_close').safeClick(function() {
 				document.location = location;
 			});

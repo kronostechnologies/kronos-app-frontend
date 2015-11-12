@@ -1253,10 +1253,6 @@ var app = {
 
 		var t = this;
 
-		if(!$.app.checkExpiredSiteminderSession()){
-			return false;
-		}
-
 		t._hideLoading();
 		t.abortOngoingXHR();
 
@@ -2220,10 +2216,6 @@ var app = {
 
 		var t = this;
 
-		if(!$.app.checkExpiredSiteminderSession()){
-			return false;
-		}
-
 		var content = '<h2>'+$.app._('QUESTION_COMMENT_SUGGESTION')+'</h2>\
 		<div class="header_line"></div>\
 		<div id="hook_question_comment_form">\
@@ -2358,7 +2350,7 @@ var app = {
 								$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
 							}
 						},
-						error: function (data, status, e){
+						error: function (xhr, status, error){
 							console.debug('Error uploading attachment.');
 							$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
 						}
@@ -2368,10 +2360,6 @@ var app = {
 		this.QCS_uploader.push(generateQCSAjaxUploader());
 
 		function removeQCSAjaxFile(folder, filename, div_number){
-
-			if(!$.app.checkExpiredSiteminderSession()){
-				return false;
-			}
 
 			var postString = '&file=' + encodeURIComponent(filename) +
 							 '&fld=' + encodeURIComponent(folder);
@@ -2386,17 +2374,16 @@ var app = {
 					$('#ajax_file_remove_'+ div_number).remove();
 					return true;
 				},
-				error: function (data, status, e){
+				error: function (xhr, status, error){
+					if(status == 'abort' || !$.app.validateXHR(xhr)){
+						return false;
+					}
 					console.debug('Error deleting attachment.');
 				}
 			});
 		}
 
 		function removeQCSAjaxFolder(folder){
-
-			if(!$.app.checkExpiredSiteminderSession()){
-				return false;
-			}
 
 			t.tmp_dir = '';
 			$.ajax({
@@ -2406,6 +2393,11 @@ var app = {
 				dataType:'json',
 				success: function(data) {
 					return true;
+				},
+				error: function (xhr, status, error){
+					if(status == 'abort' || !$.app.validateXHR(xhr)){
+						return false;
+					}
 				}
 			});
 		}
@@ -2796,12 +2788,13 @@ var app = {
 	 *
 	 */
 	validateXHR : function(xhr){
+
 		if(!xhr || typeof xhr === 'undefined' || typeof xhr.getResponseHeader !== 'function' || typeof xhr.getAllResponseHeaders !== 'function'){
 			return true;
 		}
 
 		if(xhr.status == 401 || ($.cookie('SMSESSION') === 'LOGGEDOFF')) {
-			$.app.showSessionExpiredError(xhr.responseJSON.view);
+			$.app.showSessionExpiredError(xhr.responseJSON ? xhr.responseJSON.view : false);
 			return false;
 		}
 		// Does not trigger any error handler if the page is reloading via user refresh
@@ -2814,10 +2807,6 @@ var app = {
 
 	getXHRRequest : function(url, successCallback, loading, errorCallback, button, skipOverlayHandling) {
 		var t = this;
-
-		if(!$.app.checkExpiredSiteminderSession()){
-			return false;
-		}
 
 		var xhrRequest = $.ajax({
 			url: url,
@@ -2906,10 +2895,6 @@ var app = {
 	},
 
 	get : function(view, cmd, paramsString, callback, loading, errorCallback, button, skipOverlayHandling) {
-
-		if(!this.checkExpiredSiteminderSession()){
-			return false;
-		}
 
 		if(!loading && !skipOverlayHandling) {
 			this.showOverlay();
@@ -3009,10 +2994,6 @@ var app = {
 
 	post : function(view, cmd, paramsString, postString, callback, loading, errorCallback, button) {
 		var t = this;
-
-		if(!this.checkExpiredSiteminderSession()){
-			return false;
-		}
 
 		if(button)
 			$(button).prop('disabled', true);
@@ -4502,10 +4483,6 @@ EditView.prototype = {
 	},
 
 	save : function(hash, success_callback, error_callback, stay) {
-
-		if(!$.app.checkExpiredSiteminderSession()){
-			return false;
-		}
 
 		if(!this.validate()) {
             this._onValidateFail();

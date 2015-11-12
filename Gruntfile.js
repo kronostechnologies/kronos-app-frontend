@@ -69,6 +69,9 @@ module.exports = function(grunt) {
 
 
   grunt.registerTask('release', 'Release', function(versionType){
+    if(!versionType){
+      versionType='patch';
+    }
     grunt.task.run('default');
     grunt.task.run('bump:' + versionType);
   });

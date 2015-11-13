@@ -3272,6 +3272,7 @@ var app = {
 
 		getAge: function(date, now) {
 			date = this.parse(date);
+			now = this.parse(now) || new Date();
 
 			return parseInt(moment(now).diff(date, 'years'));
 		},

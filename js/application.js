@@ -140,14 +140,14 @@ var app = {
 
 
 		//Add custom header and handling to all ajax call to catch logout.
-		$('<div></div>')
-			.ajaxSend(function(e, xhr, settings, exception) {
-				if(xhr && typeof xhr != "undefined" && typeof xhr.setRequestHeader == 'function' ) {
-					xhr.setRequestHeader('X-Kronos-Ajax', 1);
+		$(document)
+			.ajaxSend(function(event, jqXHR, settings, exception) {
+				if(jqXHR && typeof jqXHR != "undefined" && typeof jqXHR.setRequestHeader == 'function' ) {
+					jqXHR.setRequestHeader('X-Kronos-Ajax', 1);
 				}
 			})
-			.ajaxError(function(e, xhr, settings, exception) {
-				if(!$.app.validateXHR(xhr)){
+			.ajaxError(function(event, jqXHR, settings, exception) {
+				if(!$.app.validateXHR(jqXHR)){
 					return false;
 				}
 			});
@@ -884,6 +884,8 @@ var app = {
 			this._sendErrors();
 		}
 
+		this.abortOngoingXHR();
+
 		return; // Simply quit page. Return false or true for standard confirmation page, or return a question to the user for a custom dialog. IE does not support null. Simply return nothing.
 	},
 
@@ -1369,11 +1371,11 @@ var app = {
 				t._onLoadView(t._getViewObject(t.currentView), response.data, hiddenParams);
 				t._loadView(response.data, hiddenParams);
 			},
-			error: function(xhr, status, error) {
+			error: function(jqXHR, status, error) {
 				t.view_fetching = false;
 				t._hideLoading();
 
-				if(!$.app.validateXHR(xhr)){
+				if(!$.app.validateXHR(jqXHR)){
 					return false;
 				}
 
@@ -2359,8 +2361,8 @@ var app = {
 						return true;
 
 					},
-					error: function(xhr, status, error) {
-						if(!$.app.validateXHR(xhr)){
+					error: function(jqXHR, status, error) {
+						if(!$.app.validateXHR(jqXHR)){
 							$.app.hideModalDialog('fast');
 							return false;
 						}
@@ -2410,7 +2412,7 @@ var app = {
 								$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
 							}
 						},
-						error: function (xhr, status, error){
+						error: function (jqXHR, status, error){
 							console.debug('Error uploading attachment.');
 							$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
 						}
@@ -2435,8 +2437,8 @@ var app = {
 					$('#ajax_file_remove_'+ div_number).remove();
 					return true;
 				},
-				error: function (xhr, status, error){
-					if(status == 'abort' || !$.app.validateXHR(xhr)){
+				error: function (jqXHR, status, error){
+					if(!$.app.validateXHR(jqXHR)){
 						return false;
 					}
 					console.debug('Error deleting attachment.');
@@ -2456,8 +2458,8 @@ var app = {
 				success: function(data) {
 					return true;
 				},
-				error: function (xhr, status, error){
-					if(status == 'abort' || !$.app.validateXHR(xhr)){
+				error: function (jqXHR, status, error){
+					if(!$.app.validateXHR(jqXHR)){
 						return false;
 					}
 				}
@@ -2849,26 +2851,41 @@ var app = {
 	 * Used to detect login redirection during ajax errors.
 	 *
 	 */
-	validateXHR : function(xhr){
+	validateXHR : function(jqXHR){
 		var self = this;
 
-		if(!xhr || typeof xhr === 'undefined' || typeof xhr.getResponseHeader !== 'function' || typeof xhr.getAllResponseHeaders !== 'function'){
+		if(!jqXHR || typeof jqXHR === 'undefined'){
 			return true;
 		}
 
-		if(xhr.status ===  0){
-			// Probably due tu a CORS error caused by a redirection to Siteminder sso login page.
-			// Could also be caused by a sever network or dns error.
-			self.showXHRNetworkErrorError(xhr.responseJSON ? xhr.responseJSON.view : false);
+		if(jqXHR.statusText === 'abort'){
 			return false;
 		}
 
-		if(xhr.status == 401) {
-			self.showSessionExpiredError(xhr.responseJSON ? xhr.responseJSON.view : false);
+		if(jqXHR.status ===  0){
+			// $.app._beforeUnload calling $.app.abortOngoingXHR() may be trigerred after the request completion so we delay the check.
+			setTimeout(function(){
+
+				if(jqXHR.statusText === 'abort'){
+					return false;
+				}
+
+				// Probably due tu a CORS error caused by a redirection to Siteminder sso login page.
+				// Could also be caused by a sever network or dns error.
+				self.showXHRNetworkErrorError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
+
+				// Avoid double-check by ajaxError() and error callback
+				jqXHR.statusText = 'abort';
+			});
+
 			return false;
 		}
-		// Does not trigger any error handler if the page is reloading via user refresh
-		else if(!xhr.getAllResponseHeaders()){
+
+		if(jqXHR.status == 401) {
+			self.showSessionExpiredError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
+
+			// Avoid double-check by ajaxError() and error callback
+			jqXHR.statusText = 'abort';
 			return false;
 		}
 
@@ -2915,18 +2932,19 @@ var app = {
 					successCallback(data);
 				}
 			},
-			error: function(xhr, status, error) {
+			error: function(jqXHR, status, error) {
 				if(!skipOverlayHandling) {
 					t.hideOverlay();
 					t._hideLoading();
 				}
 
-				if(status == 'abort' || !$.app.validateXHR(xhr)){
-					return false;
+				if(button) {
+					$(button).prop('disabled', false);
 				}
 
-				if(button)
-					$(button).prop('disabled', false);
+				if(!$.app.validateXHR(jqXHR)){
+					return false;
+				}
 
 				if(this.debug) {
 					console.debug('AJAX query error');
@@ -3019,18 +3037,20 @@ var app = {
 					callback(data);
 				}
 			},
-			error: function(xhr, status, error) {
+			error: function(jqXHR, status, error) {
+
 				if(!skipOverlayHandling) {
 					self.hideOverlay();
 					self._hideLoading();
 				}
 
-				if(status == 'abort' || !$.app.validateXHR(xhr)){
-					return false;
+				if(button) {
+					$(button).prop('disabled', false);
 				}
 
-				if(button)
-					$(button).prop('disabled', false);
+				if(!$.app.validateXHR(jqXHR)){
+					return false;
+				}
 
 				if(this.debug) {
 					console.debug('AJAX query error');
@@ -3112,16 +3132,17 @@ var app = {
 					callback(data);
 				}
 			},
-			error: function(xhr, status, error) {
+			error: function(jqXHR, status, error) {
 				self.hideOverlay();
 				self._hideLoading();
 
-				if(status == 'abort' || !$.app.validateXHR(xhr)){
-					return false;
+				if(button) {
+					$(button).prop('disabled', false);
 				}
 
-				if(button)
-					$(button).prop('disabled', false);
+				if(!$.app.validateXHR(jqXHR)){
+					return false;
+				}
 
 				if(this.debug) {
 					console.debug('AJAX query error');
@@ -4429,6 +4450,7 @@ EditView.prototype = {
 			}
 
 			window.onbeforeunload = function(e) {
+				$.app._beforeUnload(e);
 				if(t._modified)
 					return $.app._('SAVE_CHANGES_MESSAGE');
 				else
@@ -4497,7 +4519,9 @@ EditView.prototype = {
 
 			$('#hook_do_not_save_changes').safeClick(function() {
 				$.app.hideModalDialog('normal', function() {
-					window.onbeforeunload = function (e) { return; };
+					window.onbeforeunload = function (e) {
+						return $.app._beforeUnload(e);
+					};
 
 					if(!t._canClose()) {
 						t._onCancelClose();
@@ -4581,7 +4605,9 @@ EditView.prototype = {
 
 		var params = this._onSave();
 
-		window.onbeforeunload = function (e) { return; };
+		window.onbeforeunload = function (e) {
+			return $.app._beforeUnload(e);
+		};
 
 		$.ajax({
 			url:'index.php?k=' + $.app.SESSION_KEY + '&view=' + this._view + '&cmd=save&id=' + this._id+params,
@@ -4632,8 +4658,8 @@ EditView.prototype = {
 
 				t._saveRedirect(hash, stay);
 			},
-			error: function(xhr, status, error) {
-				t._saveErrorHandler(xhr, status, error, error_callback);
+			error: function(jqXHR, status, error) {
+				t._saveErrorHandler(jqXHR, status, error, error_callback);
 			}
 		});
 
@@ -4649,21 +4675,22 @@ EditView.prototype = {
 		else $.app.goBack();
 	},
 
-	_saveErrorHandler: function(xhr, status, error, error_callback){
-		if(!$.app.validateXHR(xhr)){
-			return false;
-		}
-
-		if($.app.debug) { console.debug('error...'); }
+	_saveErrorHandler: function(jqXHR, status, error, error_callback){
 
 		$.app.hideOverlay();
 		$('input[type=submit]').prop('disabled', false);
+
+		if(!$.app.validateXHR(jqXHR)){
+			return false;
+		}
 
 		if(typeof error_callback == 'function') {
 			error_callback(false);
 			error_callback = null;
 		}
-		else { $.app.showError($.app._('SAVE_ERROR_OCCURED')); }
+		else {
+			$.app.showError($.app._('SAVE_ERROR_OCCURED'));
+		}
 	},
 
 	_saveBuildPost: function(){

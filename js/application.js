@@ -522,7 +522,6 @@ var app = {
 				.focus(function(e) {
 					target.next('.hint').fadeIn();
 				}).change(function(){
-					console.log($(target));
 					t.handleHintErrorChange.apply(target);
 				});
 

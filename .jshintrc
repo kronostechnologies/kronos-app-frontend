@@ -20,7 +20,8 @@
   "globals": {
     "console": true,
     "google": true,
-    "moment": true
+    "moment": true,
+    "Raven": false
   }
 }
 

@@ -676,6 +676,37 @@ var app = {
 			throw "No user info in application configuration";
 		}
 
+		if(config && config.sentry) {
+			var email, id, name;
+
+			if(config.VIRTUALPATH == '/crm/') {
+				email = config.globals.webuser_email;
+				id = config.globals.webuser;
+				name = config.globals.webuser_screen_name;
+			}
+			else {
+				email = config.user.email;
+				id = config.user.id;
+				name = config.user.name;
+			}
+
+			Raven.config(config.sentry).install();
+
+			Raven.setTagsContext({
+				version: config.application_version
+			});
+
+			Raven.setUserContext({
+				email: email,
+				id: id,
+				name: name
+			});
+
+			Raven.setExtraContext({
+				transaction: config.kronos_transaction_id,
+			});
+		}
+
 		this._configure(config);
 		this.setUserConfig(config['user']);
 

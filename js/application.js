@@ -690,7 +690,7 @@ var app = {
 				name = config.user.name;
 			}
 
-			Raven.config(config.sentry).install();
+			Raven.config('https://' + config.sentry.key + '@app.getsentry.com/' + config.sentry.project).install();
 
 			Raven.setTagsContext({
 				version: config.application_version

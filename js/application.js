@@ -137,21 +137,6 @@ var app = {
 			return Math.ceil((lastdate - firstdate) / 86400000 + 1);
 		};
 
-
-
-		//Add custom header and handling to all ajax call to catch logout.
-		$(document)
-			.ajaxSend(function(event, jqXHR, settings, exception) {
-				if(jqXHR && typeof jqXHR != "undefined" && typeof jqXHR.setRequestHeader == 'function' ) {
-					jqXHR.setRequestHeader('X-Kronos-Ajax', 1);
-				}
-			})
-			.ajaxError(function(event, jqXHR, settings, exception) {
-				if(!$.app.validateXHR(jqXHR)){
-					return false;
-				}
-			});
-
 		//Extends jquery
 		jQuery.fn.extend({
 			alternateText : function(value, alternate_value){
@@ -710,6 +695,7 @@ var app = {
 	getApplicationVersion : function() {
 		return this._application_version;
 	},
+
 
 	/**
 	 * Get current XSRF cookie value
@@ -2873,9 +2859,6 @@ var app = {
 				// Probably due tu a CORS error caused by a redirection to Siteminder sso login page.
 				// Could also be caused by a sever network or dns error.
 				self.showXHRNetworkErrorError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
-
-				// Avoid double-check by ajaxError() and error callback
-				jqXHR.statusText = 'abort';
 			});
 
 			return false;
@@ -2883,9 +2866,6 @@ var app = {
 
 		if(jqXHR.status == 401) {
 			self.showSessionExpiredError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
-
-			// Avoid double-check by ajaxError() and error callback
-			jqXHR.statusText = 'abort';
 			return false;
 		}
 

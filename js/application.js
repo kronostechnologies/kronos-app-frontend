@@ -677,19 +677,6 @@ var app = {
 		}
 
 		if(config && config.sentry) {
-			var email, id, name;
-
-			if(config.VIRTUALPATH == '/crm/') {
-				email = config.globals.webuser_email;
-				id = config.globals.webuser;
-				name = config.globals.webuser_screen_name;
-			}
-			else {
-				email = config.user.email;
-				id = config.user.id;
-				name = config.user.name;
-			}
-
 			Raven.config('https://' + config.sentry.key + '@app.getsentry.com/' + config.sentry.project).install();
 
 			Raven.setTagsContext({
@@ -697,9 +684,9 @@ var app = {
 			});
 
 			Raven.setUserContext({
-				email: email,
-				id: id,
-				name: name
+				email: config.user.email,
+				id: config.user.id,
+				name: config.user.name
 			});
 
 			Raven.setExtraContext({

@@ -1518,7 +1518,7 @@ var app = {
 		}
 
 		var object = this._getViewObject(this.currentView);
-
+		window.view = object;
 		if(object) {
 			object.init(location.hash);
 		}

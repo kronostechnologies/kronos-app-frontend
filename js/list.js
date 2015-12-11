@@ -405,7 +405,7 @@
 					currentHeader.html(content);
 				}
 				else {
-					currentHeader.text($.app.htmlEntity(this.headers[i]));
+					currentHeader.text(this.headers[i]);
 				}
 			}
 		},

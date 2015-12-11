@@ -1349,7 +1349,7 @@ var app = {
 						t._showNavigationError();
 					}
 					else { // Unknown error
-						t._showFatalError('An unknwon error was sent from server while fetching view data "'+view+'" ('+info.error+')');
+						t._showFatalError('An unknown error was sent from server while fetching view data "'+view+'" ('+info.error+')');
 					}
 
 					return false;

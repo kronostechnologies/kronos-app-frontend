@@ -405,7 +405,7 @@
 					currentHeader.html(content);
 				}
 				else {
-					currentHeader.text($.app.htmlEntity(this.headers[i]));
+					currentHeader.text(this.headers[i]);
 				}
 			}
 		},
@@ -575,7 +575,7 @@
 				}
 
 				if(this.headers[i].escape !== false) {
-					td.html($.app.htmlEntity(formatted_value));
+					td.text(formatted_value);
 				}
 				else if((typeof formatted_value) == 'string') {
 					td.html(formatted_value);

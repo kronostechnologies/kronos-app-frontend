@@ -4013,7 +4013,11 @@ if (!Array.prototype.reduce)
 
 Function.prototype.method = function(name, func) {
   if (!this.prototype[name]) {
-	  this.prototype[name] = func;
+	  Object.defineProperty(this.prototype, name, {
+          enumerable: false,
+		  value: func
+	  });
+
 	  return this;
   }
 };
@@ -4023,11 +4027,11 @@ Array.method('sum', function()
 	return this.reduce( function(a, b){return a + b;}, 0 );
 });
 
-Array.prototype.extend = function(a)
+Array.method('extend', function(a)
 {
 	var t = this;
 	return a.map(function(e,i) {return t.hasOwnProperty(i) ? t[i] : e;});
-};
+});
 
 // Add ECMA262-5 Array methods if not supported natively
 //

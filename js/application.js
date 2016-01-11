@@ -586,6 +586,26 @@ var app = {
 				}
 			},
 
+			toggleDisabled: function(disabledVal, toggleClass) {
+
+				if (toggleClass === undefined) {
+					toggleClass = true;
+				}
+
+				if (disabledVal) {
+					this.attr('disabled', 'disabled');
+					if (toggleClass) {
+						this.addClass('disabled');
+					}
+				}
+				else {
+					this.removeAttr('disabled');
+					if (toggleClass) {
+						this.removeClass('disabled');
+					}
+				}
+			},
+
 			getClasses : function() {
 				var all_classes = [];
 				$(this).each(function() {

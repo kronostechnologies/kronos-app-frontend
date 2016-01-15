@@ -696,6 +696,24 @@ var app = {
 			throw "No user info in application configuration";
 		}
 
+		if(config && config.sentry) {
+			Raven.config('https://' + config.sentry.key + '@app.getsentry.com/' + config.sentry.project).install();
+
+			Raven.setTagsContext({
+				version: config.application_version
+			});
+
+			Raven.setUserContext({
+				email: config.user.email,
+				id: config.user.id,
+				name: config.user.name
+			});
+
+			Raven.setExtraContext({
+				transaction: config.kronos_transaction_id,
+			});
+		}
+
 		this._configure(config);
 		this.setUserConfig(config['user']);
 

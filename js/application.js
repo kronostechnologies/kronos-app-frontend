@@ -491,35 +491,41 @@ var app = {
 
 			hintError : function(text, width, dont_show) {
 				var blurFocusTarget;
-				var target = $(this);
-				var t = this;
+				var $this = $(this);
+
+				if($this.combobox && $this.combobox('instance') !== undefined) {
+					$this = $this.combobox('instance').input;
+					$this.data('isCombobox', true);
+				}
+
+				var target = $this;
+
 				if(target.data('blur-field')){
 					blurFocusTarget = $('#'+target.data('blur-field'));
 				}
 				else{
 					blurFocusTarget = target;
 				}
-				var hintedWrapperClasses = new Array('hinted');
+				var hintedWrapperClasses = ['hinted'];
 
-				if($(this).data('is-textbox')) {
-					if($(this).next().is('.hinted')){
-						target = $(this).next().find('.textboxlist');
+				if($this.data('is-textbox')) {
+					if($this.next().is('.hinted')){
+						target = $this.next().find('.textboxlist');
 					}
 					else {
-						target = $(this).next('.textboxlist');
+						target = $this.next('.textboxlist');
 					}
 					target.find('.textboxlist-bit-box-deletable').blur(function(e) {
 						target.next('.hint').fadeOut();
 					})
 					.focus(function(e) {
 						target.next('.hint').fadeIn();
-					}).change(function(){
-						console.log($(target));
-						t.handleHintErrorChange.apply(target);
+					}).change(function() {
+						$(target).handleHintErrorChange();
 					});
 				}
 
-				if($(this).data('is-textbox') || target.hasClass('textboxlist'))
+				if($this.data('is-textbox') || target.hasClass('textboxlist'))
 				{
 					hintedWrapperClasses.push('contain-textbox');
 					blurFocusTarget = target.find('.textboxlist-bit-editable-input');
@@ -538,7 +544,7 @@ var app = {
 				.focus(function(e) {
 					target.next('.hint').fadeIn();
 				}).change(function(){
-					t.handleHintErrorChange.apply(target);
+					$(target).handleHintErrorChange();
 				});
 
 				target.data('hint', target.next('.hint'));

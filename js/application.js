@@ -672,6 +672,15 @@ var app = {
 			$.app.showMessage($(this).text(), $.app._('AVAILABLE_SOON'));
 		});
 
+		$.ajaxSetup({
+			beforeSend: function(xhr) {
+				var headers = $.app.getXSRFHeaders();
+				_.each(headers, function(value, key){
+					xhr.setRequestHeader(key, value);
+				});
+			}
+		});
+
 		this._init();
 	},
 

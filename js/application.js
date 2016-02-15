@@ -681,7 +681,7 @@ var app = {
 		$.ajaxSetup({
 			beforeSend: function(xhr) {
 				var headers = $.app.getXSRFHeaders();
-				_.each(headers, function(value, key){
+				$.each(headers, function(key, value) {
 					xhr.setRequestHeader(key, value);
 				});
 			}

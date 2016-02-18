@@ -1,6 +1,6 @@
 {
   "name": "kronos-app-frontend",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Javascript application framework by Kronos Technologies",
   "main": "Gruntfile.js",
   "scripts": {

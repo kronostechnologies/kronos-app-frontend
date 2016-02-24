@@ -1438,6 +1438,7 @@ var app = {
 
 					return false;
 				}
+				t.eventEmitter.emit('loadView');
 				t._onLoadView(t._getViewObject(t.currentView), response.data, hiddenParams);
 				t._loadView(response.data, hiddenParams);
 			},

@@ -680,10 +680,12 @@ var app = {
 
 		$.ajaxSetup({
 			beforeSend: function(xhr) {
-				var headers = $.app.getXSRFHeaders();
-				$.each(headers, function(key, value) {
-					xhr.setRequestHeader(key, value);
-				});
+				if(!this.crossDomain) {
+					var headers = $.app.getXSRFHeaders();
+					$.each(headers, function (key, value) {
+						xhr.setRequestHeader(key, value);
+					});
+				}
 			}
 		});
 

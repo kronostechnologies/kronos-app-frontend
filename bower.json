@@ -19,6 +19,6 @@
     "jquery-migrate": "1.2.1",
     "jquery-ui": "1.11.4",
     "moment": "~2.10.6",
-    "raven-js": "~1.3.0"
+    "raven-js": "~2.2.0"
   }
 }

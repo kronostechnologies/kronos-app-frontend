@@ -46,7 +46,7 @@ var app = {
 	_messages : {},
 
 	// Validations
-	emailRegex : /^[a-zA-Z0-9-'+~_&\/]+(?:\.[a-zA-Z0-9-'+~_&\/]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/,
+	emailRegex : /^[a-zA-Z0-9!#$%&'*+\-/=?^_`{|}~]+(?:\.[a-zA-Z0-9!#$%&'*+\-/=?^_`{|}~]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/,
 	currencyRegex : /^[0-9.,\s]+$/,
 	percentageRegex : /^[0-9.,]+$/,
 

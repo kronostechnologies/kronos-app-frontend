@@ -1333,6 +1333,7 @@ var app = {
 	 * Utility function to parse the location hash.
 	 * Hash should look like this :
 	 * <view>&<param>=<value>&<param2>=<value2>&...
+	 * values must bu urlencoded
 	 */
 	parseHash : function(hash) {
 		var infos = {
@@ -1342,13 +1343,11 @@ var app = {
 
 		var splits = hash.split('&');
 		infos.view = splits.shift().substr(1);
-
-
 		for(var i = 0; i < splits.length; i++) {
 			var info = splits[i].split('=');
 			var param = info.shift();
 
-			infos.params[param] = info.join('='); // Just in case there was a '=' in the value
+			infos.params[param] = decodeURIComponent(info.join('=')); // Just in case there was a '=' in the value
 		}
 
 		return infos;

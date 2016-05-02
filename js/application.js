@@ -1333,7 +1333,7 @@ var app = {
 	 * Utility function to parse the location hash.
 	 * Hash should look like this :
 	 * <view>&<param>=<value>&<param2>=<value2>&...
-	 * values must bu urlencoded
+	 * values must be urlencoded
 	 */
 	parseHash : function(hash) {
 		var infos = {

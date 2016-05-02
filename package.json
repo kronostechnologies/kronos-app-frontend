@@ -6,9 +6,12 @@
   "scripts": {
     "test": "grunt"
   },
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kronostechnologies/kronos-app-frontend.git"
+  },
   "author": "",
-  "license": "",
+  "license": "LicenseRef-LICENSE",
   "devDependencies": {
     "bower": "~1.2.8",
     "grunt": "^0.4.5",

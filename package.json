@@ -13,15 +13,17 @@
   "author": "",
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-bump": "0.0.13",
-    "grunt-contrib-copy": "^0.5.0",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-uglify": "^0.11.1",
-    "grunt-kronos-release": "^0.3.8",
-    "grunt-neuter": "~0.5.0"
+    "grunt": "^1.0.1",
+    "grunt-bump": "0.8.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-uglify": "^1.0.1",
+    "grunt-conventional-changelog": "^6.1.0",
+    "grunt-kronos-release": "^1.1.0",
+    "grunt-git": "^1.0.0",
+    "grunt-neuter": "~0.6.0"
   },
   "dependencies": {
-    "matchdep": "~0.1.2"
+    "matchdep": "~1.0.1"
   }
 }

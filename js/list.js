@@ -321,6 +321,7 @@
 		subContextPrefix : 'sub',
 		ignoreLocaleEvent : false,
 		buildTable : function() {
+			var t = this;
 			var i;
 			var html = '<table' + ((this.tableClass) ? ' class="' + this.tableClass + '"' : '') + '>';
 			html += '<thead><tr>';
@@ -345,7 +346,6 @@
 				t.sortHeader($(this).data('sortField'));
 			};
 
-			var t = this;
 			for(i = 0; i < this.headers.length; i++) {
 				if($.isPlainObject(this.headers[i]) && this.headers[i].sortable) {
 					if(!this.headers[i].sortField){

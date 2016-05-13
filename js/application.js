@@ -2924,7 +2924,7 @@ var app = {
 	 * Used to detect login redirection during ajax errors.
 	 *
 	 */
-	validateXHR : function(jqXHR){
+	validateXHR : function(jqXHR, errorCallBack){
 		var self = this;
 
 		if(!jqXHR || typeof jqXHR === 'undefined'){
@@ -2952,6 +2952,10 @@ var app = {
 		}
 
 		if(jqXHR.status == 401) {
+			if(typeof errorCallback == 'function'){
+				errorCallback();
+			}
+			
 			self.showSessionExpiredError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
 			return false;
 		}
@@ -3009,7 +3013,7 @@ var app = {
 					$(button).prop('disabled', false);
 				}
 
-				if(!$.app.validateXHR(jqXHR)){
+				if(!$.app.validateXHR(jqXHR, errorCallback)){
 					return false;
 				}
 

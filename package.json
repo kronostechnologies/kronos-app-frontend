@@ -19,8 +19,6 @@
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-contrib-uglify": "^1.0.1",
     "grunt-conventional-changelog": "^6.1.0",
-    "grunt-kronos-release": "^1.1.0",
-    "grunt-git": "^1.0.0",
     "grunt-neuter": "~0.6.0"
   },
   "dependencies": {

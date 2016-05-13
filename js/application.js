@@ -2952,10 +2952,10 @@ var app = {
 		}
 
 		if(jqXHR.status == 401) {
-			if(typeof errorCallback == 'function'){
-				errorCallback();
+			if(typeof errorCallBack == 'function'){
+				errorCallBack();
 			}
-			
+
 			self.showSessionExpiredError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
 			return false;
 		}

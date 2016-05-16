@@ -2920,6 +2920,18 @@ var app = {
 
 	},
 
+	interpolate: function(message, context) {
+		var match;
+
+		if(context !== null && typeof context === 'object') {
+			while(match = /{([a-z0-9._]+)}/gi.exec(message)) {
+				message = message.replace(match[0], context[match[1]] || '');
+			}
+		}
+
+		return message;
+	},
+
 	/**
 	 * Used to detect login redirection during ajax errors.
 	 *

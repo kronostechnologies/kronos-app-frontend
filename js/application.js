@@ -46,7 +46,7 @@ var app = {
 	_messages : {},
 
 	// Validations
-	emailRegex : /^[a-zA-Z0-9-'+~_&\/]+(?:\.[a-zA-Z0-9-'+~_&\/]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/,
+	emailRegex : /^[a-zA-Z0-9!#$%&'*+\-/=?^_`{|}~]+(?:\.[a-zA-Z0-9!#$%&'*+\-/=?^_`{|}~]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/,
 	currencyRegex : /^[0-9.,\s]+$/,
 	percentageRegex : /^[0-9.,]+$/,
 
@@ -1333,6 +1333,7 @@ var app = {
 	 * Utility function to parse the location hash.
 	 * Hash should look like this :
 	 * <view>&<param>=<value>&<param2>=<value2>&...
+	 * values must be urlencoded
 	 */
 	parseHash : function(hash) {
 		var infos = {
@@ -1342,13 +1343,11 @@ var app = {
 
 		var splits = hash.split('&');
 		infos.view = splits.shift().substr(1);
-
-
 		for(var i = 0; i < splits.length; i++) {
 			var info = splits[i].split('=');
 			var param = info.shift();
 
-			infos.params[param] = info.join('='); // Just in case there was a '=' in the value
+			infos.params[param] = decodeURIComponent(info.join('=')); // Just in case there was a '=' in the value
 		}
 
 		return infos;
@@ -2919,6 +2918,18 @@ var app = {
 
 	    return str;
 
+	},
+
+	interpolate: function(message, context) {
+		var match;
+
+		if(context !== null && typeof context === 'object') {
+			while(match = /{([a-z0-9._]+)}/gi.exec(message)) {
+				message = message.replace(match[0], context[match[1]] || '');
+			}
+		}
+
+		return message;
 	},
 
 	/**

@@ -43,7 +43,7 @@ module.exports = function(grunt) {
       all: {
         src: ['Gruntfile.js', 'js/application.js', 'js/list.js', 'js/async-api-task.js'],
         options: {
-          jshintrc: true
+          jshintrc: '.jshintrc'
         }
       }
     },
@@ -60,11 +60,19 @@ module.exports = function(grunt) {
 
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-
-  grunt.registerTask('default', [
+  
+  grunt.registerTask('build', [
     'jshint',
     'copy',
     'uglify'
+  ]);
+  
+  grunt.registerTask('build-dev', [
+    'build'
+  ]);
+
+  grunt.registerTask('default', [
+    'build'
   ]);
 
 

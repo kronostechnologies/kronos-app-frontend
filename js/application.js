@@ -113,54 +113,15 @@ var app = {
 
 		Offline.options = {
 			checks: {xhr: {url: '?ping=true'}},
-			logout: true,
-			requests: false, // We do not want to remake request after reconnected
-			login: '/',
+			unauthorized: true,
+			signIn: '/',
+			modal: true,
+			requests: false // We do not want to remake request after reconnected
 		};
-
-		var checkOfflineInterval;
-		var window_focus = true;
-
-		var $offlineModal = $('<div class="offline-modal offline-modal-up">').appendTo(document.body);
-
-		var offlineIntervalCheck = function () {
-			clearInterval(checkOfflineInterval);
-			checkOfflineInterval = setInterval(function () {
-				if (window_focus) {
-					Offline.check();
-				}
-			}, 1000);
-		};
-
-		Offline.on('up', function () {
-			offlineIntervalCheck();
-			$offlineModal.addClass('offline-modal-up');
-			$offlineModal.removeClass('offline-modal-down');
-			$offlineModal.removeClass('offline-modal-logout');
-		});
-
-		Offline.on('down', function () {
-			clearInterval(checkOfflineInterval);
-			$offlineModal.removeClass('offline-modal-up');
-			$offlineModal.addClass('offline-modal-down');
-			$offlineModal.removeClass('offline-modal-logout');
-		});
-
-		Offline.on('logout', function () {
-			clearInterval(checkOfflineInterval);
-			$offlineModal.removeClass('offline-modal-up');
-			$offlineModal.removeClass('offline-modal-down');
-			$offlineModal.addClass('offline-modal-logout');
-		});
 
 		$(window).focus(function () {
 			Offline.check();
-			window_focus = true;
-		}).blur(function () {
-			window_focus = false;
 		});
-
-		offlineIntervalCheck();
 
 
 		this._iPad = (navigator.userAgent.match(/iPad/) == 'iPad');

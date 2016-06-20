@@ -20,6 +20,6 @@
     "jquery-ui": "1.11.4",
     "moment": "~2.10.6",
     "raven-js": "~2.2.0",
-    "offline": "^0.7.17"
+    "offline": "git@github.com:kronostechnologies/offline.git"
   }
 }

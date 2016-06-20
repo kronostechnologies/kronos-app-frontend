@@ -104,25 +104,64 @@ var app = {
 			}
 		}
 
-		$(document).ajaxStart(function(){t.ajaxQueryLoading = true;});
-		$(document).ajaxStop(function(){t.ajaxQueryLoading = false;});
-
-		// if the ping interval is defined, we had the ping query interval to the document.
-		if(this.pingInterval){
-			// Ping interval
-			setInterval(function(){
-							if(!t.ajaxQueryLoading){
-								t.get('CPanel/View', 'ping', '', function() {
-									console.debug('session is still alive');
-								}, false, function() {
-									console.debug('got an error while doing a ping ?');
+		$(document).ajaxStart(function() {
+			t.ajaxQueryLoading = true;
+		});
+		$(document).ajaxStop(function() {
+			t.ajaxQueryLoading = false;
 								});
-							}
-						},
-						this.pingInterval
 
-			);
-		}
+		Offline.options = {
+			checks: {xhr: {url: '?ping=true'}},
+			logout: true,
+			requests: false, // We do not want to remake request after reconnected
+			login: '/',
+		};
+
+		var checkOfflineInterval;
+		var window_focus = true;
+
+		var $offlineModal = $('<div class="offline-modal offline-modal-up">').appendTo(document.body);
+
+		var offlineIntervalCheck = function () {
+			clearInterval(checkOfflineInterval);
+			checkOfflineInterval = setInterval(function () {
+				if (window_focus) {
+					Offline.check();
+				}
+			}, 1000);
+		};
+
+		Offline.on('up', function () {
+			offlineIntervalCheck();
+			$offlineModal.addClass('offline-modal-up');
+			$offlineModal.removeClass('offline-modal-down');
+			$offlineModal.removeClass('offline-modal-logout');
+		});
+
+		Offline.on('down', function () {
+			clearInterval(checkOfflineInterval);
+			$offlineModal.removeClass('offline-modal-up');
+			$offlineModal.addClass('offline-modal-down');
+			$offlineModal.removeClass('offline-modal-logout');
+		});
+
+		Offline.on('logout', function () {
+			clearInterval(checkOfflineInterval);
+			$offlineModal.removeClass('offline-modal-up');
+			$offlineModal.removeClass('offline-modal-down');
+			$offlineModal.addClass('offline-modal-logout');
+		});
+
+		$(window).focus(function () {
+			Offline.check();
+			window_focus = true;
+		}).blur(function () {
+			window_focus = false;
+		});
+
+		offlineIntervalCheck();
+
 
 		this._iPad = (navigator.userAgent.match(/iPad/) == 'iPad');
 		this._iPod = (navigator.userAgent.match(/iPod/) == 'iPod');
@@ -2948,23 +2987,10 @@ var app = {
 		}
 
 		if(jqXHR.status ===  0){
-			// $.app._beforeUnload calling $.app.abortOngoingXHR() may be trigerred after the request completion so we delay the check.
-			setTimeout(function(){
-
-				if(jqXHR.statusText === 'abort'){
-					return false;
-				}
-
-				// Probably due tu a CORS error caused by a redirection to Siteminder sso login page.
-				// Could also be caused by a sever network or dns error.
-				self.showXHRNetworkErrorError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
-			});
-
 			return false;
 		}
 
 		if(jqXHR.status == 401) {
-			self.showSessionExpiredError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
 			return false;
 		}
 

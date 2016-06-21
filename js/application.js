@@ -139,6 +139,8 @@ var app = {
 			clearInterval(offlineCheckInterval);
 		});
 
+		offlineCheck();
+
 		$(window).focus(function () {
 			Offline.check();
 		});

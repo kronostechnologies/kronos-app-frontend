@@ -114,7 +114,6 @@ var app = {
 		Offline.options = {
 			checks: {xhr: {url: '?ping=true'}},
 			unauthorized: true,
-			signIn: '/',
 			modal: true,
 			requests: false // We do not want to remake request after reconnected
 		};
@@ -122,7 +121,6 @@ var app = {
 		$(window).focus(function () {
 			Offline.check();
 		});
-
 
 		this._iPad = (navigator.userAgent.match(/iPad/) == 'iPad');
 		this._iPod = (navigator.userAgent.match(/iPod/) == 'iPod');

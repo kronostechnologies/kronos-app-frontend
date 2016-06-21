@@ -118,6 +118,27 @@ var app = {
 			requests: false // We do not want to remake request after reconnected
 		};
 
+
+		var offlineCheckInterval;
+		var offlineCheck = function(){
+			clearInterval(offlineCheckInterval);
+			offlineCheckInterval = setInterval(function(){
+				Offline.check()
+			}, 5000)
+		};
+
+		Offline.on('up', function(){
+			offlineCheck();
+		});
+
+		Offline.on('down', function(){
+			clearInterval(offlineCheckInterval);
+		});
+
+		Offline.on('unauthorized', function(){
+			clearInterval(offlineCheckInterval);
+		});
+
 		$(window).focus(function () {
 			Offline.check();
 		});

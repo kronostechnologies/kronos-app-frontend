@@ -21,7 +21,8 @@
     "console": true,
     "google": true,
     "moment": true,
-    "Raven": false
+    "Raven": false,
+    "Offline": true
   }
 }
 

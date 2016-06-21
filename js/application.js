@@ -109,7 +109,7 @@ var app = {
 		});
 		$(document).ajaxStop(function() {
 			t.ajaxQueryLoading = false;
-								});
+		});
 
 		Offline.options = {
 			checks: {xhr: {url: '?ping=true'}},
@@ -123,8 +123,8 @@ var app = {
 		var offlineCheck = function(){
 			clearInterval(offlineCheckInterval);
 			offlineCheckInterval = setInterval(function(){
-				Offline.check()
-			}, 5000)
+				Offline.check();
+			}, 5000);
 		};
 
 		Offline.on('up', function(){

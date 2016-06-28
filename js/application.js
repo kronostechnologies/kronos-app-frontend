@@ -111,39 +111,55 @@ var app = {
 			t.ajaxQueryLoading = false;
 		});
 
-		Offline.options = {
-			checks: {xhr: {url: '?ping=true'}},
-			unauthorized: true,
-			modal: true,
-			requests: false // We do not want to remake request after reconnected
-		};
+		if(window['Offline']){
+			var OfflineUnauthorized = function(xhr) {
+				return xhr.status == 401;
+			};
+
+			Offline.options = {
+				checks: {xhr: {url: '?ping=true'}},
+				unauthorized: function(){
+					return OfflineUnauthorized;
+				},
+				modal: true,
+				requests: false // We do not want to remake request after reconnected
+			};
 
 
-		var offlineCheckInterval;
-		var offlineCheck = function(){
-			clearInterval(offlineCheckInterval);
-			offlineCheckInterval = setInterval(function(){
-				Offline.check();
-			}, 5000);
-		};
+			var offlineCheckInterval;
+			var offlineCheck = function(){
+				clearInterval(offlineCheckInterval);
+				offlineCheckInterval = setInterval(function(){
+					Offline.check();
+				}, 5000);
+			};
 
-		Offline.on('up', function(){
+			Offline.on('up', function(){
+				offlineCheck();
+				// Make sure it's the same session
+				if(t.canUseSessionStorage()) {
+					var xsrf_token = t.getXSRFToken();
+					var stored_token = sessionStorage.getItem(t._xsrf_cookie_name);
+					if(stored_token != xsrf_token) {
+						location.reload();
+					}
+				}
+			});
+
+			Offline.on('down', function(){
+				clearInterval(offlineCheckInterval);
+			});
+
+			Offline.on('unauthorized', function(){
+				clearInterval(offlineCheckInterval);
+			});
+
 			offlineCheck();
-		});
 
-		Offline.on('down', function(){
-			clearInterval(offlineCheckInterval);
-		});
-
-		Offline.on('unauthorized', function(){
-			clearInterval(offlineCheckInterval);
-		});
-
-		offlineCheck();
-
-		$(window).focus(function () {
-			Offline.check();
-		});
+			$(window).focus(function () {
+				Offline.check();
+			});
+		}
 
 		this._iPad = (navigator.userAgent.match(/iPad/) == 'iPad');
 		this._iPod = (navigator.userAgent.match(/iPod/) == 'iPod');

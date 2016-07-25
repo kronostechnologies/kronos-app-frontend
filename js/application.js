@@ -53,6 +53,8 @@ var app = {
 	// List of all ongoing ajax requests. Allow abort on view change.
 	_ongoing_xhrs : [],
 
+	offlineCheckIntervalDelay: 5 * 60 * 1000, // 5 minutes
+
 	eventEmitter: {
 		_JQInit: function() {
 			this._JQ = jQuery(this);
@@ -104,24 +106,63 @@ var app = {
 			}
 		}
 
-		$(document).ajaxStart(function(){t.ajaxQueryLoading = true;});
-		$(document).ajaxStop(function(){t.ajaxQueryLoading = false;});
+		$(document).ajaxStart(function() {
+			t.ajaxQueryLoading = true;
+		});
+		$(document).ajaxStop(function() {
+			t.ajaxQueryLoading = false;
+		});
 
-		// if the ping interval is defined, we had the ping query interval to the document.
-		if(this.pingInterval){
-			// Ping interval
-			setInterval(function(){
-							if(!t.ajaxQueryLoading){
-								t.get('CPanel/View', 'ping', '', function() {
-									console.debug('session is still alive');
-								}, false, function() {
-									console.debug('got an error while doing a ping ?');
-								});
-							}
-						},
-						this.pingInterval
+		if(window['Offline']){
+			var OfflineUnauthorized = function(xhr) {
+				return xhr.status == 401;
+			};
 
-			);
+			Offline.options = {
+				checks: {xhr: {url: '?ping=true'}},
+				unauthorized: function(){
+					return OfflineUnauthorized;
+				},
+				modal: true,
+				requests: false // We do not want to remake request after reconnected
+			};
+
+
+			var offlineCheckInterval;
+			var offlineCheck = function(){
+				clearInterval(offlineCheckInterval);
+				offlineCheckInterval = setInterval(function(){
+					Offline.check();
+				}, t.offlineCheckIntervalDelay);
+			};
+
+			Offline.on('up', function(){
+				offlineCheck();
+				// Make sure it's the same session
+				if(t.canUseSessionStorage()) {
+					var xsrf_token = t.getXSRFToken();
+					var stored_token = t.getStoredXSRFToken();
+					if(stored_token != xsrf_token) {
+						location.reload();
+					}
+				}else{
+					location.reload();
+				}
+			});
+
+			Offline.on('down', function(){
+				clearInterval(offlineCheckInterval);
+			});
+
+			Offline.on('unauthorized', function(){
+				clearInterval(offlineCheckInterval);
+			});
+
+			offlineCheck();
+
+			$(window).focus(function () {
+				Offline.check();
+			});
 		}
 
 		this._iPad = (navigator.userAgent.match(/iPad/) == 'iPad');
@@ -828,6 +869,10 @@ var app = {
 			data[self._xsrf_cookie_name] = xsrf_token;
 		}
 		return data;
+	},
+
+	getStoredXSRFToken : function() {
+		sessionStorage.getItem(this._xsrf_cookie_name);
 	},
 
 	setUserConfig : function(user_config){
@@ -2948,23 +2993,10 @@ var app = {
 		}
 
 		if(jqXHR.status ===  0){
-			// $.app._beforeUnload calling $.app.abortOngoingXHR() may be trigerred after the request completion so we delay the check.
-			setTimeout(function(){
-
-				if(jqXHR.statusText === 'abort'){
-					return false;
-				}
-
-				// Probably due tu a CORS error caused by a redirection to Siteminder sso login page.
-				// Could also be caused by a sever network or dns error.
-				self.showXHRNetworkErrorError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
-			});
-
 			return false;
 		}
 
 		if(jqXHR.status == 401) {
-			self.showSessionExpiredError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
 			return false;
 		}
 

@@ -53,6 +53,8 @@ var app = {
 	// List of all ongoing ajax requests. Allow abort on view change.
 	_ongoing_xhrs : [],
 
+	offlineCheckIntervalDelay: 5 * 60 * 1000, // 5 minutes
+
 	eventEmitter: {
 		_JQInit: function() {
 			this._JQ = jQuery(this);
@@ -131,7 +133,7 @@ var app = {
 				clearInterval(offlineCheckInterval);
 				offlineCheckInterval = setInterval(function(){
 					Offline.check();
-				}, 5000);
+				}, t.offlineCheckIntervalDelay);
 			};
 
 			Offline.on('up', function(){
@@ -139,10 +141,12 @@ var app = {
 				// Make sure it's the same session
 				if(t.canUseSessionStorage()) {
 					var xsrf_token = t.getXSRFToken();
-					var stored_token = sessionStorage.getItem(t._xsrf_cookie_name);
+					var stored_token = t.getStoredXSRFToken();
 					if(stored_token != xsrf_token) {
 						location.reload();
 					}
+				}else{
+					location.reload();
 				}
 			});
 
@@ -865,6 +869,10 @@ var app = {
 			data[self._xsrf_cookie_name] = xsrf_token;
 		}
 		return data;
+	},
+
+	getStoredXSRFToken : function() {
+		sessionStorage.getItem(this._xsrf_cookie_name);
 	},
 
 	setUserConfig : function(user_config){

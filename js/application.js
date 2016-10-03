@@ -1410,6 +1410,8 @@ var app = {
 
 		var param_string = $.param(params);
 
+
+
 		this.view_fetching = true;
 		t._onFetchView(this._getViewObject(t.currentView));
 		$.ajax({
@@ -1423,7 +1425,6 @@ var app = {
 			success: function(response) {
 				t.view_fetching = false;
 				t._hideLoading();
-
 				if(response.status == 'error') {
 					var info = response.data;
 					if(info.code == 600) { // VIEW_CMD_ERROR;
@@ -1445,7 +1446,6 @@ var app = {
 			error: function(jqXHR, status, error) {
 				t.view_fetching = false;
 				t._hideLoading();
-
 				if(!$.app.validateXHR(jqXHR)){
 					return false;
 				}
@@ -4847,6 +4847,10 @@ EditView.prototype = {
 
 	_onCreateModel : function(model) {
 		return model;
+	},
+
+	_getRedirectionView : function() {
+		return '/View/';
 	},
 
 	alternateCreateModel: function(model) {

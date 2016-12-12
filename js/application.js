@@ -1359,6 +1359,7 @@ var app = {
 		}
 		this._fetchView(this.currentView, hiddenParams);
 	},
+	_onBeforeFetchView : function(current_view){ },
 	_onFetchView : function(current_view){	},
 	_onLoadView : function(current_view, data, hiddenParams) { },
 
@@ -1382,6 +1383,10 @@ var app = {
 			console.debug('View "'+view+'" is in cache (' + this.lang + ')');
 		}
 
+		this.view_fetching = true;
+		t._onBeforeFetchView(t.currentView);
+		t._onFetchView(this._getViewObject(t.currentView));
+
 		// Ask the requested view to transmute hash to query parameters
 		var params = this._getViewParameters(location.hash);
 
@@ -1397,7 +1402,7 @@ var app = {
 		}
 
 		params.k  = t.SESSION_KEY;
-		params.view  = view;
+		params.view  = t.currentView;
 		params.cmd = 'view';
 		params.cached = cached;
 		params.version = this.getApplicationVersion();
@@ -1410,10 +1415,6 @@ var app = {
 
 		var param_string = $.param(params);
 
-
-
-		this.view_fetching = true;
-		t._onFetchView(this._getViewObject(t.currentView));
 		$.ajax({
 			url:'index.php?'+param_string,
 			type : 'POST',

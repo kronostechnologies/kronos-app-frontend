@@ -2547,7 +2547,7 @@ var app = {
 	},
 
 	performUnmounts: function() {
-		_.each(this.unmounts, function(callback) {
+		this.unmounts.forEach(function(callback) {
 			callback();
 		});
 		this.unmounts = [];

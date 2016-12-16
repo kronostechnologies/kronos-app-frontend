@@ -2540,6 +2540,19 @@ var app = {
 		}
 	},
 
+	unmounts: [],
+
+	requestUnmount: function(callback) {
+		this.unmounts.push(callback);
+	},
+
+	performUnmounts: function() {
+		_.each(this.unmounts, function(callback) {
+			callback();
+		});
+		this.unmounts = [];
+	},
+
 	htmlEntity : function (value){
 		if(value || this.isNumber(value))
 			return $('<div></div>').text(value).html();
@@ -4294,6 +4307,7 @@ View.prototype = {
 	},
 
 	load : function(params) {
+		$.app.performUnmounts();
 		this._load(params);
 	},
 
@@ -4302,6 +4316,7 @@ View.prototype = {
 	},
 
 	draw : function(html) {
+		$.app.performUnmounts();
 		this._onBeforeDraw();
 
 		if(this._canRedraw()) {

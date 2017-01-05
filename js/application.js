@@ -4518,7 +4518,7 @@ EditView.prototype = {
 			var t = this;
 
 			$('#content form').on('change', ':input[name]:not(.no-form-change)', function(){t.changed(this);});
-			$('#content form').on('keypress', ':input[type=text]:not(.no-form-change)', function(){t.changed(this);});
+			$('#content form').on('keypress', ':input[type=text]:not(.no-form-change),:input[type=password]:not(.no-form-change)', function(){t.changed(this);});
 			$(".number:not(.positive)").number();
 			$(".number.positive").number({positive:true});
 

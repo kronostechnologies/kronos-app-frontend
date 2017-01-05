@@ -4850,8 +4850,8 @@ EditView.prototype = {
 		return model;
 	},
 
-	_getRedirectionView : function() {
-		return '/View/';
+	_getRedirectionView : function(module, id) {
+		return (module || '')  +'/View/' + (id || '');
 	},
 
 	alternateCreateModel: function(model) {

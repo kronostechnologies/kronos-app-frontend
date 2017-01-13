@@ -1426,6 +1426,13 @@ var app = {
 			success: function(response) {
 				t.view_fetching = false;
 				t._hideLoading();
+
+				/* Manage redirect responses from view calls. */
+				if (response.redirect) {
+					$.app.goTo(response.view);
+					return false;
+				}
+
 				if(response.status == 'error') {
 					var info = response.data;
 					if(info.code == 600) { // VIEW_CMD_ERROR;

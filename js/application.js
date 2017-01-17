@@ -1359,6 +1359,7 @@ var app = {
 		}
 		this._fetchView(this.currentView, hiddenParams);
 	},
+	_onBeforeFetchView : function(current_view){ },
 	_onFetchView : function(current_view){	},
 	_onLoadView : function(current_view, data, hiddenParams) { },
 
@@ -1382,6 +1383,10 @@ var app = {
 			console.debug('View "'+view+'" is in cache (' + this.lang + ')');
 		}
 
+		this.view_fetching = true;
+		t._onBeforeFetchView(t.currentView);
+		t._onFetchView(this._getViewObject(t.currentView));
+
 		// Ask the requested view to transmute hash to query parameters
 		var params = this._getViewParameters(location.hash);
 
@@ -1397,7 +1402,7 @@ var app = {
 		}
 
 		params.k  = t.SESSION_KEY;
-		params.view  = view;
+		params.view  = t.currentView;
 		params.cmd = 'view';
 		params.cached = cached;
 		params.version = this.getApplicationVersion();
@@ -1410,10 +1415,6 @@ var app = {
 
 		var param_string = $.param(params);
 
-
-
-		this.view_fetching = true;
-		t._onFetchView(this._getViewObject(t.currentView));
 		$.ajax({
 			url:'index.php?'+param_string,
 			type : 'POST',
@@ -4532,7 +4533,7 @@ EditView.prototype = {
 			var t = this;
 
 			$('#content form').on('change', ':input[name]:not(.no-form-change)', function(){t.changed(this);});
-			$('#content form').on('keypress', ':input[type=text]:not(.no-form-change)', function(){t.changed(this);});
+			$('#content form').on('keypress', ':input[type=text]:not(.no-form-change),:input[type=password]:not(.no-form-change)', function(){t.changed(this);});
 			$(".number:not(.positive)").number();
 			$(".number.positive").number({positive:true});
 
@@ -4864,8 +4865,8 @@ EditView.prototype = {
 		return model;
 	},
 
-	_getRedirectionView : function() {
-		return '/View/';
+	_getRedirectionView : function(module, id) {
+		return (module || '')  +'/View/' + (id || '');
 	},
 
 	alternateCreateModel: function(model) {

@@ -4595,24 +4595,23 @@ EditView.prototype = {
 	},
 
 	showSaveDialog : function(callback) {
-		var t = this;
+		var self = this;
 		if(typeof callback !== 'function'){
 			callback = function(action){};
 		}
-		$.app.showModalDialog(t.getSaveChangeDialogHtml(), 'normal', function() {
+		$.app.showModalDialog(self.getSaveChangeDialogHtml(), 'normal', function() {
 			$('#hook_do_save_changes').safeClick(function() {
 				$.app.hideModalDialog('normal', function() {
 
-					var saved = t.save(false,
+					self.save(false,
 						function() {
 							callback('save');
-							t.resume();
-						}, false, true);
-
-					if(!saved){
-						t.stop();
-						callback('cancel');
-					}
+							self.resume();
+						}, false, true,
+						function(){
+							self.stop();
+							callback('cancel');
+						});
 				});
 			});
 
@@ -4622,15 +4621,15 @@ EditView.prototype = {
 						return $.app._beforeUnload(e);
 					};
 
-					if(!t._canClose()) {
-						t._onCancelClose();
+					if(!self._canClose()) {
+						self._onCancelClose();
 
-						t.stop();
+						self.stop();
 						callback('cancel');
 					}
 					else{
-						t._modified = false; // We don't care about changes.
-						t.resume();
+						self._modified = false; // We don't care about changes.
+						self.resume();
 						callback('resume');
 					}
 				});
@@ -4638,38 +4637,34 @@ EditView.prototype = {
 
 			$('#hook_cancel_save_changes').safeClick(function() {
 				$.app.hideModalDialog('normal', function() {
-					t.stop();
+					self.stop();
 					callback('cancel');
 				});
 			});
 		});
 	},
 
-	save : function(hash, success_callback, error_callback, stay) {
+	/**
+	 * Save the form
+	 * @param hash Goto Hash after save
+	 * @param success_callback (data: {}, saved: int) => void
+	 *  Called after saving or when there is nothing to save.
+	 *  data: Actual saved data
+	 *  saved: true is the form was saved.  false if it was not modified or has nothing to save
+	 * @param error_callback Called on error
+	 * @param stay After save, stay on same page
+	 * @param cancel_callback Called when save aborted due to validation
+	 */
+	save : function(hash, success_callback, error_callback, stay, cancel_callback) {
 
-		if(!this.validate()) {
-            this._onValidateFail();
-            return false;
-        }
+		console.log('EditView:save');
+		console.log(arguments);
 
-		if(!this._can_save) {
-			return this._saveRedirect(hash, stay);
-		}
-
-		if(!this._canSave()){
-			this._onCancelSave();
-			return false;
-		}
-
-		if(this._wasClosing) {
-			if(!this._canClose()) {
-				this._onCancelClose();
-
-				return false;
-			}
-		}
-       
+		// Shift parameters
 		if(typeof hash == 'function') {
+			if(typeof stay == 'function'){
+				cancel_callback = stay;
+			}
 			stay = error_callback;
 			if(typeof success_callback == 'function'){
 				error_callback = success_callback;
@@ -4678,27 +4673,49 @@ EditView.prototype = {
 			hash = false;
 		}
 
+		// Validate form
+		if(!this.validate()) {
+            this._onValidateFail();
+			if(typeof cancel_callback == 'function') {
+				cancel_callback();
+			}
+            return;
+        }
+
+		this._doSave(hash, success_callback, error_callback, stay);
+	},
+
+	/**
+	 * Actual saving method after all validations
+	 */
+	_doSave : function(hash, success_callback, error_callback, stay, cancel_callback) {
+		var self = this;
+
+		// Form is closing.
 		if(this._wasClosing) {
+
+			// Abort operation if form is not allowed to close
+			if(!this._canClose()) {
+				this._onCancelClose();
+				return;
+			}
+
+			// Should always redirect to close target after save.
 			hash = $.app.getResumeHash();
 		}
 
-		if(!this._modified && !this._soft_modified) {
-
+		// When form is not allowed to save or not modified. Just redirect to hash
+		if(!this._can_save || (!this._modified && !this._soft_modified)) {
 			if(typeof success_callback == 'function') {
 				success_callback({}, false);
-				success_callback = null;
 			}
-
 			this._saveRedirect(hash, stay);
-
-			return true;
+			return;
 		}
-        
-        this._onSaveStart();
+
+		this._onSaveStart();
 
 		$('input[type=submit],input[type=button]').prop('disabled', true);
-
-		var t = this;
 
 		$.app.showOverlay();
 
@@ -4728,6 +4745,9 @@ EditView.prototype = {
 						$('#' + err.field).hintError(err.message);
 					});
 
+					if(typeof cancel_callback == 'function') {
+						cancel_callback();
+					}
 					return;
 				}
 
@@ -4747,31 +4767,35 @@ EditView.prototype = {
 					return;
 				}
 
-				t._modified = false;
+				self._modified = false;
 
-				t._afterSave();
+				self._afterSave();
 				if(typeof success_callback == 'function') {
 					success_callback(data, true);
 					success_callback = null;
 				}
 
-				t._saveRedirect(hash, stay);
+				self._saveRedirect(hash, stay);
 			},
 			error: function(jqXHR, status, error) {
-				t._saveErrorHandler(jqXHR, status, error, error_callback);
+				self._saveErrorHandler(jqXHR, status, error, error_callback);
 			}
 		});
-
-		return true;
 	},
 
 	// _saveSomething methods : save helper functions
 	_saveRedirect: function(hash, stay){
-		if(stay) return;
+		if(stay) {
+			return;
+		}
 
 		this._onClose();
-		if(typeof hash == 'string') $.app.goTo(hash);
-		else $.app.goBack();
+		if(typeof hash == 'string') {
+			$.app.goTo(hash);
+		}
+		else {
+			$.app.goBack();
+		}
 	},
 
 	_saveErrorHandler: function(jqXHR, status, error, error_callback){
@@ -4796,8 +4820,13 @@ EditView.prototype = {
 		return '&model=' + encodeURIComponent($.toJSON(this.createModel()));
 	},
 
-	validate : function(){
-        return true;
+	/**
+	 * Async validate form.
+	 * @param valid_callback call when form is valid
+	 * @param invalid_callback call when form is invalid
+	 */
+	validate : function(valid_callback, invalid_callback){
+		valid_callback();
     },
 
     _onValidateFail : function() { 
@@ -4805,15 +4834,6 @@ EditView.prototype = {
 
     _onSaveStart : function() { 
     },
-
-	_canSave : function() {
-		if($.app.debug)
-			$.app._throw('View does not implement _canSave function');
-
-		return true;
-	},
-
-	_onCancelSave : function() { },
 
 	_onSave : function() {
 		return '';

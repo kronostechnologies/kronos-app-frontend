@@ -1,3 +1,7 @@
+/* globals
+Promise
+*/
+
 var app = {
 	// Debugging and error handling
 	view_fetching : false, // Indiacte that the app is currently waiting on an ajax query that is fetching a view.
@@ -4834,7 +4838,7 @@ EditView.prototype = {
 
 				// Run next step of validation
 				return stepFunction();
-			})
+			});
 		}, Promise.resolve(true));
 	},
 

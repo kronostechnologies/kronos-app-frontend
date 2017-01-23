@@ -4502,14 +4502,15 @@ function EditView() {
 	this._modified = false;
 	this._soft_modified = false;
 	this._wasClosing = false;
+	this._validateSteps = [];
 	this.validation_rules = {};
 	this.validation_conditions = {};
 }
 
 EditView.prototype = {
 	init : function(hash) {
+		this.initValidateSteps(); // Must be before call to parent (_init)
 		this._wasClosing = false;
-
 		View.prototype.init.call(this, hash);
 	},
 
@@ -4602,7 +4603,6 @@ EditView.prototype = {
 		$.app.showModalDialog(self.getSaveChangeDialogHtml(), 'normal', function() {
 			$('#hook_do_save_changes').safeClick(function() {
 				$.app.hideModalDialog('normal', function() {
-
 					self.save(false,
 						function() {
 							callback('save');
@@ -4657,8 +4657,7 @@ EditView.prototype = {
 	 */
 	save : function(hash, success_callback, error_callback, stay, cancel_callback) {
 
-		console.log('EditView:save');
-		console.log(arguments);
+		var self = this;
 
 		// Shift parameters
 		if(typeof hash == 'function') {
@@ -4672,24 +4671,6 @@ EditView.prototype = {
 			success_callback = hash;
 			hash = false;
 		}
-
-		// Validate form
-		if(!this.validate()) {
-            this._onValidateFail();
-			if(typeof cancel_callback == 'function') {
-				cancel_callback();
-			}
-            return;
-        }
-
-		this._doSave(hash, success_callback, error_callback, stay);
-	},
-
-	/**
-	 * Actual saving method after all validations
-	 */
-	_doSave : function(hash, success_callback, error_callback, stay, cancel_callback) {
-		var self = this;
 
 		// Form is closing.
 		if(this._wasClosing) {
@@ -4712,6 +4693,28 @@ EditView.prototype = {
 			this._saveRedirect(hash, stay);
 			return;
 		}
+
+		// Validate form and save if valid
+		Promise.resolve(this.validate())
+			.then(function(result) {
+				if(!result) {
+					if(typeof cancel_callback == 'function') {
+						cancel_callback();
+					}
+
+					return;
+				}
+
+				self._doSave(hash, success_callback, error_callback, stay);
+			});
+	},
+
+	/**
+	 * Actual saving method after all validations
+	 */
+	_doSave : function(hash, success_callback, error_callback, stay, cancel_callback) {
+		var self = this;
+
 
 		this._onSaveStart();
 
@@ -4820,17 +4823,33 @@ EditView.prototype = {
 		return '&model=' + encodeURIComponent($.toJSON(this.createModel()));
 	},
 
-	/**
-	 * Async validate form.
-	 * @param valid_callback call when form is valid
-	 * @param invalid_callback call when form is invalid
-	 */
-	validate : function(valid_callback, invalid_callback){
-		valid_callback();
-    },
+	validate: function(){
+		// Return false as soon as a step return false. Do validation one step at a time.
+		return this._validateSteps.reduce(function (previousStepPromise, stepFunction) {
+			return previousStepPromise.then(function(previousStepResult) {
+				if(!previousStepResult){
+					// Form is invalid
+					return false;
+				}
 
-    _onValidateFail : function() { 
-    },
+				// Run next step of validation
+				return stepFunction();
+			})
+		}, Promise.resolve(true));
+	},
+
+	initValidateSteps: function() {
+		// override to set default validation step for application
+	},
+
+	/**
+	 * Add a validation step
+	 * fn should be a function returning promise for a boolean or a boolean indicating validation success.
+	 * @param fn : () => Promise<bool>
+	 */
+	addValidateStep: function(fn) {
+		this._validateSteps.push(fn);
+	},
 
     _onSaveStart : function() { 
     },

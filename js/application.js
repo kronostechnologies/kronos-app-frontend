@@ -898,7 +898,6 @@ var app = {
 	 * Get a translation
 	 */
 	_ : function(message_id){
-
 		if(!this._messages[this.lang]){
 			return message_id;
 		}
@@ -1999,17 +1998,16 @@ var app = {
 	 * @param string hash
 	 */
 	goBack : function(hash) {
-		if(hash === undefined){
+		if(this._history.length <= 0 || hash === undefined){
 			hash = '';
 		}
-		
+
 		if(this._history.length >= 2){
 			this._history.pop(); // Pop current page.
 			hash = this._history.pop().hash; // Previous page;
 		}
 
-		if(this.debug)
-			console.debug('Go back to "'+hash+'"');
+		if(this.debug){ console.debug('Go back to "'+hash+'"'); }
 
 		location.hash = hash;
 	},

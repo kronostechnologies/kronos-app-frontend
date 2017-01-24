@@ -2007,7 +2007,9 @@ var app = {
 			hash = this._history.pop().hash; // Previous page;
 		}
 
-		if(this.debug){ console.debug('Go back to "'+hash+'"'); }
+		if(this.debug){
+			console.debug('Go back to "'+hash+'"');
+		}
 
 		location.hash = hash;
 	},

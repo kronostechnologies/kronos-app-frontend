@@ -3865,7 +3865,7 @@ var app = {
             },
 
             _build : function() {
-                var t = this;
+                var self = this;
 
                 var options = {};
 
@@ -3877,11 +3877,16 @@ var app = {
                 options.selectFirst = false;
                 options.scrollHeight = 450;
                 options.queryStringParamName = this.queryStringParamName;
-                options.formatItem = function(data, position, length, term) {return t._formatItem(data, position, length, term);};
-                options.highlight = function(label, term) {return t._highlight(label, term);};
-                options.extraParams = t._extraParams();
-                if(this.parse){options.parse = this.parse;}
-
+                options.formatItem = function(data, position, length, term) {
+                	return self._formatItem(data, position, length, term);
+                };
+                options.highlight = function(label, term) {
+                	return self._highlight(label, term);
+                };
+                options.extraParams = self._extraParams();
+                if(this.parse){
+                	options.parse = this.parse;
+                }
 
                 return options;
             },

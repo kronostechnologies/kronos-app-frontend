@@ -15,6 +15,7 @@ export default class EditView extends View {
 		this._modified = false;
 		this._soft_modified = false;
 		this._wasClosing = false;
+		this._validateSteps = [];
 	}
 
 	init(hash) {
@@ -23,44 +24,46 @@ export default class EditView extends View {
 	}
 
 	changed(element) {
-		if ($.app.debug) {
+		if($.app.debug) {
 			console.debug('changed');
 		}
-		if (!this._modified) {
+		if(!this._modified) {
 			this._modified = true;
 		}
 	}
 
 	softModified() {
-		if ($.app.debug) console.debug('soft modified');
-		if (!this._soft_modified) {
+		if($.app.debug) {
+			console.debug('soft modified');
+		}
+		if(!this._soft_modified) {
 			this._soft_modified = true;
 		}
 	}
 
 	hook(hash) {
-		if (!this._redrawn) {
-			if ($.app.debug) {
+		if(!this._redrawn) {
+			if($.app.debug) {
 				console.debug('Hooking view');
 			}
 
 			const t = this;
 
-			$('#content form').on('change', ':input[name]:not(.no-form-change)', function () {
+			$('#content form').on('change', ':input[name]:not(.no-form-change)', function() {
 				t.changed(this);
 			});
-			$('#content form').on('keypress', ':input[type=text]:not(.no-form-change),:input[type=password]:not(.no-form-change)', function () {
+			$('#content form').on('keypress', ':input[type=text]:not(.no-form-change),:input[type=password]:not(.no-form-change)', function() {
 				t.changed(this);
 			});
 			$('.number:not(.positive)').number();
-			$('.number.positive').number({ positive: true });
+			$('.number.positive').number({positive: true});
 
 			this._hook(hash);
 
 			t.updateReturnToParentView();
 
 			// Prevent IE to prompt that a change occured when clicking on a link with href=javascript:
-			if (navigator.appName === 'Microsoft Internet Explorer') {
+			if(navigator.appName === 'Microsoft Internet Explorer') {
 				$(window).data('beforeunload', window.onbeforeunload);
 				$(document).on('mouseenter', 'a[href^="javascript:"]', () => {
 					window.onbeforeunload = null;
@@ -70,9 +73,9 @@ export default class EditView extends View {
 					});
 			}
 
-			window.onbeforeunload = function (e) {
+			window.onbeforeunload = function(e) {
 				$.app._beforeUnload(e);
-				if (t._modified) {
+				if(t._modified) {
 					return $.app._('SAVE_CHANGES_MESSAGE');
 				}
 			};
@@ -80,7 +83,7 @@ export default class EditView extends View {
 	}
 
 	inject(model) {
-		if ($.app.debug) {
+		if($.app.debug) {
 			console.debug('Injecting model');
 		}
 
@@ -93,7 +96,7 @@ export default class EditView extends View {
 
 	close(callback) {
 		$('#edit_form').off('**');
-		if (this._modified && this._can_save) {
+		if(this._modified && this._can_save) {
 			this._wasClosing = true;
 
 			this.showSaveDialog(callback);
@@ -117,40 +120,41 @@ export default class EditView extends View {
 	}
 
 	showSaveDialog(callback) {
-		const t = this;
-		if (typeof callback !== 'function') {
-			callback = () => {};
+		const self = this;
+		if(typeof callback !== 'function') {
+			callback = () => {
+			};
 		}
-		$.app.showModalDialog(t.getSaveChangeDialogHtml(), 'normal', () => {
+		$.app.showModalDialog(self.getSaveChangeDialogHtml(), 'normal', () => {
 			$('#hook_do_save_changes').safeClick(() => {
 				$.app.hideModalDialog('normal', () => {
-					const saved = t.save(false,
+					self.save(false,
 						() => {
 							callback('save');
-							t.resume();
-						}, false, true);
-
-					if (!saved) {
-						t.stop();
-						callback('cancel');
-					}
+							self.resume();
+						}, false, true,
+						() => {
+							self.stop();
+							callback('cancel');
+						});
 				});
 			});
 
 			$('#hook_do_not_save_changes').safeClick(() => {
 				$.app.hideModalDialog('normal', () => {
-					window.onbeforeunload = function (e) {
+					window.onbeforeunload = function(e) {
 						return $.app._beforeUnload(e);
 					};
 
-					if (!t._canClose()) {
-						t._onCancelClose();
+					if(!self._canClose()) {
+						self._onCancelClose();
 
-						t.stop();
+						self.stop();
 						callback('cancel');
-					} else {
-						t._modified = false; // We don't care about changes.
-						t.resume();
+					}
+					else {
+						self._modified = false; // We don't care about changes.
+						self.resume();
 						callback('resume');
 					}
 				});
@@ -158,71 +162,95 @@ export default class EditView extends View {
 
 			$('#hook_cancel_save_changes').safeClick(() => {
 				$.app.hideModalDialog('normal', () => {
-					t.stop();
+					self.stop();
 					callback('cancel');
 				});
 			});
 		});
 	}
 
-	save(hash, success_callback, error_callback, stay) {
-		if (!this.validate()) {
-			this._onValidateFail();
-			return false;
-		}
 
-		if (!this._can_save) {
-			return this._saveRedirect(hash, stay);
-		}
+	/**
+	 * Save the form
+	 * @param hash Goto Hash after save
+	 * @param success_callback (data: {}, saved: int) => void
+	 *  Called after saving or when there is nothing to save.
+	 *  data: Actual saved data
+	 *  saved: true is the form was saved.  false if it was not modified or has nothing to save
+	 * @param error_callback Called on error
+	 * @param stay After save, stay on same page
+	 * @param cancel_callback Called when save aborted due to validation
+	 */
+	save(hash, success_callback, error_callback, stay, cancel_callback) {
 
-		if (!this._canSave()) {
-			this._onCancelSave();
-			return false;
-		}
+		var self = this;
 
-		if (this._wasClosing) {
-			if (!this._canClose()) {
-				this._onCancelClose();
-
-				return false;
+		// Shift parameters
+		if(typeof hash == 'function') {
+			if(typeof stay == 'function') {
+				cancel_callback = stay;
 			}
-		}
-
-		if (typeof hash === 'function') {
 			stay = error_callback;
-			if (typeof success_callback === 'function') {
+			if(typeof success_callback == 'function') {
 				error_callback = success_callback;
 			}
 			success_callback = hash;
 			hash = false;
 		}
 
-		if (this._wasClosing) {
+		// Form is closing.
+		if(this._wasClosing) {
+
+			// Abort operation if form is not allowed to close
+			if(!this._canClose()) {
+				this._onCancelClose();
+				return;
+			}
+
+			// Should always redirect to close target after save.
 			hash = $.app.getResumeHash();
 		}
 
-		if (!this._modified && !this._soft_modified) {
-			if (typeof success_callback === 'function') {
+		// When form is not allowed to save or not modified. Just redirect to hash
+		if(!this._can_save || (!this._modified && !this._soft_modified)) {
+			if(typeof success_callback == 'function') {
 				success_callback({}, false);
-				success_callback = null;
 			}
-
 			this._saveRedirect(hash, stay);
-
-			return true;
+			return;
 		}
+
+		// Validate form and save if valid
+		Promise.resolve(this.validate())
+			.then(function(result) {
+				if(!result) {
+					if(typeof cancel_callback == 'function') {
+						cancel_callback();
+					}
+
+					return;
+				}
+
+				self._doSave(hash, success_callback, error_callback, stay);
+			});
+	}
+
+	/**
+	 * Actual saving method after all validations
+	 */
+	_doSave(hash, success_callback, error_callback, stay, cancel_callback) {
+		var self = this;
+
 
 		this._onSaveStart();
 
 		$('input[type=submit],input[type=button]').prop('disabled', true);
 
-		const t = this;
-
 		$.app.showOverlay();
 
-		const params = this._onSave();
+		var params = this._onSave();
 
-		window.onbeforeunload = function (e) {
+		window.onbeforeunload = function(e) {
 			return $.app._beforeUnload(e);
 		};
 
@@ -232,78 +260,91 @@ export default class EditView extends View {
 			data: this._saveBuildPost(),
 			dataType: 'json',
 			headers: $.app.getXSRFHeaders(),
-			success(data) {
-				if (!data) data = {};
+			success: function(data) {
+
+				if(!data) {
+					data = {};
+				}
 
 				$.app.hideOverlay();
 				$('input[type=submit],input[type=button]').prop('disabled', false);
 
-				let validationErrors = data.validation_errors;
-				if (validationErrors === undefined) {
+				var validationErrors = data.validation_errors;
+				if(validationErrors === undefined) {
 					validationErrors = (data.data) ? data.data.validation_errors : validationErrors;
 				}
-				if (validationErrors && validationErrors.length) {
-					$.each(validationErrors, (i, err) => {
+				if(validationErrors && validationErrors.length) {
+					$.each(validationErrors, function(i, err) {
 						$('#' + err.field).hintError(err.message);
 					});
 
+					if(typeof cancel_callback == 'function') {
+						cancel_callback();
+					}
 					return;
 				}
 
-				if (data.status === 'error') {
-					if ($.app.debug) {
+				if(data.status == 'error') {
+					if($.app.debug) {
 						console.debug('Save failed with error : ' + data.message);
 					}
 
-					if (typeof error_callback === 'function') {
+					if(typeof error_callback == 'function') {
 						error_callback(data);
 						error_callback = null;
-					} else {
+					}
+					else {
 						$.app.showError($.app._('SAVE_ERROR_OCCURED'));
 					}
 
 					return;
 				}
 
-				t._modified = false;
+				self._modified = false;
 
-				t._afterSave();
-				if (typeof success_callback === 'function') {
+				self._afterSave();
+				if(typeof success_callback == 'function') {
 					success_callback(data, true);
 					success_callback = null;
 				}
 
-				t._saveRedirect(hash, stay);
+				self._saveRedirect(hash, stay);
 			},
-			error(jqXHR, status, error) {
-				t._saveErrorHandler(jqXHR, status, error, error_callback);
+			error: function(jqXHR, status, error) {
+				self._saveErrorHandler(jqXHR, status, error, error_callback);
 			}
 		});
-
-		return true;
 	}
 
-// _saveSomething methods : save helper functions
 	_saveRedirect(hash, stay) {
-		if (stay) return;
-
-		this._onClose();
-		if (typeof hash === 'string') $.app.goTo(hash);
-		else $.app.goBack();
-	}
-
-	_saveErrorHandler(jqXHR, status, error, error_callback): void {
-		$.app.hideOverlay();
-		$('input[type=submit]').prop('disabled', false);
-
-		if (!$.app.validateXHR(jqXHR)) {
+		if(stay) {
 			return;
 		}
 
-		if (typeof error_callback === 'function') {
+		this._onClose();
+
+		if(typeof hash === 'string') {
+			$.app.goTo(hash);
+		}
+		else {
+			$.app.goBack();
+		}
+	}
+
+	_saveErrorHandler(jqXHR, status, error, error_callback) {
+
+		$.app.hideOverlay();
+		$('input[type=submit]').prop('disabled', false);
+
+		if(!$.app.validateXHR(jqXHR)) {
+			return false;
+		}
+
+		if(typeof error_callback == 'function') {
 			error_callback(false);
 			error_callback = null;
-		} else {
+		}
+		else {
 			$.app.showError($.app._('SAVE_ERROR_OCCURED'));
 		}
 	}
@@ -313,23 +354,29 @@ export default class EditView extends View {
 	}
 
 	validate() {
-		return true;
+		// Return false as soon as a step return false. Do validation one step at a time.
+		return this._validateSteps.reduce(function(previousStepPromise, stepFunction) {
+			return previousStepPromise.then(function(previousStepResult) {
+				if(!previousStepResult) {
+					// Form is invalid
+					return false;
+				}
+
+				// Run next step of validation
+				return stepFunction();
+			});
+		}, Promise.resolve(true));
 	}
 
-	_onValidateFail() {
+	/**
+	 * Add a validation step
+	 * fn should be a function returning promise for a boolean or a boolean indicating validation success.
+	 */
+	addValidateStep(fn: () => Promise<bool>) {
+		this._validateSteps.push(fn);
 	}
 
 	_onSaveStart() {
-	}
-
-	_canSave() {
-		if ($.app.debug) {
-			$.app._throw('View does not implement _canSave function');
-		}
-		return true;
-	}
-
-	_onCancelSave() {
 	}
 
 	_onSave() {
@@ -345,30 +392,35 @@ export default class EditView extends View {
 	createModel() {
 		let model = {};
 
-		$('form input[name],select[name],textarea[name]')
-			.each((index, element) => {
-				const value = $(element).val();
+		$("form input[name],select[name],textarea[name]")
+			.each(function(index, element) {
+				let value = $(element).val();
 
-				if (element.type === 'radio' || element.type === 'checkbox') {
-					if (element.checked) {
-						if (value === 'on') {
+				if(element.type == "radio" || element.type == "checkbox") {
+					if(element.checked) {
+						if(value == 'on') {
 							model[element.name] = 'YES';
-						} else {
+						}
+						else {
 							model[element.name] = value;
 						}
 					}
-				} else if ($(element).hasClass('money')) {
+				}
+				else if($(element).hasClass('money')) {
 					model[element.name] = $(element).moneyVal();
-				} else if ($(element).hasClass('percent')) {
-					model[element.name] = $.app.parseFloat(value.replace('%', ''));
-				} else if ($(element).hasClass('number')) {
+				}
+				else if($(element).hasClass('percent')) {
+					model[element.name] = $.app.parseFloat(value.replace("%", ""));
+				}
+				else if($(element).hasClass('number')) {
 					model[element.name] = $.app.parseFloat(value);
-				} else {
+				}
+				else {
 					model[element.name] = value;
 				}
 			});
 
-		if (this._onCreateModel) {
+		if(this._onCreateModel) {
 			model = this._onCreateModel(model);
 		}
 
@@ -386,22 +438,22 @@ export default class EditView extends View {
 	}
 
 	alternateCreateModel(model) {
-		const alternateModel = {};
+		var alternateModel = {};
 
-		const replaceBracket = function (t) {
+		var replaceBracket = function(t) {
 			return t.replace(']', '');
 		};
 
-		const reduceFunc = function (previous, current) {
-			const n = {};
+		var reduceFunc = function(previous, current) {
+			var n = {};
 			n[current] = previous;
 			return n;
 		};
 
-		for (const key in model) {
-			if (model.hasOwnProperty(key)) {
-				const path = key.split('[').map(replaceBracket);
-				const element = path.reduceRight(reduceFunc, model[key]);
+		for(var key in model) {
+			if(model.hasOwnProperty(key)) {
+				var path = key.split('[').map(replaceBracket);
+				var element = path.reduceRight(reduceFunc, model[key]);
 				$.extend(true, alternateModel, element);
 			}
 		}
@@ -410,11 +462,12 @@ export default class EditView extends View {
 	}
 
 	_removeNullValue(model) {
-		if (typeof model === 'object') {
-			for (const index in model) {
+		if(typeof model == "object") {
+			for(let index in model) {
 				model[index] = this._removeNullValue(model[index]);
 			}
-		} else if (!model) {
+		}
+		else if(!model) {
 			model = '';
 		}
 
@@ -441,5 +494,4 @@ export default class EditView extends View {
 	stop() {
 		$.app.resume(true);
 	}
-
 }

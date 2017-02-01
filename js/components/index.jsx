@@ -8,12 +8,12 @@ import sprintf from './sprintf.jsx';
 import DateHelper from './DateHelper.jsx';
 import jQueryExtend from './jQueryExtend.jsx';
 
-declare var $: {
+declare var jQuery: {
 	extend: (object: {}) => void;
 };
 
 // App initialization
-var app = new BaseApplication();
+const app = new BaseApplication();
 app.lang = "fr";
 app.autocompleter = Autocompleter;
 app.sprintf = sprintf;

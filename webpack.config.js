@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = {
 	entry: {
-		application: "./js/components/index.jsx",
+		application: "./js/components/index.js",
 	},
 	output: {
 		path: './js/bundle',

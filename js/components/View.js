@@ -1,6 +1,6 @@
 // @flow
 
-import BaseApplication from './BaseApplication.jsx';
+import BaseApplication from './BaseApplication.js';
 
 declare var $: {
 	app: BaseApplication;

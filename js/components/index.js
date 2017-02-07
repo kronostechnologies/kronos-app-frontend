@@ -1,12 +1,12 @@
 // @flow
 
-window.BaseApplication = require('./BaseApplication.jsx');
-window.View = require('./View.jsx');
-window.EditView = require('./EditView.jsx');
-import Autocompleter from './Autocompleter.jsx';
-import sprintf from './sprintf.jsx';
-import DateHelper from './DateHelper.jsx';
-import jQueryExtend from './jQueryExtend.jsx';
+window.BaseApplication = require('./BaseApplication.js');
+window.View = require('./View.js');
+window.EditView = require('./EditView.js');
+import Autocompleter from './Autocompleter.js';
+import sprintf from './sprintf.js';
+import DateHelper from './DateHelper.js';
+import jQueryExtend from './jQueryExtend.js';
 
 declare var jQuery: {
 	extend: (object: {}) => void;

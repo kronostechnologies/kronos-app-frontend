@@ -1,6 +1,7 @@
+import $ from 'jquery';
 
-// jQuery.fn.extend(jQueryExtend);
-export var jQueryExtend = {
+// TODO: Enlever les dépendance à $.app
+var jQueryExtend = {
 
 	alternateText(value, alternate_value) {
 		this.text(value && value !== '' ? value : alternate_value);
@@ -492,3 +493,5 @@ export var jQueryExtend = {
 		return all_classes;
 	}
 };
+
+$.fn.extend(jQueryExtend);

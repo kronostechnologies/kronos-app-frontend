@@ -1,12 +1,14 @@
 // @flow
 
 import EventEmitter from 'events';
+import jQuery from 'jquery';
+import Raven from 'raven-js';
+
+// TODO: Enlever les dépendance à $.app
+var $ = jQuery;
 
 declare var window: Object;
 declare var document: Object;
-declare var jQuery: Object;
-declare var $: Object;
-declare var Raven: Object;
 
 export default class BaseApplication extends EventEmitter{
 

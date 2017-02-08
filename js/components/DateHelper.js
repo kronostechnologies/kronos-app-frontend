@@ -1,10 +1,10 @@
 // @flow
 
-declare var jQuery: Object;
-declare var $: Object;
+import $ from 'jquery';
 
 export default class DateHelper {
-	constructor(){
+	constructor(app: BaseApplication){
+		this.app = app;
 		this._date_regex = new RegExp(/^([1-9]{1}\d{3})-{0,1}([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-{0,1}([0-2]{1}[1-9]{1}|[1-2]{1}[0]{1}|[3]{1}[0-1]{1})(| (\d{2}):(\d{2}):(\d{2})(|\.\d+))$/);
 	}
 
@@ -32,7 +32,7 @@ export default class DateHelper {
 		var m = this._date_regex.exec(date);
 
 		if(m == null) {
-			if($.app.debug)
+			if(this.app.debug)
 				console.debug('Could not parse date "'+date+'"');
 
 			return false;
@@ -80,7 +80,7 @@ export default class DateHelper {
 			return moment(date).format('LLL');
 		}
 		else if(format == 'short') {
-			return $.app.lang === "en" ? moment(date).format('MMMM D') : moment(date).format('D MMMM');
+			return this.app.lang === "en" ? moment(date).format('MMMM D') : moment(date).format('D MMMM');
 		}
 		else if(format == 'longabbrmonth') {
 			return moment(date).format('ll');
@@ -88,15 +88,15 @@ export default class DateHelper {
 		else if(format == 'time') {
 			var timeformat = 'LT';
 
-			if($.isPlainObject($.app.config) && typeof $.app.config.time_format === "string") {
-				timeformat = $.app.config.time_format === "24h" ? "HH:mm" : "hh:mm A";
+			if($.isPlainObject(this.app.config) && typeof this.app.config.time_format === "string") {
+				timeformat = this.app.config.time_format === "24h" ? "HH:mm" : "hh:mm A";
 			}
 			return moment(date).format(timeformat);
 		}
 		else if(format == 'dashboard') {
-			return $.app.lang === "en" ? moment(date).format('dddd, MMMM D') : moment(date).format('dddd, D MMMM');
+			return this.app.lang === "en" ? moment(date).format('dddd, MMMM D') : moment(date).format('dddd, D MMMM');
 		}
-		if($.app.debug) {
+		if(this.app.debug) {
 			console.debug('Unknown date format "' + format + '"');
 		}
 		return '';
@@ -112,7 +112,7 @@ export default class DateHelper {
 		var returnValue = moment.months(month);
 
 		if($.isArray(returnValue))
-			$.app._throw('Unknown month "'+month+'"');
+			this.app._throw('Unknown month "'+month+'"');
 		else
 			return returnValue;
 

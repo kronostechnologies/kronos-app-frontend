@@ -1,7 +1,9 @@
 // @flow
 
-export default class Autocompleter {
+import $ from 'jquery';
 
+// TODO: Enlever les dépendance à $.app
+export default class Autocompleter {
 
 	constructor(selector, view, command, callback, config) {
 		const self = this;

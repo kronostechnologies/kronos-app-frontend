@@ -1,10 +1,10 @@
 // @flow
 
+import jQuery from 'jquery';
 import BaseApplication from './BaseApplication.js';
 
-declare var $: {
-	app: BaseApplication;
-};
+// TODO: Enlever les dépendance à $.app
+var $ = jQuery;
 
 export default class View {
 

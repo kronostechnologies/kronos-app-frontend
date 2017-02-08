@@ -1,11 +1,11 @@
 // @flow
 
+import jQuery from 'jquery';
 import BaseApplication from './BaseApplication.js';
 import View from './View.js';
 
-declare var $: {
-	app: BaseApplication;
-};
+// TODO: Enlever les dépendance à $.app
+var $ = jQuery;
 
 export default class EditView extends View {
 

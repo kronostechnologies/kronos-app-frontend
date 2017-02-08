@@ -38,8 +38,10 @@
     "grunt-conventional-changelog": "^6.1.0",
     "grunt-neuter": "~0.6.0",
     "grunt-webpack": "^1.0.18",
+    "jquery": "^3.1.1",
     "jsx-control-statements": "^3.1.5",
     "mocha": "^3.2.0",
+    "raven-js": "^3.10.0",
     "sinon": "^1.17.7",
     "webpack": "^1.14.0",
     "webpack-dev-server": "^1.16.2"

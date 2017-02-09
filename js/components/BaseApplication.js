@@ -69,6 +69,8 @@ export default class BaseApplication extends EventEmitter{
 		this._ongoing_xhrs = [];
 
 		this.unmounts = [];
+
+		this.initBrowserDetection();
 	}
 
 	/**
@@ -99,7 +101,7 @@ export default class BaseApplication extends EventEmitter{
 				this.pingInterval);
 		}
 
-		this.browserDetect();
+
 
 
 		// Error catching function
@@ -140,7 +142,8 @@ export default class BaseApplication extends EventEmitter{
 		this._init();
 	}
 
-	browserDetect(){
+	initBrowserDetection(){
+
 		// Taken from jquery-migrate
 		const uaMatch = function( ua ) {
 			ua = ua.toLowerCase();

@@ -1,15 +1,16 @@
 import jQueryExtend from './jQueryExtend';
 import sprintf from './sprintf';
 import Autocompleter from './Autocompleter';
-import BaseApplication from './BaseApplication';
+import Application from './Application';
 import View from './View';
 import EditView from './EditView';
 import DateHelper from './DateHelper';
 import removeDiacritics from './removeDiacritics';
-module.exports = {
+
+export {
 	sprintf,
 	Autocompleter,
-	BaseApplication,
+	Application,
 	View,
 	EditView,
 	DateHelper,

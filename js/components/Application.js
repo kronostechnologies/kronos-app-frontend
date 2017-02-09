@@ -9,7 +9,7 @@ declare var $;
 declare var window: Object;
 declare var document: Object;
 
-export default class BaseApplication extends EventEmitter{
+export default class Application extends EventEmitter{
 
 	constructor() {
 		super();

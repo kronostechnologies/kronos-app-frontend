@@ -5,7 +5,7 @@
 declare var $;
 
 export default class DateHelper {
-	constructor(app: BaseApplication){
+	constructor(app: Application){
 		this.app = app;
 		this._date_regex = new RegExp(/^([1-9]{1}\d{3})-{0,1}([0]{1}[1-9]{1}|[1]{1}[0-2]{1})-{0,1}([0-2]{1}[1-9]{1}|[1-2]{1}[0]{1}|[3]{1}[0-1]{1})(| (\d{2}):(\d{2}):(\d{2})(|\.\d+))$/);
 	}

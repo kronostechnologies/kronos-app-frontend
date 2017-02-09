@@ -4,7 +4,6 @@ import EventEmitter from 'events';
 import jQuery from 'jquery';
 import Raven from 'raven-js';
 
-// TODO: Enlever les dépendance à $.app
 var $ = jQuery;
 
 declare var window: Object;
@@ -116,16 +115,8 @@ export default class BaseApplication extends EventEmitter{
 				this.pingInterval);
 		}
 
-		this._iPad = (navigator.userAgent.match(/iPad/) === 'iPad');
-		this._iPod = (navigator.userAgent.match(/iPod/) === 'iPod');
-		this._iPhone = (navigator.userAgent.match(/iPhone/) === 'iPhone');
-		this._blackberry = (navigator.userAgent.match('/BlackBerry/') === 'BlackBerry' && $.browser.webkit);
-		this._palm_pre = (navigator.userAgent.match('/webOS/') === 'webOS' && $.browser.webkit);
-		this._mobile = (this._iPad || this._iPod || this._iPhone || this._blackberry || this._palm_pre);
-		this._webkit = $.browser.webkit;
-		this._opera = $.browser.opera;
-		this._msie = $.browser.msie;
-		this._mozilla = $.browser.mozilla;
+		this.browserDetect();
+
 
 		// Error catching function
 		window.onerror = function (description, page, line) {
@@ -144,11 +135,11 @@ export default class BaseApplication extends EventEmitter{
 		};
 
 		if (!window.name.match(/^GUID-/)) {
-			window.name = 'GUID-' + $.app.generateGUID();
+			window.name = 'GUID-' + self.generateGUID();
 		}
 
 		$('#hook_confidentiality_policy,#hook_usage_policy').safeClick(function () {
-			$.app.showMessage($(this).text(), $.app._('AVAILABLE_SOON'));
+			self.showMessage($(this).text(), self._('AVAILABLE_SOON'));
 		});
 
 		$.ajaxSetup({
@@ -163,6 +154,49 @@ export default class BaseApplication extends EventEmitter{
 		});
 
 		this._init();
+	}
+
+	browserDetect(){
+		// Taken from jquery-migrate
+		const uaMatch = function( ua ) {
+			ua = ua.toLowerCase();
+
+			var match = /(chrome)[ \/]([\w.]+)/.exec( ua ) ||
+				/(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+				/(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
+				/(msie) ([\w.]+)/.exec( ua ) ||
+				ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
+				[];
+
+			return {
+				browser: match[ 1 ] || "",
+				version: match[ 2 ] || "0"
+			};
+		};
+		const matched = uaMatch(navigator.userAgent);
+		this.browser = {};
+		if ( matched.browser ) {
+			this.browser[ matched.browser ] = true;
+			this.browser.version = matched.version;
+		}
+
+		// Chrome is Webkit, but Webkit is also Safari.
+		if ( this.browser.chrome ) {
+			this.browser.webkit = true;
+		} else if ( browser.webkit ) {
+			this.browser.safari = true;
+		}
+
+		this._webkit = this.browser.webkit;
+		this._opera = this.browser.opera;
+		this._msie = this.browser.msie;
+		this._mozilla = this.browser.mozilla;
+		this._iPad = (navigator.userAgent.match(/iPad/) === 'iPad');
+		this._iPod = (navigator.userAgent.match(/iPod/) === 'iPod');
+		this._iPhone = (navigator.userAgent.match(/iPhone/) === 'iPhone');
+		this._blackberry = (navigator.userAgent.match('/BlackBerry/') === 'BlackBerry' && this.browser.webkit);
+		this._palm_pre = (navigator.userAgent.match('/webOS/') === 'webOS' && this.browser.webkit);
+		this._mobile = (this._iPad || this._iPod || this._iPhone || this._blackberry || this._palm_pre);
 	}
 
 	_init() {
@@ -502,26 +536,27 @@ export default class BaseApplication extends EventEmitter{
 	}
 
 	_showNavigationError() {
-		$.app.showModalDialog('<h2>'+$.app._('NAVIGATION_ERROR')+'</h2>\
+		const self = this;
+		self.showModalDialog('<h2>'+self._('NAVIGATION_ERROR')+'</h2>\
 										<p>\
-											<strong>'+$.app._('INVALID_PAGE_REQUEST')+'</strong>\
+											<strong>'+self._('INVALID_PAGE_REQUEST')+'</strong>\
 											<br />\
 										</p>\
 										<p class="submit">\
-											<input type="submit" id="hook_create_error_close" value="'+$.app._('OK')+'" />\
+											<input type="submit" id="hook_create_error_close" value="'+self._('OK')+'" />\
 										</p>', 'fast', function() {
 			$('#hook_create_error_close').safeClick(function() {
-				$.app.hideModalDialog('fast');
+				self.hideModalDialog('fast');
 
 				// stop looking at the location for now ...
-				$.app._stopObservation();
+				self._stopObservation();
 
 				// ... revert page change ...
-				$.app.hash = $.app.stepBack();
-				$.app._history.push($.app.hash);
+				self.hash = self.stepBack();
+				self._history.push(self.hash);
 
 				// ... and then start to observe again
-				$.app._observe();
+				self._observe();
 			});
 		});
 	}
@@ -530,18 +565,18 @@ export default class BaseApplication extends EventEmitter{
 	 *	Show a modal dialog telling the user something bad happened. He can try again or go back to where he was before.
 	 */
 	_showFatalError(error) {
-		var t = this;
+		var self = this;
 
-		this.showModalDialog('<h2>'+$.app._('ERROR')+'</h2>\
+		this.showModalDialog('<h2>'+self._('ERROR')+'</h2>\
 						<p>\
-							<strong>'+$.app._('FATAL_ERROR_OCCURED')+'</strong>\
+							<strong>'+self._('FATAL_ERROR_OCCURED')+'</strong>\
 							<br />\
-							'+$.app._('CONTACT_SUPPORT_PERSIST')+'\
+							'+self._('CONTACT_SUPPORT_PERSIST')+'\
 						</p>\
 						<p class="submit">\
-							'+$.app._('FATAL_ERROR__YOU_CAN')+' <a href="javascript:$.app._hideFatalError(\'reload\');">'+$.app._('FATAL_ERROR__RELOAD_PAGE')+'</a> '+$.app._('OR')+' <a href="javascript:$.app._hideFatalError(\'stepback\');">'+$.app._('FATAL_ERROR__GO_BACK')+'</a>\
+							'+self._('FATAL_ERROR__YOU_CAN')+' <a href="javascript:$.app._hideFatalError(\'reload\');">'+self._('FATAL_ERROR__RELOAD_PAGE')+'</a> '+self._('OR')+' <a href="javascript:$.app._hideFatalError(\'stepback\');">'+self._('FATAL_ERROR__GO_BACK')+'</a>\
 						</p>', 'fast', function() {
-			t._errors.push({description:error, page:'$.app.js', line:0});
+			self._errors.push({description:error, page:'$.app.js', line:0});
 		});
 	}
 
@@ -549,8 +584,9 @@ export default class BaseApplication extends EventEmitter{
 	 *	Close the modal dialog then reload or back, depending on what the use chose.
 	 */
 	_hideFatalError(action) {
+		const self = this;
 		this.hideModalDialog('fast', function() {
-			$.app.hideOverlay();
+			self.hideOverlay();
 
 			$('#fatal_error').remove();
 
@@ -558,7 +594,7 @@ export default class BaseApplication extends EventEmitter{
 				location.reload();
 			}
 			else if(action == 'stepback') {
-				$.app.forceStepBack();
+				self.forceStepBack();
 			}
 		});
 	}
@@ -723,11 +759,11 @@ export default class BaseApplication extends EventEmitter{
 	}
 
 	goToNoTriggerHashChange(hash){
-		$.app._stopObservation();
+		this._stopObservation();
 		this.goTo(hash);
-		$.app._hash_changed_while_not_observing = false;
-		$.app.hash = hash;
-		$.app._observe();
+		this._hash_changed_while_not_observing = false;
+		this.hash = hash;
+		this._observe();
 	}
 
 	navigateBackTo(hash) {
@@ -843,12 +879,10 @@ export default class BaseApplication extends EventEmitter{
 	_fetchView(view, hiddenParams) {
 		this.currentView = view;
 
-		// TODO : Branch here to lookup data from gears instead doing a ajax query.
+		var self = this;
 
-		var t = this;
-
-		t._hideLoading();
-		t.abortOngoingXHR();
+		self._hideLoading();
+		self.abortOngoingXHR();
 
 		var cached = this._isViewCached(view);
 		if(cached && this.debug) {
@@ -856,8 +890,8 @@ export default class BaseApplication extends EventEmitter{
 		}
 
 		this.view_fetching = true;
-		t._onBeforeFetchView(t.currentView);
-		t._onFetchView(this._getViewObject(t.currentView));
+		self._onBeforeFetchView(self.currentView);
+		self._onFetchView(this._getViewObject(self.currentView));
 
 		// Ask the requested view to transmute hash to query parameters
 		var params = this._getViewParameters(location.hash);
@@ -873,12 +907,12 @@ export default class BaseApplication extends EventEmitter{
 			}
 		}
 
-		params.k  = t.SESSION_KEY;
-		params.view  = t.currentView;
+		params.k  = self.SESSION_KEY;
+		params.view  = self.currentView;
 		params.cmd = 'view';
 		params.cached = cached;
 		params.version = this.getApplicationVersion();
-		params.uv = t.userVersion;
+		params.uv = self.userVersion;
 
 		if(this.replaced_session_key) {
 			params.rk = this.replaced_session_key;
@@ -891,35 +925,35 @@ export default class BaseApplication extends EventEmitter{
 			url:'index.php?'+param_string,
 			type : 'POST',
 			data: {
-				context : $.app.getContext()
+				context : self.getContext()
 			},
 			dataType:'json',
-			headers: $.app.getXSRFHeaders(),
+			headers: self.getXSRFHeaders(),
 			success: function(response) {
-				t.view_fetching = false;
-				t._hideLoading();
+				self.view_fetching = false;
+				self._hideLoading();
 				if(response.status == 'error') {
 					var info = response.data;
 					if(info.code == 600) { // VIEW_CMD_ERROR;
 						// Hopefuly this won't happen
-						t._showFatalError('An error occured server side while fetching view data "'+view+'" (600)');
+						self._showFatalError('An error occured server side while fetching view data "'+view+'" (600)');
 					}
 					else if(info.code == 601 || info.code == 602) { // VIEW_ACL_ERROR or MODEL_ACL_ERROR
-						t._showNavigationError();
+						self._showNavigationError();
 					}
 					else { // Unknown error
-						t._showFatalError('An unknown error was sent from server while fetching view data "'+view+'" ('+info.error+')');
+						self._showFatalError('An unknown error was sent from server while fetching view data "'+view+'" ('+info.error+')');
 					}
 
 					return false;
 				}
-				t._onLoadView(t._getViewObject(t.currentView), response.data, hiddenParams);
-				t._loadView(response.data, hiddenParams);
+				self._onLoadView(self._getViewObject(self.currentView), response.data, hiddenParams);
+				self._loadView(response.data, hiddenParams);
 			},
 			error: function(jqXHR, status, error) {
-				t.view_fetching = false;
-				t._hideLoading();
-				if(!$.app.validateXHR(jqXHR)){
+				self.view_fetching = false;
+				self._hideLoading();
+				if(!self.validateXHR(jqXHR)){
 					return false;
 				}
 
@@ -929,13 +963,13 @@ export default class BaseApplication extends EventEmitter{
 					console.debug(error);
 				}
 
-				t._showFatalError('An error occured while fetching view data "'+view+'" ('+status+')');
+				self._showFatalError('An error occured while fetching view data "'+view+'" ('+status+')');
 			}
 		});
 
 		// If we don't receive an awnser after 1.5 second, a loading overlay will appear
 		this._loadingTimeout = setTimeout(function() {
-			t._showLoading();
+			self._showLoading();
 		}, this._loadingDelay);
 	}
 
@@ -1135,14 +1169,15 @@ export default class BaseApplication extends EventEmitter{
 	_onViewHook(viewObject) { }
 
 	recursiveCleanFloats(model) {
+		var self = this;
 		if($.isArray(model)) {
 			for(var i = 0; i < model.length; i++) {
-				model[i] = $.app.recursiveCleanFloats(model[i]);
+				model[i] = self.recursiveCleanFloats(model[i]);
 			}
 		}
 		else if(typeof model == 'object') {
 			for(var k in model) {
-				model[k] = $.app.recursiveCleanFloats(model[k]);
+				model[k] = self.recursiveCleanFloats(model[k]);
 			}
 		}
 		else {
@@ -1162,7 +1197,7 @@ export default class BaseApplication extends EventEmitter{
 		var object = this._getViewObject(this.currentView);
 
 		if(object) {
-			model = $.app.recursiveCleanFloats(model);
+			model = this.recursiveCleanFloats(model);
 
 			if(this.debug) {
 				console.debug(model);
@@ -1621,7 +1656,8 @@ export default class BaseApplication extends EventEmitter{
 	 * @param callback Function to call once the animation is done
 	 */
 	showModalDialog(content, speed, callback, width) {
-		if($.app.debug)
+		var self = this;
+		if(this.debug)
 			console.debug('Show modal dialog');
 
 		this.showOverlay('#000', 0.4);
@@ -1632,7 +1668,7 @@ export default class BaseApplication extends EventEmitter{
 				.attr('id', 'modal_dialog')
 				.css({
 					'display': 'none',
-					'top': $.app._scrollTop() + 'px'
+					'top': self._scrollTop() + 'px'
 				})
 				.append(
 					$('<div></div>')
@@ -1649,7 +1685,6 @@ export default class BaseApplication extends EventEmitter{
 			$('#modal_dialog .modal-2').css('width', width);
 		}
 
-		if($.app.isIE7()) $('div.modal p.submit').prepend('<span style="width: 1px; display: inline-block;">&nbsp;</span>');
 		$('#modal_dialog').slideDown(speed, callback);
 	}
 
@@ -1662,11 +1697,12 @@ export default class BaseApplication extends EventEmitter{
 	 *  false if it should be removed (default)
 	 */
 	hideModalDialog(speed, callback, use_detach) {
-		if($.app.debug)
+		const self = this;
+		if(this.debug)
 			console.debug('Hide modal dialog');
 
 		$('#modal_dialog').fadeOut(speed, function() {
-			$.app.hideOverlay();
+			self.hideOverlay();
 			if(use_detach){
 				$('#modal_dialog').detach();
 			}
@@ -1681,51 +1717,54 @@ export default class BaseApplication extends EventEmitter{
 	 * Hide the modal dialog now. Mainly used to be sure no dialog is left behind
 	 */
 	hideModalDialogNow() {
-		if($.app.debug)
+		if(this.debug)
 			console.debug('Hide modal dialog now!');
 
 		$('#modal_dialog').remove();
 	}
 
 	getShowErrorHTML(message) {
-		return '<div class="modal-dialog"><h2>'+$.app._('ERROR')+'</h2>\
+		const self = this;
+		return '<div class="modal-dialog"><h2>'+self._('ERROR')+'</h2>\
 						<p>\
-							<strong>'+(message ? $.app._(message) : $.app._('FATAL_ERROR_OCCURED'))+'</strong>\
+							<strong>'+(message ? self._(message) : self._('FATAL_ERROR_OCCURED'))+'</strong>\
 							<br />\
-							'+$.app._('ERROR_TRY_AGAIN')+'\
+							'+self._('ERROR_TRY_AGAIN')+'\
 							<br />\
-							'+$.app._('CONTACT_SUPPORT_PERSIST')+'\
+							'+self._('CONTACT_SUPPORT_PERSIST')+'\
 						</p>\
 						<p class="submit">\
-							<input type="submit" id="hook_create_error_close" value="'+$.app._('OK')+'" />\
+							<input type="submit" id="hook_create_error_close" value="'+self._('OK')+'" />\
 						</p></div>';
 	}
 
 	showError(message, onHideCallback) {
-		$.app.showModalDialog($.app.getShowErrorHTML(message), 'fast', function() {
+		const self = this;
+		self.showModalDialog(self.getShowErrorHTML(message), 'fast', function() {
 			$('#hook_create_error_close').safeClick(function() {
-				$.app.hideModalDialog('fast');
+				self.hideModalDialog('fast');
 				if (onHideCallback) { onHideCallback(); }
 			});
 		});
 	}
 
 	getShowSessionExpiredError() {
-		return '<div class="modal-dialog"><h2>'+$.app._('INVALID_CREDENTIAL_ERROR_TITLE')+'</h2>\
+		const self = this;
+		return '<div class="modal-dialog"><h2>'+self._('INVALID_CREDENTIAL_ERROR_TITLE')+'</h2>\
 				<p>\
-					<strong>'+$.app._('INVALID_CREDENTIAL_ERROR_BODY')+'</strong>\
+					<strong>'+self._('INVALID_CREDENTIAL_ERROR_BODY')+'</strong>\
 					<br />\
 				</p>\
 				<p class="submit">\
-					<input type="submit" id="hook_session_expired_error_close" value="'+$.app._('OK')+'" />\
+					<input type="submit" id="hook_session_expired_error_close" value="'+self._('OK')+'" />\
 				</p>\
 			</div>';
 	}
 
 	showSessionExpiredError(location) {
-		var self = this;
+		const self = this;
 		location = location || self.VIRTUALPATH || '/?logout';
-		$.app.showModalDialog($.app.getShowSessionExpiredError(), 'fast', function() {
+		self.showModalDialog(self.getShowSessionExpiredError(), 'fast', function() {
 			$('#hook_session_expired_error_close').safeClick(function() {
 				document.location = location;
 			});
@@ -1733,13 +1772,14 @@ export default class BaseApplication extends EventEmitter{
 	}
 
 	getShowXHRNetworkError() {
-		return '<div class="modal-dialog"><h2>'+$.app._('XHR_NETWORK_ERROR_TITLE')+'</h2>\
+		const self = this;
+		return '<div class="modal-dialog"><h2>'+self._('XHR_NETWORK_ERROR_TITLE')+'</h2>\
 				<p>\
-					<strong>'+$.app._('XHR_NETWORK_ERROR_BODY')+'</strong>\
+					<strong>'+self._('XHR_NETWORK_ERROR_BODY')+'</strong>\
 					<br />\
 				</p>\
 				<p class="submit">\
-					<input type="submit" id="hook_xhr_network_error_close" value="'+$.app._('OK')+'" />\
+					<input type="submit" id="hook_xhr_network_error_close" value="'+self._('OK')+'" />\
 				</p>\
 			</div>';
 	}
@@ -1755,69 +1795,72 @@ export default class BaseApplication extends EventEmitter{
 	}
 
 	getShowConfirmationHTML(title, message) {
+		const self = this;
 		return '<div class="modal-dialog"><h2>'+title+'</h2>\
 							<p>'+message+'</p>\
 						<p class="submit">\
-							<input type="button" id="hook_confirmation_yes" value="'+$.app._('YES')+'" />\
-							<input type="button" id="hook_confirmation_no" value="'+$.app._('NO')+'" />\
+							<input type="button" id="hook_confirmation_yes" value="'+self._('YES')+'" />\
+							<input type="button" id="hook_confirmation_no" value="'+self._('NO')+'" />\
 						</p></div>';
 	}
 
 	showConfirmation(title, message, yesCallback, noCallback) {
-		$.app.showModalDialog($.app.getShowConfirmationHTML(title, message), 'fast', function() {
+		const self = this;
+		self.showModalDialog(self.getShowConfirmationHTML(title, message), 'fast', function() {
 
 			$('#hook_confirmation_yes').safeClick(function() {
 				if (yesCallback) { yesCallback(); }
-				$.app.hideModalDialog('fast');
+				self.hideModalDialog('fast');
 			});
 
 			$('#hook_confirmation_no').safeClick(function() {
 				if (noCallback) { noCallback(); }
-				$.app.hideModalDialog('fast');
+				self.hideModalDialog('fast');
 			});
 		});
 	}
 
 	showMessage(title, message, content) {
+		const self = this;
 		if(title === '')
 			this._throw('Missing title', true);
 		if(message === '')
 			this._throw('Missing message', true);
 
-		$.app.showModalDialog('<h2>'+title+'</h2>\
+		self.showModalDialog('<h2>'+title+'</h2>\
 						<p>\
 							<strong>'+message+'</strong>\
 						</p>\
 						'+(content ? '<p>'+content+'</p>' : '')+'\
 						<p class="submit">\
-							<input type="submit" id="hook_show_message_close" value="'+$.app._('OK')+'" />\
+							<input type="submit" id="hook_show_message_close" value="'+self._('OK')+'" />\
 						</p>', 'fast', function() {
 			$('#hook_show_message_close').safeClick(function() {
-				$.app.hideModalDialog('fast');
+				self.hideModalDialog('fast');
 			});
 		});
 	}
 
 	showQuestionCommentDialog(comment_type){
 
-		var t = this;
+		var self = this;
 
-		var content = '<h2>'+$.app._('QUESTION_COMMENT_SUGGESTION')+'</h2>\
+		var content = '<h2>'+self._('QUESTION_COMMENT_SUGGESTION')+'</h2>\
 		<div class="header_line"></div>\
 		<div id="hook_question_comment_form">\
 		<dl class="form left_form">\
-		<dt><label style="width:100px">' + $.app._('COMMENT_TYPE') + '</label></dt>\
+		<dt><label style="width:100px">' + self._('COMMENT_TYPE') + '</label></dt>\
 		<dd><select id="hook_question_comment_type">\
-		<option value="QUESTION">' + $.app._('QUESTION') + '</option>\
-		<option value="COMMENT">' + $.app._('COMMENT') + '</option>\
-		<option value="SUGGESTION">' + $.app._('SUGGESTION') + '</option>\
+		<option value="QUESTION">' + self._('QUESTION') + '</option>\
+		<option value="COMMENT">' + self._('COMMENT') + '</option>\
+		<option value="SUGGESTION">' + self._('SUGGESTION') + '</option>\
 		</select></dd>\
-		<dt><label style="width:100px">' + $.app._('COMMENT_FROM') + '</label></dt>\
+		<dt><label style="width:100px">' + self._('COMMENT_FROM') + '</label></dt>\
 		<dd><input type="text" id="hook_question_comment_from" style="width:350px" disabled="disabled" /></dd>\
-		<dt><label style="width:100px">' + $.app._('COMMENT_SUBJECT') + '</label></dt>\
+		<dt><label style="width:100px">' + self._('COMMENT_SUBJECT') + '</label></dt>\
 		<dd><input type="text" id="hook_question_comment_subject" style="width:350px" /></dd>\
 		<div id="hook_question_comment_attachement_div">\
-		<dt><label style="width:100px">' + $.app._('ATTACHMENT') + '</label></dt>\
+		<dt><label style="width:100px">' + self._('ATTACHMENT') + '</label></dt>\
 		<dd><div id="file_upload"></div></dd>\
 		<dd><ul style="margin-left:115px;" id="uploaded_files_names"></ul><dd>\
 		<br />\
@@ -1825,18 +1868,18 @@ export default class BaseApplication extends EventEmitter{
 		<dd><textarea id="hook_question_comment_textarea" style="width:500px;height:150px"></textarea></dd>\
 		</dl>\
 		<p class="submit">\
-		<input type="submit" id="hook_send_question_comment" value="'+$.app._('OK')+'" /> <a href="javascript:void(0);" id="hook_cancel_question_comment">'+$.app._('CANCEL')+'</a>\
+		<input type="submit" id="hook_send_question_comment" value="'+self._('OK')+'" /> <a href="javascript:void(0);" id="hook_cancel_question_comment">'+self._('CANCEL')+'</a>\
 		</p>\
 		</div>\
-		<div id="hook_question_comment_sent" style="display:none"><p>' + $.app._('THANK_YOU_FOR_YOUR_COMMENTS') + '</p></div>';
+		<div id="hook_question_comment_sent" style="display:none"><p>' + self._('THANK_YOU_FOR_YOUR_COMMENTS') + '</p></div>';
 
 		var i = 0;
 
-		$.app.showModalDialog(content, 'normal', function(){
+		self.showModalDialog(content, 'normal', function(){
 
 			if(comment_type) $('#hook_question_comment_type').val(comment_type);
 
-			$('#hook_question_comment_from').val($.app.userEmail);
+			$('#hook_question_comment_from').val(self.userEmail);
 
 			$('#hook_send_question_comment').safeClick(function() {
 
@@ -1846,12 +1889,12 @@ export default class BaseApplication extends EventEmitter{
 				var message = $('#hook_question_comment_textarea').val();
 
 				if(!subject){
-					$('#hook_question_comment_subject').hintError($.app._('FIELD_REQUIRED')).focus();
+					$('#hook_question_comment_subject').hintError(self._('FIELD_REQUIRED')).focus();
 					return false;
 				}
 
 				if(!message){
-					$('#hook_question_comment_textarea').hintError($.app._('FIELD_REQUIRED')).focus();
+					$('#hook_question_comment_textarea').hintError(self._('FIELD_REQUIRED')).focus();
 					return false;
 				}
 
@@ -1859,38 +1902,38 @@ export default class BaseApplication extends EventEmitter{
 					'&subject=' + encodeURIComponent(subject) +
 					'&from=' + encodeURIComponent(from) +
 					'&message=' + encodeURIComponent(message) +
-					'&tmp_dir=' + encodeURIComponent(t.tmp_dir);
+					'&tmp_dir=' + encodeURIComponent(self.tmp_dir);
 
 				$.ajax({
-					url:'index.php?k=' + t.SESSION_KEY + '&sendComment' ,
+					url:'index.php?k=' + self.SESSION_KEY + '&sendComment' ,
 					type: 'POST',
 					data: postString,
 					dataType:'json',
-					headers: $.app.getXSRFHeaders(),
+					headers: self.getXSRFHeaders(),
 					success: function(data) {
 
 						if(data.status && data.status == 'error') {
-							$.app.showError();
-							$.app.hideModalDialog('fast');
+							self.showError();
+							self.hideModalDialog('fast');
 							return false;
 						}
 
 						setTimeout(function(){
-							$.app.hideModalDialog('fast');
+							self.hideModalDialog('fast');
 						}, 2000);
 
-						removeQCSAjaxFolder(t.tmp_dir);
+						removeQCSAjaxFolder(self.tmp_dir);
 						return true;
 
 					},
 					error: function(jqXHR, status, error) {
-						if(!$.app.validateXHR(jqXHR)){
-							$.app.hideModalDialog('fast');
+						if(!self.validateXHR(jqXHR)){
+							self.hideModalDialog('fast');
 							return false;
 						}
 
-						$.app.showError();
-						$.app.hideModalDialog('fast');
+						self.showError();
+						self.hideModalDialog('fast');
 						return false;
 					}
 				});
@@ -1902,8 +1945,8 @@ export default class BaseApplication extends EventEmitter{
 			});
 
 			$('#hook_cancel_question_comment').safeClick(function() {
-				t.tmp_dir = '';
-				$.app.hideModalDialog('fast');
+				self.tmp_dir = '';
+				self.hideModalDialog('fast');
 
 			});
 
@@ -1913,7 +1956,7 @@ export default class BaseApplication extends EventEmitter{
 		this.QCS_uploader = [];
 		function generateQCSAjaxUploader(){
 			return $('#file_upload').ajaxUploader({
-				url:'index.php?k=' + t.SESSION_KEY + '&uploadFile&tmp_dir=' + t.tmp_dir,
+				url:'index.php?k=' + self.SESSION_KEY + '&uploadFile&tmp_dir=' + self.tmp_dir,
 				autoUpload : true,
 				progressBarConfig: {
 					barImage: 'img/progressbg_orange.gif'
@@ -1922,21 +1965,21 @@ export default class BaseApplication extends EventEmitter{
 					if(data.ajax_filename){
 						var element_number = i++;
 						var filename = data.ajax_filename;
-						t.tmp_dir = data.tmp_dir;
+						self.tmp_dir = data.tmp_dir;
 						$('#uploaded_files_names').append('<li id="ajax_file_'+ element_number + '" style="list-style:none;">' + filename + '&nbsp&nbsp<span class="ico icon-cross" id="ajax_file_remove_' + element_number + '" style="position: absolute; margin-bottom:10px;"></span></li>');
 						$('#ajax_file_remove_'+ element_number).on('click', function(){
-							removeQCSAjaxFile(t.tmp_dir, filename, element_number);
+							removeQCSAjaxFile(self.tmp_dir, filename, element_number);
 						});
-						t.QCS_uploader.push(generateQCSAjaxUploader());
+						self.QCS_uploader.push(generateQCSAjaxUploader());
 					}
 					else if(data.error){
 						console.debug(data.error);
-						$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
+						self.showMessage(self._('ERROR'), self._('UPLOAD_FILE_ERROR_OCCURED'));
 					}
 				},
 				error: function (jqXHR, status, error){
 					console.debug('Error uploading attachment.');
-					$.app.showMessage($.app._('ERROR'), $.app._('UPLOAD_FILE_ERROR_OCCURED'));
+					self.showMessage(self._('ERROR'), self._('UPLOAD_FILE_ERROR_OCCURED'));
 				}
 			});
 		}
@@ -1949,18 +1992,18 @@ export default class BaseApplication extends EventEmitter{
 				'&fld=' + encodeURIComponent(folder);
 
 			$.ajax({
-				url:'index.php?k=' + t.SESSION_KEY + '&removeQCSAjaxFile',
+				url:'index.php?k=' + self.SESSION_KEY + '&removeQCSAjaxFile',
 				type: 'POST',
 				data: postString,
 				dataType:'json',
-				headers: $.app.getXSRFHeaders(),
+				headers: self.getXSRFHeaders(),
 				success: function(data) {
 					$('#ajax_file_'+ div_number).remove();
 					$('#ajax_file_remove_'+ div_number).remove();
 					return true;
 				},
 				error: function (jqXHR, status, error){
-					if(!$.app.validateXHR(jqXHR)){
+					if(!self.validateXHR(jqXHR)){
 						return false;
 					}
 					console.debug('Error deleting attachment.');
@@ -1970,18 +2013,18 @@ export default class BaseApplication extends EventEmitter{
 
 		function removeQCSAjaxFolder(folder){
 
-			t.tmp_dir = '';
+			self.tmp_dir = '';
 			$.ajax({
-				url:'index.php?k=' + t.SESSION_KEY + '&removeQCSAjaxFolder',
+				url:'index.php?k=' + self.SESSION_KEY + '&removeQCSAjaxFolder',
 				type: 'POST',
 				data: '&fld=' + encodeURIComponent(folder),
 				dataType:'json',
-				headers: $.app.getXSRFHeaders(),
+				headers: self.getXSRFHeaders(),
 				success: function(data) {
 					return true;
 				},
 				error: function (jqXHR, status, error){
-					if(!$.app.validateXHR(jqXHR)){
+					if(!self.validateXHR(jqXHR)){
 						return false;
 					}
 				}
@@ -2193,7 +2236,7 @@ export default class BaseApplication extends EventEmitter{
 		var rounded;
 		var tmp;
 		if(options.precision===0){
-			rounded = $.app.parseFloat(value).toFixed(0);
+			rounded = this.parseFloat(value).toFixed(0);
 			tmp = rounded;
 		}
 		else {
@@ -2357,7 +2400,7 @@ export default class BaseApplication extends EventEmitter{
 		}
 
 		if(extension) {
-			formatted += $.app._('PHONE_EXTENSION')+extension;
+			formatted += this._('PHONE_EXTENSION')+extension;
 		}
 
 		return formatted;
@@ -2410,7 +2453,7 @@ export default class BaseApplication extends EventEmitter{
 		}
 
 		if(jqXHR.status ===  0){
-			// $.app._beforeUnload calling $.app.abortOngoingXHR() may be trigerred after the request completion so we delay the check.
+			// self._beforeUnload calling self.abortOngoingXHR() may be trigerred after the request completion so we delay the check.
 			setTimeout(function(){
 
 				if(jqXHR.statusText === 'abort'){
@@ -2434,7 +2477,7 @@ export default class BaseApplication extends EventEmitter{
 	}
 
 	getXHRRequest(url, successCallback, loading, errorCallback, button, skipOverlayHandling) {
-		var t = this;
+		var self = this;
 
 		var xhrRequest = $.ajax({
 			url: url,
@@ -2443,8 +2486,8 @@ export default class BaseApplication extends EventEmitter{
 
 			success: function(response) {
 				if(!skipOverlayHandling){
-					t.hideOverlay();
-					t._hideLoading();
+					self.hideOverlay();
+					self._hideLoading();
 				}
 
 				if(button)
@@ -2463,10 +2506,10 @@ export default class BaseApplication extends EventEmitter{
 						errorCallback(data );
 					}
 					else if(typeof data.message != 'undefined'){
-						$.app.showError(data.message);
+						self.showError(data.message);
 					}
 					else {
-						$.app.showError();
+						self.showError();
 					}
 				}
 				else if(typeof successCallback == 'function') {
@@ -2475,15 +2518,15 @@ export default class BaseApplication extends EventEmitter{
 			},
 			error: function(jqXHR, status, error) {
 				if(!skipOverlayHandling) {
-					t.hideOverlay();
-					t._hideLoading();
+					self.hideOverlay();
+					self._hideLoading();
 				}
 
 				if(button) {
 					$(button).prop('disabled', false);
 				}
 
-				if(!$.app.validateXHR(jqXHR)){
+				if(!self.validateXHR(jqXHR)){
 					return false;
 				}
 
@@ -2496,7 +2539,7 @@ export default class BaseApplication extends EventEmitter{
 				if(typeof errorCallback == 'function')
 					errorCallback();
 				else
-					$.app.showError();
+					self.showError();
 			}
 		});
 
@@ -2568,10 +2611,10 @@ export default class BaseApplication extends EventEmitter{
 						errorCallback(data );
 					}
 					else if(typeof data.message != 'undefined'){
-						$.app.showError(data.message);
+						self.showError(data.message);
 					}
 					else {
-						$.app.showError();
+						self.showError();
 					}
 				}
 				else if(typeof callback == 'function') {
@@ -2589,7 +2632,7 @@ export default class BaseApplication extends EventEmitter{
 					$(button).prop('disabled', false);
 				}
 
-				if(!$.app.validateXHR(jqXHR)){
+				if(!self.validateXHR(jqXHR)){
 					return false;
 				}
 
@@ -2602,7 +2645,7 @@ export default class BaseApplication extends EventEmitter{
 				if(typeof errorCallback == 'function')
 					errorCallback();
 				else
-					$.app.showError();
+					self.showError();
 			}
 		});
 
@@ -2663,10 +2706,10 @@ export default class BaseApplication extends EventEmitter{
 						errorCallback(data);
 					}
 					else if(typeof data.message != 'undefined'){
-						$.app.showError(data.message);
+						self.showError(data.message);
 					}
 					else {
-						$.app.showError();
+						self.showError();
 					}
 				}
 				else if(typeof callback == 'function') {
@@ -2681,7 +2724,7 @@ export default class BaseApplication extends EventEmitter{
 					$(button).prop('disabled', false);
 				}
 
-				if(!$.app.validateXHR(jqXHR)){
+				if(!self.validateXHR(jqXHR)){
 					return false;
 				}
 
@@ -2694,7 +2737,7 @@ export default class BaseApplication extends EventEmitter{
 				if(typeof errorCallback == 'function')
 					errorCallback();
 				else
-					$.app.showError();
+					self.showError();
 			},
 			ajaxStop: function(){
 				self.ajaxQueryLoading = false;
@@ -2719,8 +2762,9 @@ export default class BaseApplication extends EventEmitter{
 	}
 
 	datepicker(selector, options) {
+		var self = this;
 		return $(selector).bind('change', function() {
-			this.value = $.app.date.format(this.value, 'input');
+			this.value = self.date.format(this.value, 'input');
 		}).datepicker(options);
 	}
 
@@ -2799,9 +2843,9 @@ export default class BaseApplication extends EventEmitter{
 	 * Download a file using an iframe
 	 */
 	downloadFile(url){
-		var t = this;
+		var self = this;
 
-		if(!t._iPad){
+		if(!self._iPad){
 			var frameId =  'download_iframe';
 			var io = document.getElementById(frameId);
 			if(!io){
@@ -2817,15 +2861,15 @@ export default class BaseApplication extends EventEmitter{
 			io.src = url;
 		}
 		else {
-			var content = '<h2>'+$.app._('DOWNLOAD_FILE_DIALOG_TITLE')+'</h2>\
+			var content = '<h2>'+self._('DOWNLOAD_FILE_DIALOG_TITLE')+'</h2>\
 			<div class="header_line"></div>\
-			<a id="hook_download_file" href="javascript:void(0);">' + t._('DOWNLOAD_FILE') + '</a>\
+			<a id="hook_download_file" href="javascript:void(0);">' + self._('DOWNLOAD_FILE') + '</a>\
 			<br /><br />';
 
-			$.app.showModalDialog(content, 'normal', function() {
+			self.showModalDialog(content, 'normal', function() {
 				$('#hook_download_file').click(function(){
 					window.open(url, '_blank');
-					$.app.hideModalDialog('fast');
+					self.hideModalDialog('fast');
 				});
 			});
 		}

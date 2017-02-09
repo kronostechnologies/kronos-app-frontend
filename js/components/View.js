@@ -1,9 +1,10 @@
 // @flow
 
-import jQuery from 'jquery';
+// import jQuery from 'jquery';
 
 // TODO: Enlever les dépendance à $.app
-var $ = jQuery;
+// var $ = jQuery;
+declare var $;
 
 export default class View {
 

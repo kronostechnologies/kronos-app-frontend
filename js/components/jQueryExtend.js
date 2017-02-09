@@ -1,7 +1,5 @@
-import $ from 'jquery';
 
-// TODO: Enlever les dépendance à $.app
-var jQueryExtend = {
+export default (jQuery, app) => ({
 
 	alternateText(value, alternate_value) {
 		this.text(value && value !== '' ? value : alternate_value);
@@ -37,8 +35,8 @@ var jQueryExtend = {
 			const sign = (months_duration < 0 ? '-' : '');
 			const years = Math.floor(Math.abs(months_duration) / 12);
 			const months = Math.abs(months_duration) - 12 * years;
-			text = sign + (years === 0 ? '' : (years === 1 ? $.app._('YEARD').replace('%{years}', years) : $.app._('YEARSD').replace('%{years}', years)) + ' ') +
-				(months === 0 ? '' : (months === 1 ? $.app._('MONTHD').replace('%{months}', months) : $.app._('MONTHSD').replace('%{months}', months)));
+			text = sign + (years === 0 ? '' : (years === 1 ? app._('YEARD').replace('%{years}', years) : app._('YEARSD').replace('%{years}', years)) + ' ') +
+				(months === 0 ? '' : (months === 1 ? app._('MONTHD').replace('%{months}', months) : app._('MONTHSD').replace('%{months}', months)));
 		}
 		this.val(text);
 
@@ -47,10 +45,10 @@ var jQueryExtend = {
 
 	booleanText(value) {
 		if(value === 'YES') {
-			value = $.app._('YES');
+			value = app._('YES');
 		}
 		else if(value === 'NO') {
-			value = $.app._('NO');
+			value = app._('NO');
 		}
 		else {
 			value = '-';
@@ -79,7 +77,7 @@ var jQueryExtend = {
 					t.__clicked = false;
 				}, 500);
 			}
-			else if($.app.debug) {
+			else if(app.debug) {
 				console.debug('catched double click');
 			}
 		});
@@ -89,12 +87,12 @@ var jQueryExtend = {
 
 	numberVal(value, opts) {
 		if(arguments.length > 0) {
-			return $(this).val(self.formatNumber(value, opts));
+			return jQuery(this).val(self.formatNumber(value, opts));
 		}
 
-		const val = $.app.parseFloat(this.val());
+		const val = app.parseFloat(this.val());
 
-		if($(this).hasClass('positive') && $(this).hasClass('number')) {
+		if(jQuery(this).hasClass('positive') && jQuery(this).hasClass('number')) {
 			if(val < 0) {
 				return 0;
 			}
@@ -106,58 +104,59 @@ var jQueryExtend = {
 	},
 
 	number(opts) {
-		return $(this).each(function() {
-			$(this).addClass('number');
-			$(this).val($.app.formatNumber($(this).val(), opts));
 
-			$(this).blur(function() {
-				$(this).val($.app.formatNumber($(this).val(), opts));
+		return jQuery(this).each(function() {
+			jQuery(this).addClass('number');
+			jQuery(this).val(app.formatNumber(jQuery(this).val(), opts));
+
+			jQuery(this).blur(function() {
+				jQuery(this).val(app.formatNumber(jQuery(this).val(), opts));
 			});
 		});
 	},
 
 	moneyVal(value, opts) {
 		if(arguments.length > 0) {
-			if($(this).hasClass('money')) {
-				$(this).data('val', $.app.parseFloat(value.replace('$', '')));
-				return $(this).val(self.formatMoney(value, opts));
+			if(jQuery(this).hasClass('money')) {
+				jQuery(this).data('val', app.parseFloat(value.replace('$', '')));
+				return jQuery(this).val(self.formatMoney(value, opts));
 			}
 
-			return $(this).val(self.formatMoney(value, opts));
+			return jQuery(this).val(self.formatMoney(value, opts));
 		}
-		else if($(this).hasClass('money')) {
-			const val = $(this).data('val');
+		else if(jQuery(this).hasClass('money')) {
+			const val = jQuery(this).data('val');
 
-			if($(this).hasClass('positive') && val < 0) {
+			if(jQuery(this).hasClass('positive') && val < 0) {
 				return 0;
 			}
 
 			return val;
 		}
 
-		return $.app.parseFloat($(this).val().replace('$', ''));
+		return app.parseFloat(jQuery(this).val().replace('$', ''));
 	},
 
 	money(opts) {
-		return $(this).each(function() {
-			const $t = $(this);
+		return jQuery(this).each(function() {
+			const $t = jQuery(this);
 			$t.addClass('money');
 
 			$t.focus(function() {
-				$(this).val($(this).data('val'));
+				jQuery(this).val(jQuery(this).data('val'));
 				return this;
 			});
-			$(this).click(function() {
-				$(this).select();
+			jQuery(this).click(function() {
+				jQuery(this).select();
 			});
-			$(this).blur(function() {
+			jQuery(this).blur(function() {
 				let val;
-				const value = $(this).val();
+				const value = jQuery(this).val();
 				if(opts && opts.canBeNull && (value === '' || value === null)) {
 					val = '';
 				}
 				else {
-					val = $.app.parseFloat(value.replace('$', ''));
+					val = app.parseFloat(value.replace('$', ''));
 					if(opts && opts.true_precision) {
 						if(opts.rounded) {
 							val = Math.round(val * Math.pow(10, opts.true_precision)) / Math.pow(10, opts.true_precision);
@@ -167,8 +166,8 @@ var jQueryExtend = {
 						}
 					}
 				}
-				$(this).data('val', val);
-				$(this).val($.app.formatMoney(val, opts));
+				jQuery(this).data('val', val);
+				jQuery(this).val(app.formatMoney(val, opts));
 				return this;
 			});
 			if($t.val() !== '') {
@@ -179,12 +178,12 @@ var jQueryExtend = {
 
 	percentVal(value, opts) {
 		if(arguments.length > 0) {
-			return $(this).val(self.formatPercent(value, opts));
+			return jQuery(this).val(self.formatPercent(value, opts));
 		}
 
-		const val = $.app.parseFloat(this.val().replace('%', ''));
+		const val = app.parseFloat(this.val().replace('%', ''));
 
-		if($(this).hasClass('positive') && $(this).hasClass('percent')) {
+		if(jQuery(this).hasClass('positive') && jQuery(this).hasClass('percent')) {
 			if(val < 0) {
 				return 0;
 			}
@@ -196,29 +195,29 @@ var jQueryExtend = {
 	},
 
 	percent(opts) {
-		return $(this).each(function() {
-			$(this).addClass('percent');
-			$(this).val($.app.formatPercent($(this).val(), opts));
+		return jQuery(this).each(function() {
+			jQuery(this).addClass('percent');
+			jQuery(this).val(app.formatPercent(jQuery(this).val(), opts));
 
-			$(this).blur(function() {
-				$(this).val($.app.formatPercent($(this).val(), opts));
+			jQuery(this).blur(function() {
+				jQuery(this).val(app.formatPercent(jQuery(this).val(), opts));
 			});
 		});
 	},
 
 	SIN() {
-		return $(this).each(function() {
-			$(this).val($.app.formatSIN($(this).val()));
+		return jQuery(this).each(function() {
+			jQuery(this).val(app.formatSIN(jQuery(this).val()));
 
-			$(this).blur(function() {
-				this.value = $.app.formatSIN($(this).val());
+			jQuery(this).blur(function() {
+				this.value = app.formatSIN(jQuery(this).val());
 			});
 		});
 	},
 
 	datepickerInput(interval) {
-		return $(this).each(function() {
-			const $this = $(this);
+		return jQuery(this).each(function() {
+			const $this = jQuery(this);
 			let $calendar_button = $this.next('.btn.calendar');
 			if($this.next('.btn.calendar').length === 0) {
 				$calendar_button = $('<a href="javascript:void(0);" class="btn calendar" tabindex=-1><span class="icon"></span></a>');
@@ -242,10 +241,10 @@ var jQueryExtend = {
 						onClose(value) {
 							try {
 								const parsed_date = $.datepicker.parseDate('yymmdd', value);
-								$(this).val($.datepicker.formatDate('yy-mm-dd', parsed_date));
+								jQuery(this).val($.datepicker.formatDate('yy-mm-dd', parsed_date));
 							}
 							catch(e) {
-								$(this).val(value);
+								jQuery(this).val(value);
 							}
 						}
 					},
@@ -259,10 +258,10 @@ var jQueryExtend = {
 					onClose(value) {
 						try {
 							const parsed_date = $.datepicker.parseDate('yymmdd', value);
-							$(this).val($.datepicker.formatDate('yy-mm-dd', parsed_date));
+							jQuery(this).val($.datepicker.formatDate('yy-mm-dd', parsed_date));
 						}
 						catch(e) {
-							$(this).val(value);
+							jQuery(this).val(value);
 						}
 					}
 				});
@@ -281,7 +280,7 @@ var jQueryExtend = {
 	hint(text, width) {
 		const w = Math.max(parseInt(width, 10), 200);
 
-		return $(this)
+		return jQuery(this)
 			.wrap('<span class="hinted"></span>')
 			.after('<span class="hint" style="width: ' + w + 'px; right: -' + (w + 50) + 'px;">' + text + '<span class="hint-pointer sprite">&nbsp;</span></span>')
 			.focus(function() {
@@ -295,24 +294,24 @@ var jQueryExtend = {
 					clearTimeout(this._focus_timeout);
 				}
 
-				$(this).next('.hint').fadeOut();
+				jQuery(this).next('.hint').fadeOut();
 			})
 			.keypress(function() {
 				if(this._focus_timeout) {
 					clearTimeout(this._focus_timeout);
 				}
 
-				$(this).next('.hint').fadeOut();
+				jQuery(this).next('.hint').fadeOut();
 			});
 	},
 
 	unhint() {
-		if($(this).parent().hasClass('hinted')) {
-			$(this).next('.hint').remove();
-			$(this).unwrap();
+		if(jQuery(this).parent().hasClass('hinted')) {
+			jQuery(this).next('.hint').remove();
+			jQuery(this).unwrap();
 		}
-		else if($(this).parent().find('.hinted')) {
-			$(this).next('.hint').remove();
+		else if(jQuery(this).parent().find('.hinted')) {
+			jQuery(this).next('.hint').remove();
 		}
 
 		return this;
@@ -320,7 +319,7 @@ var jQueryExtend = {
 
 	hintError(text, width, dont_show) {
 		let blurFocusTarget;
-		let $this = $(this);
+		let $this = jQuery(this);
 
 		if($this.combobox && $this.combobox('instance') !== undefined) {
 			$this = $this.combobox('instance').input;
@@ -389,7 +388,7 @@ var jQueryExtend = {
 			.click(function(e) {
 				e.preventDefault();
 				e.stopPropagation();
-				$(this).fadeOut();
+				jQuery(this).fadeOut();
 			});
 
 		if(!dont_show) {
@@ -400,27 +399,27 @@ var jQueryExtend = {
 	},
 
 	handleHintErrorChange() {
-		$(this).unhint().removeClass('save_warning');
+		jQuery(this).unhint().removeClass('save_warning');
 	},
 
 	setHintErrorWidth(width) {
 		const w = Math.max(parseInt(width, 10), 200);
 
-		$(this).next('.hint').css({
+		jQuery(this).next('.hint').css({
 			width: w
 		});
 
-		return $(this);
+		return jQuery(this);
 	},
 
 	setHintErrorPosition() {
-		const r = -(parseInt($(this).data('hint').css('width')) + 50);
+		const r = -(parseInt(jQuery(this).data('hint').css('width')) + 50);
 
-		$(this).data('hint').css({
+		jQuery(this).data('hint').css({
 			right: r
 		});
 
-		return $(this);
+		return jQuery(this);
 	},
 
 	signal(length) {
@@ -429,8 +428,8 @@ var jQueryExtend = {
 			length = 500;
 		}
 
-		return $(this).each(function() {
-			$(this).addClass('signal');
+		return jQuery(this).each(function() {
+			jQuery(this).addClass('signal');
 			const t = this;
 			setTimeout(() => {
 				$(t).removeClass('signal');
@@ -473,8 +472,8 @@ var jQueryExtend = {
 
 	getClasses() {
 		const all_classes = [];
-		$(this).each(function() {
-			const classes = $(this).attr('class').split(' ');
+		jQuery(this).each(function() {
+			const classes = jQuery(this).attr('class').split(' ');
 
 			for(const k in classes) {
 				let found = false;
@@ -492,6 +491,4 @@ var jQueryExtend = {
 
 		return all_classes;
 	}
-};
-
-$.fn.extend(jQueryExtend);
+});

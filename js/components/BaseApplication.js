@@ -1,11 +1,11 @@
 // @flow
 
 import EventEmitter from 'events';
-import jQuery from 'jquery';
+//import jQuery from 'jquery'; // Faire un import de jquery semble faire un import distinct que celui du crm
 import Raven from 'raven-js';
 
-var $ = jQuery;
-
+// var $ = jQuery;
+declare var $;
 declare var window: Object;
 declare var document: Object;
 
@@ -76,22 +76,6 @@ export default class BaseApplication extends EventEmitter{
 	 */
 	init() {
 		const self = this;
-
-		// Debug functions catcher
-		if (!window.console || !window.console.firebug) {
-			if (!window.console) {
-				window.console = {
-					log() {
-					},
-					debug() {
-					}
-				};
-			} else if (!window.console.debug) {
-				window.console.debug = function (info) {
-					window.console.log(info);
-				};
-			}
-		}
 
 		$(document).ajaxStart(() => {
 			self.ajaxQueryLoading = true;
@@ -571,8 +555,7 @@ export default class BaseApplication extends EventEmitter{
 						<p>\
 							<strong>'+self._('FATAL_ERROR_OCCURED')+'</strong>\
 							<br />\
-							'+self._('CONTACT_SUPPORT_PERSIST')+'\
-						</p>\
+					init	</p>\
 						<p class="submit">\
 							'+self._('FATAL_ERROR__YOU_CAN')+' <a href="javascript:$.app._hideFatalError(\'reload\');">'+self._('FATAL_ERROR__RELOAD_PAGE')+'</a> '+self._('OR')+' <a href="javascript:$.app._hideFatalError(\'stepback\');">'+self._('FATAL_ERROR__GO_BACK')+'</a>\
 						</p>', 'fast', function() {

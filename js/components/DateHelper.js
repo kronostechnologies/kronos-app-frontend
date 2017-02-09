@@ -1,6 +1,8 @@
 // @flow
 
-import $ from 'jquery';
+// import $ from 'jquery';
+
+declare var $;
 
 export default class DateHelper {
 	constructor(app: BaseApplication){

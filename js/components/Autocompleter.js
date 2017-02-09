@@ -1,6 +1,8 @@
 // @flow
 
-import $ from 'jquery';
+//import $ from 'jquery';
+
+declare var $;
 
 // TODO: Enlever les dépendance à $.app
 export default class Autocompleter {

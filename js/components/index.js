@@ -6,13 +6,15 @@ import View from './View';
 import EditView from './EditView';
 import DateHelper from './DateHelper';
 import removeDiacritics from './removeDiacritics';
+import Router from './Router';
 
 export {
-	sprintf,
-	Autocompleter,
 	Application,
 	View,
 	EditView,
+	Router,
+	sprintf,
+	Autocompleter,
 	DateHelper,
 	removeDiacritics,
 	jQueryExtend

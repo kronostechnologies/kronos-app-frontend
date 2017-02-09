@@ -11,8 +11,9 @@ declare var document: Object;
 
 export default class Application extends EventEmitter{
 
-	constructor() {
+	constructor(router: Router) {
 		super();
+		this.router = router;
 
 		// Debugging and error handling
 		this.view_fetching = false; // Indiacte that the app is currently waiting on an ajax query that is fetching a view.
@@ -617,115 +618,138 @@ export default class Application extends EventEmitter{
 	 * Get location hash and check if it changed
 	 */
 	_checkHash() {
-		var view;
-		var object;
+		const self = this;
+		let view;
 
-		if(!this.view_fetching && this.hash !== location.hash){
-			//Store the new hash before the loop starts again
+		if(this.view_fetching || this.hash === location.hash) {
+			return;
+		}
 
-			if(this.debug) {
-				console.debug('Hash changed');
+		//Store the new hash before the loop starts again
+		if(this.debug) {
+			console.debug('Hash changed');
+		}
+
+		this.hash = location.hash;
+
+		// Get the requested view
+		if(!this.hash || this.hash == '#') {
+			this.goTo(this.default_view);
+			return false;
+		}
+		else {
+			var splits = this.hash.substring(1).split('&');
+
+			view = splits.shift();
+
+			var pos = view.indexOf('/');
+			if(pos > 0) {
+				var next = view.indexOf('/', pos+1);
+				if(next > 0) {
+					pos = next;
+
+					view = view.substring(0, pos);
+				}
 			}
 
-			this.hash = location.hash;
+			splits = null;
 
-			// Get the requested view
-			if(!this.hash || this.hash == '#') {
-				this.goTo(this.default_view);
+			if(view === '' || view === null) {
+				view = this.default_view;
+			}
+		}
+
+		const initialState = {
+			fetch: true,
+			cancel: false
+		};
+
+		let fetchViewPromise = Promise.resolve(initialState);
+
+		if(self.currentView){
+			fetchViewPromise = fetchViewPromise
+				.then((state) => {
+					return self._getViewObject(self.currentView)
+						.then((viewObject)=> {
+
+							// Are we staying in the same view ?
+							// Did the the view handled the hash change ?
+							if(view === self.currentView && viewObject.onHashChange(self.hash)) {
+								state.fetch = false;
+								return state;
+							}
+
+							// If we where in a view and we're not resuming navigation (see Test form for more detail) we can ask to view to close;
+							if(self.currentView && !self._resume_hash) {
+
+								if(!viewObject.close(self.hash)) { // Can we continue ?
+									// Cannot close current view abort view change
+									if(self.debug) {
+										console.debug('View coulnd\'t close');
+									}
+
+									// Temporarily stop the hash observation loop so we can ...
+									self._stopObservation();
+
+									// ... keep where the user wanted to go and stay where we were ...
+									self._resume_hash = self.hash;
+									self.hash = self.stepBack();
+
+									// ... and then start to observe again
+									self._observe();
+
+									state.cancel = true;
+									return state;
+
+								}
+								else {
+									// Close current view
+									self._onViewClose(viewObject);
+									if(self.debug) {
+										console.debug('Closed view');
+									}
+
+									return state;
+								}
+							}
+						})
+						.catch(() => state); // Forward state
+				});
+		}
+
+		fetchViewPromise.then((state) => {
+			if(state.cancel){
 				return false;
-			}
-			else {
-				var splits = this.hash.substring(1).split('&');
-
-				view = splits.shift();
-
-				var pos = view.indexOf('/');
-				if(pos > 0) {
-					var next = view.indexOf('/', pos+1);
-					if(next > 0) {
-						pos = next;
-
-						view = view.substring(0, pos);
-					}
-				}
-
-				splits = null;
-
-				if(view === '' || view === null) {
-					view = this.default_view;
-				}
-			}
-
-			var fetch = true;
-			if(this.currentView && view == this.currentView) { // Are we staying in the same view ?
-				object = this._getViewObject(this.currentView);
-
-				if(object) {
-					if(object.onHashChange(this.hash)) { // Did the the view handled the hash change ?
-						fetch = false;
-					}
-				}
-			}
-			// If we where in a view and we're not resuming navigation (see Test form for more detail) we can ask to view to close;
-			if(fetch && this.currentView && !this._resume_hash) {
-				object = this._getViewObject(this.currentView);
-
-				// No object to manage the view, why bother ?
-				if(object) {
-					if(!object.close(this.hash)) { // Can we continue ?
-						if(this.debug) {
-							console.debug('View coulnd\'t close');
-						}
-
-						// Temporarily stop the hash observation loop so we can ...
-						this._stopObservation();
-
-						// ... keep where the user wanted to go and stay where we were ...
-						this._resume_hash = this.hash;
-						this.hash = this.stepBack();
-
-						// ... and then start to observe again
-						this._observe();
-
-						return; // We don't want to anything else until the hash changes again or the view tells us to resume
-					}
-					else {
-						this._onViewClose(object);
-
-						if(this.debug) {
-							console.debug('Closed view');
-						}
-					}
-				}
 			}
 
 			// We don't need that information anymore. It can block us from getting away from the current view if we don't
-			this._resume_hash = false;
+			self._resume_hash = false;
 
 			// We don't keep page reloads in history
-			if(this._force_clear){
-				this.addHistory(this.hash);
-				this._force_clear = false;
+			if(self._force_clear){
+				self.addHistory(self.hash);
+				self._force_clear = false;
 			}
-			else if(!this._detectStepBack(this.hash)) {
-				this.addHistory(this.hash);
+			else if(!self._detectStepBack(self.hash)) {
+				self.addHistory(self.hash);
 			}
 
-			if(fetch) {
-				if(this.debug) {
+			if(state.fetch){
+				if(self.debug) {
 					console.debug('View : '+view);
 				}
 
 				// Just to be sure we leave nothing behind
-				this.hideModalDialogNow();
+				self.hideModalDialogNow();
 
 				// Highlight the right menu
-				this._selectViewMenu(view);
+				self._selectViewMenu(view);
 
 				// It's time to change the view
-				this._fetchView(view);
+				self._fetchView(view);
 			}
-		}
+		});
+
 	}
 
 	_onViewClose(viewObject) {
@@ -792,9 +816,15 @@ export default class Application extends EventEmitter{
 	 * Resume user navigation, or not. If view could not close, we stored the hash into _resume_hash to be able to resume when the time comes
 	 */
 	resume(stay) {
+		var self = this;
 		if(this._resume_hash) {
 			if(!stay && typeof stay != 'undefined') {
-				this._onViewClose(this._getViewObject(this.currentView));
+
+				// Trigger _onViewClose eventually
+				this._getViewObject(this.currentView).then((viewObject) => {
+					self._onViewClose(viewObject);
+				}).catch(() => {});
+
 
 				// We're going where the user wanted to before the view cancelled it
 				this.currentView = false;
@@ -867,188 +897,195 @@ export default class Application extends EventEmitter{
 
 		var self = this;
 
-		self._hideLoading();
-		self.abortOngoingXHR();
+		this._getViewObject(this.currentView).then((viewObject) => {
 
-		var cached = this._isViewCached(view);
-		if(cached && this.debug) {
-			console.debug('View "'+view+'" is in cache (' + this.lang + ')');
-		}
+			self._hideLoading();
+			self.abortOngoingXHR();
 
-		this.view_fetching = true;
-		self._onBeforeFetchView(self.currentView);
-		self._onFetchView(this._getViewObject(self.currentView));
-
-		// Ask the requested view to transmute hash to query parameters
-		var params = this._getViewParameters(location.hash);
-
-		for(var k in params.params) {
-			params[k] = params.params[k];
-		}
-		delete(params.params);
-
-		if(hiddenParams && $.isPlainObject(hiddenParams)) {
-			for(k in hiddenParams) {
-				params[k] = hiddenParams[k];
+			var cached = this._isViewCached(view);
+			if(cached && this.debug) {
+				console.debug('View "'+view+'" is in cache (' + this.lang + ')');
 			}
-		}
 
-		params.k  = self.SESSION_KEY;
-		params.view  = self.currentView;
-		params.cmd = 'view';
-		params.cached = cached;
-		params.version = this.getApplicationVersion();
-		params.uv = self.userVersion;
+			this.view_fetching = true;
+			self._onBeforeFetchView(self.currentView);
 
-		if(this.replaced_session_key) {
-			params.rk = this.replaced_session_key;
-			this.replaced_session_key = false;
-		}
+			self._onFetchView(viewObject);
 
-		var param_string = $.param(params);
+			// Ask the requested view to transmute hash to query parameters
+			var params = viewObject.parseHash(location.hash);
 
-		$.ajax({
-			url:'index.php?'+param_string,
-			type : 'POST',
-			data: {
-				context : self.getContext()
-			},
-			dataType:'json',
-			headers: self.getXSRFHeaders(),
-			success: function(response) {
-				self.view_fetching = false;
-				self._hideLoading();
-				if(response.status == 'error') {
-					var info = response.data;
-					if(info.code == 600) { // VIEW_CMD_ERROR;
-						// Hopefuly this won't happen
-						self._showFatalError('An error occured server side while fetching view data "'+view+'" (600)');
-					}
-					else if(info.code == 601 || info.code == 602) { // VIEW_ACL_ERROR or MODEL_ACL_ERROR
-						self._showNavigationError();
-					}
-					else { // Unknown error
-						self._showFatalError('An unknown error was sent from server while fetching view data "'+view+'" ('+info.error+')');
-					}
-
-					return false;
-				}
-				self._onLoadView(self._getViewObject(self.currentView), response.data, hiddenParams);
-				self._loadView(response.data, hiddenParams);
-			},
-			error: function(jqXHR, status, error) {
-				self.view_fetching = false;
-				self._hideLoading();
-				if(!self.validateXHR(jqXHR)){
-					return false;
-				}
-
-				if(this.debug) {
-					console.debug('AJAX query error');
-					console.debug(status);
-					console.debug(error);
-				}
-
-				self._showFatalError('An error occured while fetching view data "'+view+'" ('+status+')');
+			for(var k in params.params) {
+				params[k] = params.params[k];
 			}
+			delete(params.params);
+
+			if(hiddenParams && $.isPlainObject(hiddenParams)) {
+				for(k in hiddenParams) {
+					params[k] = hiddenParams[k];
+				}
+			}
+
+			params.k  = self.SESSION_KEY;
+			params.view  = self.currentView;
+			params.cmd = 'view';
+			params.cached = cached;
+			params.version = this.getApplicationVersion();
+			params.uv = self.userVersion;
+
+			if(this.replaced_session_key) {
+				params.rk = this.replaced_session_key;
+				this.replaced_session_key = false;
+			}
+
+			var param_string = $.param(params);
+
+			$.ajax({
+				url:'index.php?'+param_string,
+				type : 'POST',
+				data: {
+					context : self.getContext()
+				},
+				dataType:'json',
+				headers: self.getXSRFHeaders(),
+				success: function(response) {
+					self.view_fetching = false;
+					self._hideLoading();
+					if(response.status == 'error') {
+						var info = response.data;
+						if(info.code == 600) { // VIEW_CMD_ERROR;
+							// Hopefuly this won't happen
+							self._showFatalError('An error occured server side while fetching view data "'+view+'" (600)');
+						}
+						else if(info.code == 601 || info.code == 602) { // VIEW_ACL_ERROR or MODEL_ACL_ERROR
+							self._showNavigationError();
+						}
+						else { // Unknown error
+							self._showFatalError('An unknown error was sent from server while fetching view data "'+view+'" ('+info.error+')');
+						}
+
+						return false;
+					}
+
+					self._onLoadView(viewObject, response.data, hiddenParams);
+					self._loadView(response.data, hiddenParams);
+				},
+				error: function(jqXHR, status, error) {
+					self.view_fetching = false;
+					self._hideLoading();
+					if(!self.validateXHR(jqXHR)){
+						return false;
+					}
+
+					if(this.debug) {
+						console.debug('AJAX query error');
+						console.debug(status);
+						console.debug(error);
+					}
+
+					self._showFatalError('An error occured while fetching view data "'+view+'" ('+status+')');
+				}
+			});
+
+			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
+			this._loadingTimeout = setTimeout(function() {
+				self._showLoading();
+			}, this._loadingDelay);
+
 		});
-
-		// If we don't receive an awnser after 1.5 second, a loading overlay will appear
-		this._loadingTimeout = setTimeout(function() {
-			self._showLoading();
-		}, this._loadingDelay);
 	}
 
 	/**
 	 *	Standard entry point for view data (html and model).
 	 */
 	_loadView(data, hiddenParams) {
-		var t = this,
-			fullParams;
+		const self = this;
+		let fullParams;
 
 
-		try {
+
+			if (data.data) { //backward compatibility.
+				data = data.data;
+			}
+
+			if (data.user && self.userVersion != data.user.version) {
+				self.clearViewCache();
+				self.setUserConfig(data.user);
+			}
 
 			// Application version changed server side, we have to reload the application.
 			if (this.getApplicationVersion() != data.version) {
 				location.reload();
 			}
 
-			if (data.data) { //backward compatibility.
-				data = data.data;
-			}
+			this._getViewObject(this.currentView).then((viewObject) => {
 
-			if (data.user && t.userVersion != data.user.version) {
-				t.clearViewCache();
-				t.setUserConfig(data.user);
-			}
+				try {
+					window.view = viewObject;
+					viewObject.init(location.hash);
+					viewObject._validateable = (data.validateable || false);
 
-			this._initView();
-			var object = this._getViewObject(this.currentView);
-			if (!object) {
-				throw this._throw('View object not found : ' + this.currentView, true);
-			}
+					//* BASED on kronos-lib/Kronos/Common/View.php -> function getContent *//
+					if (data.html) {
+						if (this.debug) {
+							console.debug('Using recieved html');
+						}
+						this._loadContent(viewObject, data.html);
 
-			object._validateable = (data.validateable || false);
+						// We store the html and json we received
+						this._setViewCache(this.currentView, data.html, false);
+					}
+					else if (this._isViewCached(this.currentView)) {
+						if (this.debug) {
+							console.debug('Using cached html');
+						}
 
+						// Get no html/params but the sent version is the same as the one we have, we can use it.
+						this._loadContent(viewObject, this._getViewCachedHTML(this.currentView));
+					}
+					else {
+						throw this._throw('View not cached and not recieved from html...', true);
+					}
 
-			//* BASED on kronos-lib/Kronos/Common/View.php -> function getContent *//
+					if (data.params) {
+						fullParams = $.extend({}, data.params, hiddenParams);
+					}
+					else {
+						fullParams = $.extend({}, hiddenParams);
+					}
 
-			if (data.html) {
-				if (this.debug) {
-					console.debug('Using recieved html');
+					viewObject.load(fullParams);
+
+					this._hookView(viewObject);
+
+					// NOTE : No offline support is required here. Everything is managed by {TODO: insert offline fetch method name}
+					this._loadModel(viewObject, data.model);
+					this._checkAnchor(viewObject);
+					this._checkOnLoadScroll();
+
+					$('input').each(function (index, element) {
+						if (!$(element).attr('maxlength')) {
+							$(element).attr('maxlength', 255);
+						}
+					});
+
 				}
-				this._loadContent(data.html);
-
-				// We store the html and json we received
-				this._setViewCache(this.currentView, data.html, false);
-			}
-			else if (this._isViewCached(this.currentView)) {
-				if (this.debug) {
-					console.debug('Using cached html');
+				catch(error) {
+					return Promise.reject(error);
 				}
+			})
+			.catch((error) => {
+				this._stopObservation();
+				this._showFatalError(error);
+				throw error;
+			})
 
-				// Get no html/params but the sent version is the same as the one we have, we can use it.
-				this._loadContent(this._getViewCachedHTML(this.currentView));
-			}
-			else {
-				throw this._throw('View not cached and not recieved from html...', true);
-			}
-
-			if (data.params) {
-				fullParams = $.extend({}, data.params, hiddenParams);
-			}
-			else {
-				fullParams = $.extend({}, hiddenParams);
-			}
-			this._loadParams(fullParams);
-
-			this._hookView();
-
-			// NOTE : No offline support is required here. Everything is managed by {TODO: insert offline fetch method name}
-			this._loadModel(data.model);
-			this._checkAnchor();
-			this._checkOnLoadScroll();
-
-			$('input').each(function (index, element) {
-				if (!$(element).attr('maxlength')) {
-					$(element).attr('maxlength', 255);
-				}
-			});
-		}
-		catch(error) {
-			this._stopObservation();
-			this._showFatalError(error);
-
-			throw error;
-		}
 	}
 
-	_checkAnchor(){
-		var params = this._getViewParameters(this.hash);
+	_checkAnchor(viewObject: View){
+		var params = viewObject.parseHash(this.hash);
 		if(params.params['anchor']){
 			var anchor_name = params.params.anchor;
-			var view = this._getViewObject(this.currentView);
 			var $element = $('[anchor='+anchor_name+']');
 			if($element.length === 0){
 				if(this.debug) {
@@ -1056,8 +1093,8 @@ export default class Application extends EventEmitter{
 				}
 				return false;
 			}
-			if($.isFunction(view.onScrollToAnchor)){
-				view.onScrollToAnchor($element, anchor_name);
+			if(typeof viewObject.onScrollToAnchor === 'function'){
+				viewObject.onScrollToAnchor($element, anchor_name);
 			}
 			else{
 				if(this.debug) {
@@ -1090,28 +1127,15 @@ export default class Application extends EventEmitter{
 		delete this._onLoadScroll;
 	}
 
-	_initView() {
-		if(!this.currentView) {
-			throw this._throw('No view to initialize', true);
-		}
-
-		var object = this._getViewObject(this.currentView);
-		window.view = object;
-		if(object) {
-			object.init(location.hash);
-		}
-	}
-
 	/**
 	 *	Ask the view to draw the content if it can or we do it.
 	 *
 	 *	NOTE : If you want to support view redrawing, implement 'draw'.
 	 */
-	_loadContent(html) {
-		var object = this._getViewObject(this.currentView);
+	_loadContent(viewObject, html) {
 
-		if(object && typeof object.draw == 'function') {
-			object.draw(html);
+		if(typeof viewObject !== 'undefined' && typeof viewObject.draw == 'function') {
+			viewObject.draw(html);
 		}
 		else {
 			$('#content').html(html);
@@ -1121,35 +1145,17 @@ export default class Application extends EventEmitter{
 	}
 
 	/**
-	 *	Load the passed params in the view
-	 */
-	_loadParams(params) {
-		if(!this.currentView) {
-			throw this._throw('No view to load parameters from.', true);
-		}
-
-		var object = this._getViewObject(this.currentView);
-		if (object) {
-			object.load(params);
-		}
-	}
-
-	/**
 	 * Hook the view object to the current content
 	 */
-	_hookView() {
-		if(!this.currentView) {
-			throw this._throw('No view to hook', true);
+	_hookView(viewObject: View) {
+
+		if(typeof viewObject._preHook == 'function'){
+			viewObject._preHook();
 		}
 
-		var object = this._getViewObject(this.currentView);
+		viewObject.hook();
 
-		if(object) {
-			if(typeof object._preHook == 'function'){ object._preHook(); }
-			object.hook();
-
-			this._onViewHook(object);
-		}
+		this._onViewHook(viewObject);
 	}
 
 	_onViewHook(viewObject) { }
@@ -1179,34 +1185,28 @@ export default class Application extends EventEmitter{
 		return model;
 	}
 
-	_loadModel(model) {
-		var object = this._getViewObject(this.currentView);
+	_loadModel(viewObject: View, model) {
+		model = this.recursiveCleanFloats(model);
 
-		if(object) {
-			model = this.recursiveCleanFloats(model);
-
-			if(this.debug) {
-				console.debug(model);
-			}
-
-			this.emit('preInject');
-			object.inject(model);
-			this.emit('postInject');
-			if(typeof object._postInject == 'function'){
-				object._postInject();
-			}
-			this._onViewInject(object, model);
+		if(this.debug) {
+			console.debug(model);
 		}
-		else if(this.debug) {
-			console.debug('No view object, cannot inject model');
+
+		this.emit('preInject');
+		viewObject.inject(model);
+		this.emit('postInject');
+		if(typeof viewObject._postInject == 'function'){
+			viewObject._postInject();
 		}
+
+		this._onViewInject(viewObject, model);
 
 		if ($('.page-title').length) {
 			window.document.title = ($('.page-title').text());
 		}
 	}
 
-	_onViewInject(viewObject, model) { }
+	_onViewInject(viewObject: View, model) { }
 
 
 	/**
@@ -1266,20 +1266,6 @@ export default class Application extends EventEmitter{
 
 		if(this.debug) {
 			console.debug('Cached version of view "'+view+'"');
-		}
-	}
-
-	/**
-	 * Ask the view object to transmute the hash to query parameters.
-	 */
-	_getViewParameters(hash) {
-		var object = this._getViewObject(this.currentView);
-		if(object) {
-			return object.parseHash(hash);
-		}
-		else {
-			// No objects ? We can't determine anything...
-			return {};
 		}
 	}
 
@@ -1603,23 +1589,33 @@ export default class Application extends EventEmitter{
 	/**
 	 * Add a view object and make sure it implements required fonction (debug only)
 	 */
-	registerView(view, object) {
+	registerView(view, viewObject) {
 
-		if(this.debug && this._view_objects[view]) {
-			console.debug('View '+view+' is already registered');
-		}
+		console.log('registerView() si deprecated. Use router.');
 
-		if(this.debug)
-			console.debug('Registered view "'+view+'"');
-
-		this._view_objects[view] = object;
+		this._view_objects[view] = viewObject;
 	}
+
 
 	/**
 	 * Tries to get the request view object
 	 */
-	_getViewObject(view) {
-		return this._view_objects[view];
+	_getViewObject(viewName: string): Promise<Class<View>> {
+		const self = this;
+		if(this._view_objects[viewName]){
+			return Promise.resolve(this._view_objects[viewName]);
+		}
+
+		return this.router.getViewClass(viewName)
+			.then((viewClass) => {
+				const viewObject = new viewClass();
+				self._view_objects[viewName] = viewObject;
+				return viewObject;
+			})
+			.catch((err)=>{
+				console.log(err);
+				return Promise.reject(err);
+			});
 	}
 
 	_scrollTop() {

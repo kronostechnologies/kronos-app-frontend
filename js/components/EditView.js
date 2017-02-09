@@ -1,7 +1,6 @@
 // @flow
 
 import jQuery from 'jquery';
-import BaseApplication from './BaseApplication.js';
 import View from './View.js';
 
 // TODO: Enlever les dépendance à $.app

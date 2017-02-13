@@ -4,7 +4,8 @@ import View from './View.js';
 type ViewClass = Class<View>;
 type ViewClassPromise = Promise<ViewClass>;
 type Route = {
-	viewName: string;
+	viewName: ?string;
+	viewMatch: ?RegExp;
 	getViewClass: () => ViewClassPromise;
 }
 
@@ -26,7 +27,11 @@ export default class Router {
 	}
 
 	static testRoute(viewName: string, route: Route) {
-		if(route.viewName === viewName || route.viewName === '*'){
+		if(route.viewName && route.viewName === viewName){
+			return true;
+		}
+
+		if(route.viewMatch instanceof RegExp && viewName.match(route.viewMatch)) {
 			return true;
 		}
 

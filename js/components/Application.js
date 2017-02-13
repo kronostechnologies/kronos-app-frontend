@@ -2548,7 +2548,42 @@ export default class Application extends EventEmitter{
 		this._ongoing_xhrs = [];
 	}
 
-	get(view, cmd, paramsString, callback, loading, errorCallback, button, skipOverlayHandling) {
+	ajax(view, cmd, paramsString, settings: {}) : Promise {
+		const self = this;
+		if(paramsString.length > 0) {
+			if(paramsString[0] != '&') {
+				paramsString = '&'+paramsString;
+			}
+		}
+
+		Object.assign(settings, {
+			url:  'index.php?k=' + self.SESSION_KEY + '&view=' + view + '&cmd=' + cmd + paramsString,
+			headers: Object.assign( settings.headers || {} , self.getXSRFHeaders()),
+		});
+
+		const xhrRequest = $.ajax(settings);
+		self.registerXHR(xhrRequest);
+
+		xhrRequest.done(function(data, textStatus, jqXHR) {
+			self.unregisterXHR(jqXHR);
+		}).fail(function(jqXHR) {
+			self.unregisterXHR(jqXHR);
+		});
+
+		// Convert to real Promise
+		return xhrRequest.then(
+			(result) => {
+				return Promise.resolve(result);
+			},
+			(error) => {
+				return Promise.reject(error);
+			}
+		);
+	}
+
+	get(view, cmd, paramsString, callback, loading, errorCallback, button, skipOverlayHandling): Promise {
+
+		const self = this;
 
 		if(!loading && !skipOverlayHandling) {
 			this.showOverlay();
@@ -2557,20 +2592,9 @@ export default class Application extends EventEmitter{
 		if(button)
 			$(button).prop('disabled', true);
 
-		var self = this;
-
-		if(paramsString.length > 0) {
-			if(paramsString[0] != '&') {
-				paramsString = '&'+paramsString;
-			}
-		}
-
-		// Le bloc ci-dessous devrait/pourrait être remplacer par un call à getXHRRequest //
-		var xhrRequest = $.ajax({
-			url:'index.php?k=' + self.SESSION_KEY + '&view=' + view + '&cmd=' + cmd + paramsString ,
+		const xhrRequest = self.ajax(view, cmd, paramsString, {
 			type : 'GET',
 			dataType:'json',
-			headers: self.getXSRFHeaders(),
 			success: function(response) {
 				if(!skipOverlayHandling){
 					self.hideOverlay();
@@ -2631,13 +2655,6 @@ export default class Application extends EventEmitter{
 			}
 		});
 
-		self.registerXHR(xhrRequest);
-		xhrRequest.done(function(data, textStatus, jqXHR) {
-			self.unregisterXHR(jqXHR);
-		}).fail(function(jqXHR) {
-			self.unregisterXHR(jqXHR);
-		});
-
 		if(loading) {
 			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
 			this._loadingTimeout = setTimeout(function() {
@@ -2648,24 +2665,16 @@ export default class Application extends EventEmitter{
 		return xhrRequest;
 	}
 
-	post(view, cmd, paramsString, postString, callback, loading, errorCallback, button) {
+	post(view, cmd, paramsString, postString, callback, loading, errorCallback, button): Promise {
 		var self = this;
 
 		if(button)
 			$(button).prop('disabled', true);
 
-		if(paramsString.length > 0) {
-			if(paramsString[0] != '&') {
-				paramsString = '&'+paramsString;
-			}
-		}
-
-		var xhrRequest = $.ajax({
-			url:'index.php?k=' + self.SESSION_KEY + '&view=' + view + '&cmd=' + cmd + paramsString ,
+		const xhrRequest = self.ajax(view, cmd, paramsString, {
 			type: 'POST',
 			data: postString,
 			dataType:'json',
-			headers: self.getXSRFHeaders(),
 			success: function(response) {
 				if(loading) {
 					self.hideOverlay();
@@ -2724,13 +2733,6 @@ export default class Application extends EventEmitter{
 			ajaxStop: function(){
 				self.ajaxQueryLoading = false;
 			}
-		});
-
-		self.registerXHR(xhrRequest);
-		xhrRequest.done(function(data, textStatus, jqXHR) {
-			self.unregisterXHR(jqXHR);
-		}).fail(function(jqXHR) {
-			self.unregisterXHR(jqXHR);
 		});
 
 		if(loading) {

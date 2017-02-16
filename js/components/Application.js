@@ -1018,7 +1018,7 @@ export default class Application extends EventEmitter{
 				location.reload();
 			}
 
-			this._getViewObject(this.currentView).then((viewObject) => {
+			return this._getViewObject(this.currentView).then((viewObject) => {
 
 				try {
 					window.view = viewObject;
@@ -1054,21 +1054,28 @@ export default class Application extends EventEmitter{
 						fullParams = $.extend({}, hiddenParams);
 					}
 
-					viewObject.load(fullParams);
+					return Promise.resolve(viewObject.load(fullParams))
+						.then(()=>{
+							return Promise.resolve(self._hookView(viewObject));
+						})
+						.then(()=>{
+							return Promise.resolve(self._loadModel(viewObject, data.model));
+						})
+						.then(()=>{
+							return Promise.resolve(self._checkAnchor(viewObject));
+						})
+						.then(()=>{
+							return Promise.resolve(self._checkOnLoadScroll());
+						})
+						.then(()=>{
+							$('input').each(function (index, element) {
+								if (!$(element).attr('maxlength')) {
+									$(element).attr('maxlength', 255);
+								}
+							});
 
-					this._hookView(viewObject);
-
-					// NOTE : No offline support is required here. Everything is managed by {TODO: insert offline fetch method name}
-					this._loadModel(viewObject, data.model);
-					this._checkAnchor(viewObject);
-					this._checkOnLoadScroll();
-
-					$('input').each(function (index, element) {
-						if (!$(element).attr('maxlength')) {
-							$(element).attr('maxlength', 255);
-						}
-					});
-
+							return Promise.resolve();
+						});
 				}
 				catch(error) {
 					return Promise.reject(error);

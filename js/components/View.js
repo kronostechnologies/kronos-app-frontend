@@ -77,7 +77,7 @@ export default class View {
 
 	load(params) {
 		$.app.performUnmounts();
-		this._load(params);
+		return Promise.resolve(this._load(params));
 	}
 
 	_load(params) {
@@ -121,8 +121,7 @@ export default class View {
 			console.debug('Drawing view');
 		}
 
-		$('#content').html(html);
-
+		const r = $('#content').html(html);
 		this._onDraw();
 	}
 

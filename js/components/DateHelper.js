@@ -1,8 +1,10 @@
 // @flow
+import Application from "./Application";
 
 // import $ from 'jquery';
 
 declare var $;
+declare var moment;
 
 export default class DateHelper {
 	constructor(app: Application){

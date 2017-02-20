@@ -1,6 +1,5 @@
 import jQueryExtend from './jQueryExtend';
 import sprintf from './sprintf';
-import Autocompleter from './Autocompleter';
 import Application from './Application';
 import View from './View';
 import EditView from './EditView';
@@ -14,7 +13,6 @@ export {
 	EditView,
 	Router,
 	sprintf,
-	Autocompleter,
 	DateHelper,
 	removeDiacritics,
 	jQueryExtend

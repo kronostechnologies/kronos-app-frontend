@@ -892,9 +892,8 @@ export default class Application extends EventEmitter{
 		this._fetchView(this.currentView, hiddenParams);
 	}
 
-	_onBeforeFetchView(current_view){ }
-	_onFetchView(current_view){	}
-	_onLoadView(current_view, data, hiddenParams) { }
+	_onFetchView(viewObject){	}
+	_onLoadView(viewObject, data, hiddenParams) { }
 
 	/**
 	 * Fetch view html and model from server
@@ -915,8 +914,6 @@ export default class Application extends EventEmitter{
 			}
 
 			this.view_fetching = true;
-			self._onBeforeFetchView(self.currentView);
-
 			self._onFetchView(viewObject);
 
 			// Ask the requested view to transmute hash to query parameters

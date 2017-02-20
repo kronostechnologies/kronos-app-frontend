@@ -34,10 +34,6 @@
 		injectOnExistingRow: function(injectObj, $row) {
 			for(var i = 0; i < injectObj.length; i++){
 				var $form_elem = $row.find(injectObj[i].selector);
-				if($form_elem.length === 0 && $.app.debug){
-					console.error('No input found for selector "'+ injectObj[i].selector +'" in $.fn.manyToOneSelector.inject');
-				}
-
 				if(typeof injectObj[i].before === 'function'){ injectObj[i].before($row); }
 
 				$form_elem.val(injectObj[i].val);

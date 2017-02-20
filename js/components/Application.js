@@ -561,9 +561,16 @@ export default class Application extends EventEmitter{
 							<br />\
 					init	</p>\
 						<p class="submit">\
-							'+self._('FATAL_ERROR__YOU_CAN')+' <a href="javascript:$.app._hideFatalError(\'reload\');">'+self._('FATAL_ERROR__RELOAD_PAGE')+'</a> '+self._('OR')+' <a href="javascript:$.app._hideFatalError(\'stepback\');">'+self._('FATAL_ERROR__GO_BACK')+'</a>\
+							'+self._('FATAL_ERROR__YOU_CAN')+' <a id="fatal-error-reload" href="javascript:void(0);">'+self._('FATAL_ERROR__RELOAD_PAGE')+'</a> '+self._('OR')+' <a id="fatal-error-stepback" href="javascript:void(0);">'+self._('FATAL_ERROR__GO_BACK')+'</a>\
 						</p>', 'fast', function() {
-			self._errors.push({description:error, page:'$.app.js', line:0});
+
+			$('#fatal-error-reload').click(()=>{
+				self._hideFatalError('reload');
+			});
+			$('#fatal-error-stepback').click(()=>{
+				self._hideFatalError('stepback');
+			});
+			self._errors.push({description:error, page:'Application.js', line:0});
 		});
 	}
 
@@ -1615,7 +1622,7 @@ export default class Application extends EventEmitter{
 
 		return this.router.getViewClass(viewName)
 			.then((viewClass) => {
-				const viewObject = new viewClass();
+				const viewObject = new viewClass(self);
 				self._view_objects[viewName] = viewObject;
 				return viewObject;
 			})

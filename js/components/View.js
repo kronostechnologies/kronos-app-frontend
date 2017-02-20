@@ -1,14 +1,11 @@
 // @flow
 
-// import jQuery from 'jquery';
-
-// TODO: Enlever les dépendance à $.app
-// var $ = jQuery;
-declare var $;
+declare var $:jQuery;
 
 export default class View {
 
-	constructor() {
+	constructor(app: Application) {
+		this.app = app;
 		this._view = '';
 		this._id = false;
 		this._uri_params = {};
@@ -20,7 +17,7 @@ export default class View {
 	}
 
 	parseHash(hash) {
-		const uri = $.app.parseHash(hash);
+		const uri = this.app.parseHash(hash);
 
 		let pos = uri.view.indexOf('/');
 		if (pos > 0) {
@@ -70,13 +67,13 @@ export default class View {
 	}
 
 	_init() {
-		if ($.app.debug) {
-			$.app._throw('View does not implement _init function');
+		if (this.app.debug) {
+			this.app._throw('View does not implement _init function');
 		}
 	}
 
 	load(params) {
-		$.app.performUnmounts();
+		this.app.performUnmounts();
 		return Promise.resolve(this._load(params));
 	}
 
@@ -85,7 +82,7 @@ export default class View {
 	}
 
 	draw(html) {
-		$.app.performUnmounts();
+		this.app.performUnmounts();
 		this._onBeforeDraw();
 
 		if (this._canRedraw()) {
@@ -104,7 +101,7 @@ export default class View {
 			if (can_redraw) {
 				this._redrawn = true;
 
-				if ($.app.debug) {
+				if (this.app.debug) {
 					console.debug('Redrawing content');
 				}
 
@@ -115,9 +112,7 @@ export default class View {
 		}
 
 		this._redrawn = false;
-
-
-		if ($.app.debug) {
+		if (this.app.debug) {
 			console.debug('Drawing view');
 		}
 
@@ -146,26 +141,25 @@ export default class View {
 	}
 
 	hook(hash) {
-		const t = this;
-		if (!t._redrawn) {
-			if ($.app.debug) {
+		const self = this;
+		if (!self._redrawn) {
+			if (self.app.debug) {
 				console.debug('Hooking view');
 			}
 
 			this._hook(hash);
-
-			t.updateReturnToParentView();
+			self.updateReturnToParentView();
 		}
 	}
 
 	_hook(hash) {
-		if ($.app.debug) {
-			$.app._throw('View does not implement _hook function');
+		if (this.app.debug) {
+			this.app._throw('View does not implement _hook function');
 		}
 	}
 
 	inject(model) {
-		if ($.app.debug) {
+		if (this.app.debug) {
 			console.debug('Injecting model');
 		}
 
@@ -173,8 +167,8 @@ export default class View {
 	}
 
 	_inject(model: {}) {
-		if ($.app.debug) {
-			$.app._throw('View does not implement _inject function');
+		if (this.app.debug) {
+			this.app._throw('View does not implement _inject function');
 		}
 	}
 
@@ -198,8 +192,8 @@ export default class View {
 	}
 
 	_onCancelClose() {
-		if ($.app.debug) {
-			$.app._throw('View does not implement _onCancelClose function');
+		if (this.app.debug) {
+			this.app._throw('View does not implement _onCancelClose function');
 		}
 	}
 
@@ -252,24 +246,24 @@ export default class View {
 	}
 
 	getParentView() {
-		const t = this;
-		if (t._uri_params.parent_view === undefined) {
+		const self = this;
+		if (self._uri_params.parent_view === undefined) {
 			return false;
 		}
-		if (t._uri_params.parent_view === '') {
-			return t._uri_params.parent_view;
+		if (self._uri_params.parent_view === '') {
+			return self._uri_params.parent_view;
 		}
 
-		const views = t._uri_params.parent_view.split('|');
+		const views = self._uri_params.parent_view.split('|');
 		return decodeURIComponent(views.pop());
 	}
 
 	updateReturnToParentView() {
-		const t = this;
-		const parent_view = t.getParentView();
+		const self = this;
+		const parent_view = self.getParentView();
 		if (parent_view) {
 			const translate_key = 'BACK_TO_' + parent_view.toUpperCase().split('/').splice(0, 2).join('_');
-			const label = $.app._(translate_key);
+			const label = self.app._(translate_key);
 			$('.hook_back_to_parent_view').text(label);
 		}
 	}

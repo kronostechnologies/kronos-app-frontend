@@ -1,17 +1,13 @@
 // @flow
 
-//import jQuery from 'jquery';
 import View from './View.js';
 
-// TODO: Enlever les dépendance à $.app
-//var $ = jQuery;
-
-declare var $;
+declare var $: jQuery;
 
 export default class EditView extends View {
 
-	constructor() {
-		super();
+	constructor(app: Application) {
+		super(app);
 		this._can_save = true;
 		this._modified = false;
 		this._soft_modified = false;
@@ -25,7 +21,7 @@ export default class EditView extends View {
 	}
 
 	changed(element) {
-		if($.app.debug) {
+		if(this.app.debug) {
 			console.debug('changed');
 		}
 		if(!this._modified) {
@@ -34,7 +30,7 @@ export default class EditView extends View {
 	}
 
 	softModified() {
-		if($.app.debug) {
+		if(this.app.debug) {
 			console.debug('soft modified');
 		}
 		if(!this._soft_modified) {
@@ -43,25 +39,24 @@ export default class EditView extends View {
 	}
 
 	hook(hash) {
+		const self = this;
 		if(!this._redrawn) {
-			if($.app.debug) {
+			if(this.app.debug) {
 				console.debug('Hooking view');
 			}
 
-			const t = this;
-
 			$('#content form').on('change', ':input[name]:not(.no-form-change)', function() {
-				t.changed(this);
+				self.changed(this);
 			});
 			$('#content form').on('keypress', ':input[type=text]:not(.no-form-change),:input[type=password]:not(.no-form-change)', function() {
-				t.changed(this);
+				self.changed(this);
 			});
 			$('.number:not(.positive)').number();
 			$('.number.positive').number({positive: true});
 
 			this._hook(hash);
 
-			t.updateReturnToParentView();
+			self.updateReturnToParentView();
 
 			// Prevent IE to prompt that a change occured when clicking on a link with href=javascript:
 			if(navigator.appName === 'Microsoft Internet Explorer') {
@@ -75,16 +70,16 @@ export default class EditView extends View {
 			}
 
 			window.onbeforeunload = function(e) {
-				$.app._beforeUnload(e);
-				if(t._modified) {
-					return $.app._('SAVE_CHANGES_MESSAGE');
+				self.app._beforeUnload(e);
+				if(self._modified) {
+					return self.app._('SAVE_CHANGES_MESSAGE');
 				}
 			};
 		}
 	}
 
 	inject(model) {
-		if($.app.debug) {
+		if(this.app.debug) {
 			console.debug('Injecting model');
 		}
 
@@ -110,12 +105,12 @@ export default class EditView extends View {
 
 	getSaveChangeDialogHtml() {
 		return '<div class="modal-dialog">' +
-			'<h2>' + $.app._('SAVE_CHANGES_TITLE') + '</h2>' +
-			'<p>' + $.app._('SAVE_CHANGES_MESSAGE') + '</p>' +
+			'<h2>' + this.app._('SAVE_CHANGES_TITLE') + '</h2>' +
+			'<p>' + this.app._('SAVE_CHANGES_MESSAGE') + '</p>' +
 			'<p class="submit">' +
-			'<a href="javascript:void(0);" id="hook_cancel_save_changes">' + $.app._('CANCEL') + '</a>' +
-			'<input type="submit" id="hook_do_not_save_changes" value="' + $.app._('NO') + '" />' +
-			'<input type="submit" id="hook_do_save_changes" value="' + $.app._('YES') + '" />' +
+			'<a href="javascript:void(0);" id="hook_cancel_save_changes">' + this.app._('CANCEL') + '</a>' +
+			'<input type="submit" id="hook_do_not_save_changes" value="' + this.app._('NO') + '" />' +
+			'<input type="submit" id="hook_do_save_changes" value="' + this.app._('YES') + '" />' +
 			'</p>' +
 			'</div>';
 	}
@@ -126,9 +121,9 @@ export default class EditView extends View {
 			callback = () => {
 			};
 		}
-		$.app.showModalDialog(self.getSaveChangeDialogHtml(), 'normal', () => {
+		self.app.showModalDialog(self.getSaveChangeDialogHtml(), 'normal', () => {
 			$('#hook_do_save_changes').safeClick(() => {
-				$.app.hideModalDialog('normal', () => {
+				self.app.hideModalDialog('normal', () => {
 					self.save(false,
 						() => {
 							callback('save');
@@ -142,9 +137,9 @@ export default class EditView extends View {
 			});
 
 			$('#hook_do_not_save_changes').safeClick(() => {
-				$.app.hideModalDialog('normal', () => {
+				self.app.hideModalDialog('normal', () => {
 					window.onbeforeunload = function(e) {
-						return $.app._beforeUnload(e);
+						return self.app._beforeUnload(e);
 					};
 
 					if(!self._canClose()) {
@@ -162,7 +157,7 @@ export default class EditView extends View {
 			});
 
 			$('#hook_cancel_save_changes').safeClick(() => {
-				$.app.hideModalDialog('normal', () => {
+				self.app.hideModalDialog('normal', () => {
 					self.stop();
 					callback('cancel');
 				});
@@ -209,7 +204,7 @@ export default class EditView extends View {
 			}
 
 			// Should always redirect to close target after save.
-			hash = $.app.getResumeHash();
+			hash = this.app.getResumeHash();
 		}
 
 		// When form is not allowed to save or not modified. Just redirect to hash
@@ -240,34 +235,33 @@ export default class EditView extends View {
 	 * Actual saving method after all validations
 	 */
 	_doSave(hash, success_callback, error_callback, stay, cancel_callback) {
-		var self = this;
-
+		const self = this;
 
 		this._onSaveStart();
 
 		$('input[type=submit],input[type=button]').prop('disabled', true);
 
-		$.app.showOverlay();
+		self.app.showOverlay();
 
-		var params = this._onSave();
+		let params = this._onSave();
 
 		window.onbeforeunload = function(e) {
-			return $.app._beforeUnload(e);
+			return self.app._beforeUnload(e);
 		};
 
 		$.ajax({
-			url: 'index.php?k=' + $.app.SESSION_KEY + '&view=' + this._view + '&cmd=save&id=' + this._id + params,
+			url: 'index.php?k=' + self.app.SESSION_KEY + '&view=' + this._view + '&cmd=save&id=' + this._id + params,
 			type: 'POST',
 			data: this._saveBuildPost(),
 			dataType: 'json',
-			headers: $.app.getXSRFHeaders(),
+			headers: self.app.getXSRFHeaders(),
 			success: function(data) {
 
 				if(!data) {
 					data = {};
 				}
 
-				$.app.hideOverlay();
+				self.app.hideOverlay();
 				$('input[type=submit],input[type=button]').prop('disabled', false);
 
 				var validationErrors = data.validation_errors;
@@ -286,7 +280,7 @@ export default class EditView extends View {
 				}
 
 				if(data.status == 'error') {
-					if($.app.debug) {
+					if(self.app.debug) {
 						console.debug('Save failed with error : ' + data.message);
 					}
 
@@ -295,7 +289,7 @@ export default class EditView extends View {
 						error_callback = null;
 					}
 					else {
-						$.app.showError($.app._('SAVE_ERROR_OCCURED'));
+						self.app.showError(self.app._('SAVE_ERROR_OCCURED'));
 					}
 
 					return;
@@ -325,19 +319,19 @@ export default class EditView extends View {
 		this._onClose();
 
 		if(typeof hash === 'string') {
-			$.app.goTo(hash);
+			this.app.goTo(hash);
 		}
 		else {
-			$.app.goBack();
+			this.app.goBack();
 		}
 	}
 
 	_saveErrorHandler(jqXHR, status, error, error_callback) {
 
-		$.app.hideOverlay();
+		this.app.hideOverlay();
 		$('input[type=submit]').prop('disabled', false);
 
-		if(!$.app.validateXHR(jqXHR)) {
+		if(!this.app.validateXHR(jqXHR)) {
 			return false;
 		}
 
@@ -346,7 +340,7 @@ export default class EditView extends View {
 			error_callback = null;
 		}
 		else {
-			$.app.showError($.app._('SAVE_ERROR_OCCURED'));
+			this.app.showError(this.app._('SAVE_ERROR_OCCURED'));
 		}
 	}
 
@@ -391,6 +385,7 @@ export default class EditView extends View {
 	}
 
 	createModel() {
+		const self = this;
 		let model = {};
 
 		$("form input[name],select[name],textarea[name]")
@@ -411,10 +406,10 @@ export default class EditView extends View {
 					model[element.name] = $(element).moneyVal();
 				}
 				else if($(element).hasClass('percent')) {
-					model[element.name] = $.app.parseFloat(value.replace("%", ""));
+					model[element.name] = self.app.parseFloat(value.replace("%", ""));
 				}
 				else if($(element).hasClass('number')) {
-					model[element.name] = $.app.parseFloat(value);
+					model[element.name] = self.app.parseFloat(value);
 				}
 				else {
 					model[element.name] = value;
@@ -478,21 +473,21 @@ export default class EditView extends View {
 	cancel(hash) {
 		this._modified = false;
 		$('input[type=submit],input[type=button]').prop('disabled', false);
-		$.app.goBack(hash);
+		this.app.goBack(hash);
 	}
 
 	cancelTo(hash) {
 		this._modified = false;
 		$('input[type=submit],input[type=button]').prop('disabled', false);
 		hash = hash || '';
-		$.app.navigateBackTo(hash);
+		this.app.navigateBackTo(hash);
 	}
 
 	resume() {
-		$.app.resume(false);
+		this.app.resume(false);
 	}
 
 	stop() {
-		$.app.resume(true);
+		this.app.resume(true);
 	}
 }

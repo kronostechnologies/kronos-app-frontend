@@ -1159,14 +1159,14 @@ export default class Application extends EventEmitter{
 	 * Hook the view object to the current content
 	 */
 	_hookView(viewObject: View) {
-
+		const self = this;
 		if(typeof viewObject._preHook == 'function'){
 			viewObject._preHook();
 		}
 
-		viewObject.hook();
-
-		this._onViewHook(viewObject);
+		return Promise.resolve(viewObject.hook()).then(() => {
+			return self._onViewHook(viewObject);
+		});
 	}
 
 	_onViewHook(viewObject) { }

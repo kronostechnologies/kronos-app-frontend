@@ -54,16 +54,15 @@ export default class EditView extends View {
 			$('.number:not(.positive)').number();
 			$('.number.positive').number({positive: true});
 
-			this._hook(hash);
-
 			self.updateReturnToParentView();
 
 			// Prevent IE to prompt that a change occured when clicking on a link with href=javascript:
 			if(navigator.appName === 'Microsoft Internet Explorer') {
 				$(window).data('beforeunload', window.onbeforeunload);
-				$(document).on('mouseenter', 'a[href^="javascript:"]', () => {
-					window.onbeforeunload = null;
-				})
+				$(document)
+					.on('mouseenter', 'a[href^="javascript:"]', () => {
+						window.onbeforeunload = null;
+					})
 					.on('mouseleave', 'a[href^="javascript:"]', () => {
 						window.onbeforeunload = $(window).data('beforeunload');
 					});
@@ -75,6 +74,8 @@ export default class EditView extends View {
 					return self.app._('SAVE_CHANGES_MESSAGE');
 				}
 			};
+
+			return this._hook(hash);
 		}
 	}
 

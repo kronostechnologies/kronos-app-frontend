@@ -147,8 +147,8 @@ export default class View {
 				console.debug('Hooking view');
 			}
 
-			this._hook(hash);
 			self.updateReturnToParentView();
+			return this._hook(hash);
 		}
 	}
 

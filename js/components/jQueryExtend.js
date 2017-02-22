@@ -8,20 +8,19 @@ export default (jQuery, app) => ({
 	},
 
 	numberText(value) {
-		const text = self.formatNumber(value);
+		const text = app.formatNumber(value);
 		this.text(text === '' ? '0' : text);
-
 		return this;
 	},
 
 	moneyText(value) {
-		this.text(self.formatMoney(value));
+		this.text(app.formatMoney(value));
 
 		return this;
 	},
 
 	dateText(value) {
-		this.text(self.date.format(value));
+		this.text(app.date.format(value));
 
 		return this;
 	},
@@ -60,7 +59,7 @@ export default (jQuery, app) => ({
 	},
 
 	dateVal(value) {
-		this.val(self.date.format(value, 'input'));
+		this.val(app.date.format(value, 'input'));
 
 		return this;
 	},
@@ -87,7 +86,7 @@ export default (jQuery, app) => ({
 
 	numberVal(value, opts) {
 		if(arguments.length > 0) {
-			return jQuery(this).val(self.formatNumber(value, opts));
+			return jQuery(this).val(app.formatNumber(value, opts));
 		}
 
 		const val = app.parseFloat(this.val());
@@ -119,10 +118,10 @@ export default (jQuery, app) => ({
 		if(arguments.length > 0) {
 			if(jQuery(this).hasClass('money')) {
 				jQuery(this).data('val', app.parseFloat(value.replace('$', '')));
-				return jQuery(this).val(self.formatMoney(value, opts));
+				return jQuery(this).val(app.formatMoney(value, opts));
 			}
 
-			return jQuery(this).val(self.formatMoney(value, opts));
+			return jQuery(this).val(app.formatMoney(value, opts));
 		}
 		else if(jQuery(this).hasClass('money')) {
 			const val = jQuery(this).data('val');
@@ -178,7 +177,7 @@ export default (jQuery, app) => ({
 
 	percentVal(value, opts) {
 		if(arguments.length > 0) {
-			return jQuery(this).val(self.formatPercent(value, opts));
+			return jQuery(this).val(app.formatPercent(value, opts));
 		}
 
 		const val = app.parseFloat(this.val().replace('%', ''));

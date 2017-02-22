@@ -1,12 +1,9 @@
 // @flow
-import View from './View.js';
-
-type ViewClass = Class<View>;
-type ViewClassPromise = Promise<ViewClass>;
+type ObjectClass = Class<{}>;
+type ObjectClassPromise = Promise<ObjectClass>;
 type Route = {
-	viewName: ?string;
-	viewMatch: ?RegExp;
-	getViewClass: () => ViewClassPromise;
+	match: RegExp | string;
+	getClass: () => ObjectClassPromise;
 }
 
 export default class Router {
@@ -14,24 +11,24 @@ export default class Router {
 		this.routes = routes;
 	}
 
-	getViewClass(viewName): ViewClassPromise {
+	getClass(path): ObjectClassPromise {
 		return new Promise((resolve, reject) => {
 			this.routes.forEach((route: Route) =>{
-				if(Router.testRoute(viewName, route)){
-					resolve(route.getViewClass());
+				if(Router.testRoute(path, route)){
+					resolve(route.getClass());
 				}
 			});
 
-			reject('View "' + viewName + '" not found');
+			reject('No route match:"' + path + '"');
 		});
 	}
 
-	static testRoute(viewName: string, route: Route) {
-		if(route.viewName && route.viewName === viewName){
+	static testRoute(path: string, route: Route) {
+		if(route.match && route.match === path){
 			return true;
 		}
 
-		if(route.viewMatch instanceof RegExp && viewName.match(route.viewMatch)) {
+		if(route.match instanceof RegExp && path.match(route.match)) {
 			return true;
 		}
 

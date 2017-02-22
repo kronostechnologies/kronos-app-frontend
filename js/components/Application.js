@@ -1617,7 +1617,7 @@ export default class Application extends EventEmitter{
 			return Promise.resolve(this._view_objects[viewName]);
 		}
 
-		return this.router.getViewClass(viewName)
+		return this.router.getClass(viewName)
 			.then((viewClass) => {
 				const viewObject = new viewClass(self);
 				self._view_objects[viewName] = viewObject;

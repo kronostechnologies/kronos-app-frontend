@@ -156,6 +156,7 @@ export default class View {
 		if (this.app.debug) {
 			this.app._throw('View does not implement _hook function');
 		}
+		return Promise.resolve();
 	}
 
 	inject(model) {
@@ -163,13 +164,14 @@ export default class View {
 			console.debug('Injecting model');
 		}
 
-		this._inject(model);
+		return this._inject(model);
 	}
 
 	_inject(model: {}) {
 		if (this.app.debug) {
 			this.app._throw('View does not implement _inject function');
 		}
+		return Promise.resolve();
 	}
 
 	close(callback) {

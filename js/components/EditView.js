@@ -332,17 +332,18 @@ export default class EditView extends View {
 		this.app.hideOverlay();
 		$('input[type=submit]').prop('disabled', false);
 
-		if(!this.app.validateXHR(jqXHR)) {
-			return false;
-		}
-
-		if(typeof error_callback == 'function') {
-			error_callback(false);
-			error_callback = null;
-		}
-		else {
-			this.app.showError(this.app._('SAVE_ERROR_OCCURED'));
-		}
+		this.validateXHR(jqXHR).then((isValidXHR)=> {
+			if(!isValidXHR){
+				return;
+			}
+			if(typeof error_callback == 'function') {
+				error_callback(false);
+				error_callback = null;
+			}
+			else {
+				this.app.showError(this.app._('SAVE_ERROR_OCCURED'));
+			}
+		});
 	}
 
 	_saveBuildPost() {

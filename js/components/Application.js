@@ -977,17 +977,19 @@ export default class Application extends EventEmitter{
 				error: function(jqXHR, status, error) {
 					self.view_fetching = false;
 					self._hideLoading();
-					if(!self.validateXHR(jqXHR)){
-						return false;
-					}
 
-					if(this.debug) {
-						console.debug('AJAX query error');
-						console.debug(status);
-						console.debug(error);
-					}
+					self.validateXHR(jqXHR).then((isValidXHR)=>{
+						if(!isValidXHR){
+							return;
+						}
+						if(this.debug) {
+							console.debug('AJAX query error');
+							console.debug(status);
+							console.debug(error);
+						}
 
-					self._showFatalError('An error occured while fetching view data "'+view+'" ('+status+')');
+						self._showFatalError('An error occured while fetching view data "'+view+'" ('+status+')');
+					});
 				}
 			});
 
@@ -1920,14 +1922,13 @@ export default class Application extends EventEmitter{
 
 					},
 					error: function(jqXHR, status, error) {
-						if(!self.validateXHR(jqXHR)){
-							self.hideModalDialog('fast');
-							return false;
-						}
-
-						self.showError();
 						self.hideModalDialog('fast');
-						return false;
+						self.validateXHR(jqXHR).then((isValidXHR)=>{
+							if(!isValidXHR){
+								return;
+							}
+							self.showError();
+						});
 					}
 				});
 
@@ -1996,10 +1997,13 @@ export default class Application extends EventEmitter{
 					return true;
 				},
 				error: function (jqXHR, status, error){
-					if(!self.validateXHR(jqXHR)){
-						return false;
-					}
-					console.debug('Error deleting attachment.');
+					self.validateXHR(jqXHR).then((isValidXHR)=> {
+						if(!isValidXHR){
+							return;
+						}
+						console.log(error);
+					});
+
 				}
 			});
 		}
@@ -2017,9 +2021,12 @@ export default class Application extends EventEmitter{
 					return true;
 				},
 				error: function (jqXHR, status, error){
-					if(!self.validateXHR(jqXHR)){
-						return false;
-					}
+					self.validateXHR(jqXHR).then((isValidXHR)=> {
+						if(!isValidXHR){
+							return;
+						}
+						console.log(error);
+					});
 				}
 			});
 		}
@@ -2434,39 +2441,42 @@ export default class Application extends EventEmitter{
 	 * Used to detect login redirection during ajax errors.
 	 *
 	 */
-	validateXHR(jqXHR){
-		var self = this;
+	validateXHR(jqXHR): Promise{
+		const self = this;
+		return new Promise((resolve)=>{
+			if(!jqXHR || typeof jqXHR === 'undefined') {
+				resolve(false);
+				return;
+			}
 
-		if(!jqXHR || typeof jqXHR === 'undefined'){
-			return true;
-		}
+			if(jqXHR.statusText === 'abort') {
+				resolve(false);
+				return;
+			}
 
-		if(jqXHR.statusText === 'abort'){
-			return false;
-		}
+			if(jqXHR.status === 0) {
+				// self._beforeUnload calling self.abortOngoingXHR() may be trigerred after the request completion so we delay the check.
+				setTimeout(function() {
 
-		if(jqXHR.status ===  0){
-			// self._beforeUnload calling self.abortOngoingXHR() may be trigerred after the request completion so we delay the check.
-			setTimeout(function(){
+					// Probably due tu a CORS error caused by a redirection to Siteminder sso login page.
+					// Could also be caused by a sever network or dns error.
+					self.showXHRNetworkErrorError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
 
-				if(jqXHR.statusText === 'abort'){
-					return false;
-				}
+					resolve(false);
+				});
 
-				// Probably due tu a CORS error caused by a redirection to Siteminder sso login page.
-				// Could also be caused by a sever network or dns error.
-				self.showXHRNetworkErrorError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
-			});
+				return;
+			}
 
-			return false;
-		}
+			if(jqXHR.status == 401) {
+				self.showSessionExpiredError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
+				resolve(false);
+				return;
+			}
 
-		if(jqXHR.status == 401) {
-			self.showSessionExpiredError(jqXHR.responseJSON ? jqXHR.responseJSON.view : false);
-			return false;
-		}
+			resolve(true);
 
-		return true;
+		});
 	}
 
 	getXHRRequest(url, successCallback, loading, errorCallback, button, skipOverlayHandling) {
@@ -2519,20 +2529,23 @@ export default class Application extends EventEmitter{
 					$(button).prop('disabled', false);
 				}
 
-				if(!self.validateXHR(jqXHR)){
-					return false;
-				}
+				self.validateXHR(jqXHR).then((isValidXHR)=> {
+					if(!isValidXHR){
+						return;
+					}
+					if(this.debug) {
+						console.debug('AJAX query error');
+						console.debug(status);
+						console.debug(error);
+					}
 
-				if(this.debug) {
-					console.debug('AJAX query error');
-					console.debug(status);
-					console.debug(error);
-				}
-
-				if(typeof errorCallback == 'function')
-					errorCallback();
-				else
-					self.showError();
+					if(typeof errorCallback == 'function') {
+						errorCallback();
+					}
+					else {
+						self.showError();
+					}
+				});
 			}
 		});
 
@@ -2541,6 +2554,7 @@ export default class Application extends EventEmitter{
 
 	registerXHR(xhr) {
 		this._ongoing_xhrs.push(xhr);
+		console.log('registerXHR : ' + this._ongoing_xhrs.length);
 	}
 
 	unregisterXHR(xhr) {
@@ -2551,6 +2565,7 @@ export default class Application extends EventEmitter{
 	}
 
 	abortOngoingXHR() {
+		console.log('abortOngoingXHR : ' + this._ongoing_xhrs.length);
 		$.each(this._ongoing_xhrs, function(index, xhr) {
 			if(xhr !== undefined) {
 				xhr.abort();
@@ -2584,11 +2599,14 @@ export default class Application extends EventEmitter{
 		// Return real Promise. Not jQuery.Deferred
 		return new Promise((resolve, reject) => {
 			xhrRequest.then(
-				(result) => {
-					return resolve(result);
+				(data, textStatus, jqXHR) => {;
+					resolve({data, textStatus, jqXHR});
 				},
-				(error) => {
-					return reject(error);
+				(jqXHR, textStatus, errorThrown) => {
+					// validateXHR should be called again by client
+					self.validateXHR(jqXHR).then(()=> {
+						reject({jqXHR, textStatus, errorThrown});
+					});
 				}
 			);
 		});
@@ -2605,68 +2623,72 @@ export default class Application extends EventEmitter{
 		if(button)
 			$(button).prop('disabled', true);
 
-		const xhrRequest = self.ajax(view, cmd, paramsString, {
+
+		const xhrResult = self.ajax(view, cmd, paramsString, {
 			type : 'GET',
-			dataType:'json',
-			success: function(response) {
-				if(!skipOverlayHandling){
-					self.hideOverlay();
-					self._hideLoading();
-				}
-
-				if(button)
-					$(button).prop('disabled', false);
-
-				var data;
-				if(typeof response.data != 'undefined'){
-					data = response.data;
-				}
-				else {
-					data = response;
-				}
-
-				if(response.status && response.status == 'error') {
-					if(typeof errorCallback == 'function'){
-						errorCallback(data );
+			dataType:'json'})
+			.then(
+				({data, textStatus, jqXHR}) => {
+					if(!skipOverlayHandling){
+						self.hideOverlay();
+						self._hideLoading();
 					}
-					else if(typeof data.message != 'undefined'){
-						self.showError(data.message);
+
+					if(button)
+						$(button).prop('disabled', false);
+
+					if(typeof data.data != 'undefined'){
+						data = data.data;
 					}
-					else {
-						self.showError();
+
+					if(data.status && data.status == 'error') {
+						if(typeof errorCallback == 'function'){
+							errorCallback(data );
+						}
+						else if(typeof data.message != 'undefined'){
+							self.showError(data.message);
+						}
+						else {
+							self.showError();
+						}
 					}
-				}
-				else if(typeof callback == 'function') {
-					callback(data);
-				}
-			},
-			error: function(jqXHR, status, error) {
+					else if(typeof callback == 'function') {
+						callback(data);
+					}
 
-				if(!skipOverlayHandling) {
-					self.hideOverlay();
-					self._hideLoading();
-				}
+					return Promise.resolve({data, textStatus, jqXHR});
+				},
+				({jqXHR, textStatus, errorThrown}) => {
 
-				if(button) {
-					$(button).prop('disabled', false);
-				}
+					if(!skipOverlayHandling) {
+						self.hideOverlay();
+						self._hideLoading();
+					}
 
-				if(!self.validateXHR(jqXHR)){
-					return false;
-				}
+					if(button) {
+						$(button).prop('disabled', false);
+					}
 
-				if(this.debug) {
-					console.debug('AJAX query error');
-					console.debug(status);
-					console.debug(error);
-				}
+					return self.validateXHR(jqXHR).then((isValidXHR)=> {
+						if(isValidXHR){
+							if(self.debug) {
+								console.debug('AJAX query error');
+								console.debug(textStatus);
+								console.debug(errorThrown);
+							}
 
-				if(typeof errorCallback == 'function')
-					errorCallback();
-				else
-					self.showError();
-			}
-		});
+							if(typeof errorCallback == 'function') {
+								errorCallback();
+							}
+							else {
+								self.showError();
+							}
+						}
+
+						return Promise.resolve({jqXHR, textStatus, errorThrown});
+					});
+				}
+			);
 
 		if(loading) {
 			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
@@ -2675,21 +2697,29 @@ export default class Application extends EventEmitter{
 			}, this._loadingDelay);
 		}
 
-		return xhrRequest;
+		return xhrResult;
 	}
 
-	post(view, cmd, paramsString, postString, callback, loading, errorCallback, button): Promise {
-		var self = this;
+	post(view, cmd, paramsString, postString, callback, loading, errorCallback, button, skipOverlayHandling): Promise {
+		const self = this;
+
+		if(!loading && !skipOverlayHandling) {
+			this.showOverlay();
+		}
 
 		if(button)
 			$(button).prop('disabled', true);
 
-		const xhrRequest = self.ajax(view, cmd, paramsString, {
+		const xhrResult = self.ajax(view, cmd, paramsString, {
 			type: 'POST',
 			data: postString,
 			dataType:'json',
-			success: function(response) {
-				if(loading) {
+			ajaxStop: function(){
+				self.ajaxQueryLoading = false;
+			}
+		}).then(
+			({data, textStatus, jqXHR}) => {
+				if(!skipOverlayHandling) {
 					self.hideOverlay();
 					self._hideLoading();
 				}
@@ -2697,15 +2727,11 @@ export default class Application extends EventEmitter{
 				if(button)
 					$(button).prop('disabled', false);
 
-				var data;
-				if(typeof response.data != 'undefined'){
-					data = response.data;
-				}
-				else {
-					data = response;
+				if(typeof data.data != 'undefined'){
+					data = data.data;
 				}
 
-				if(response.status && response.status == 'error') {
+				if(data.status && data.status == 'error') {
 					if(typeof errorCallback == 'function'){
 						errorCallback(data);
 					}
@@ -2719,34 +2745,39 @@ export default class Application extends EventEmitter{
 				else if(typeof callback == 'function') {
 					callback(data);
 				}
+
+				return Promise.resolve({data, textStatus, jqXHR});
 			},
-			error: function(jqXHR, status, error) {
-				self.hideOverlay();
-				self._hideLoading();
+			({jqXHR, textStatus, errorThrown}) => {
+				if(!skipOverlayHandling) {
+					self.hideOverlay();
+					self._hideLoading();
+				}
 
 				if(button) {
 					$(button).prop('disabled', false);
 				}
 
-				if(!self.validateXHR(jqXHR)){
-					return false;
-				}
+				return self.validateXHR(jqXHR).then((isValidXHR)=> {
+					if(isValidXHR){
+						if(self.debug) {
+							console.debug('AJAX query error');
+							console.debug(textStatus);
+							console.debug(errorThrown);
+						}
 
-				if(this.debug) {
-					console.debug('AJAX query error');
-					console.debug(status);
-					console.debug(error);
-				}
+						if(typeof errorCallback == 'function') {
+							errorCallback();
+						}
+						else {
+							self.showError();
+						}
+					}
 
-				if(typeof errorCallback == 'function')
-					errorCallback();
-				else
-					self.showError();
-			},
-			ajaxStop: function(){
-				self.ajaxQueryLoading = false;
+					return Promise.resolve({jqXHR, textStatus, errorThrown});
+				});
 			}
-		});
+		);
 
 		if(loading) {
 			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
@@ -2755,7 +2786,7 @@ export default class Application extends EventEmitter{
 			}, this._loadingDelay);
 		}
 
-		return xhrRequest;
+		return xhrResult;
 	}
 
 	datepicker(selector, options) {

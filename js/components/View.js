@@ -1,10 +1,12 @@
 // @flow
+import {EventEmitter} from 'events';
 
 declare var $:jQuery;
 
-export default class View {
+export default class View extends EventEmitter{
 
 	constructor(app: Application) {
+		super();
 		this.app = app;
 		this._view = '';
 		this._id = false;
@@ -74,7 +76,10 @@ export default class View {
 
 	load(params) {
 		this.app.performUnmounts();
-		return Promise.resolve(this._load(params));
+		return Promise.resolve(this._load(params))
+			.then(() => {
+				this.emit('load', params);
+			});
 	}
 
 	_load(params) {
@@ -148,7 +153,12 @@ export default class View {
 			}
 
 			self.updateReturnToParentView();
-			return this._hook(hash);
+			return Promise.resolve(this._hook(hash)).then(()=>{
+				self.emit('hook', hash);
+			});
+		}
+		else {
+			return Promise.resolve();
 		}
 	}
 
@@ -180,6 +190,7 @@ export default class View {
 		if (!canClose) {
 			this._onCancelClose();
 		} else {
+			this.emit('close');
 			this._onClose();
 		}
 		if (typeof callback === 'function') {

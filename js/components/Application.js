@@ -2581,15 +2581,17 @@ export default class Application extends EventEmitter{
 			self.unregisterXHR(jqXHR);
 		});
 
-		// Convert to real Promise
-		return xhrRequest.then(
-			(result) => {
-				return Promise.resolve(result);
-			},
-			(error) => {
-				return Promise.reject(error);
-			}
-		);
+		// Return real Promise. Not jQuery.Deferred
+		return new Promise((resolve, reject) => {
+			xhrRequest.then(
+				(result) => {
+					return resolve(result);
+				},
+				(error) => {
+					return reject(error);
+				}
+			);
+		});
 	}
 
 	get(view, cmd, paramsString, callback, loading, errorCallback, button, skipOverlayHandling): Promise {

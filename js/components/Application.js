@@ -2554,7 +2554,6 @@ export default class Application extends EventEmitter{
 
 	registerXHR(xhr) {
 		this._ongoing_xhrs.push(xhr);
-		console.log('registerXHR : ' + this._ongoing_xhrs.length);
 	}
 
 	unregisterXHR(xhr) {
@@ -2565,7 +2564,6 @@ export default class Application extends EventEmitter{
 	}
 
 	abortOngoingXHR() {
-		console.log('abortOngoingXHR : ' + this._ongoing_xhrs.length);
 		$.each(this._ongoing_xhrs, function(index, xhr) {
 			if(xhr !== undefined) {
 				xhr.abort();

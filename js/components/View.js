@@ -12,6 +12,14 @@ export default class View extends EventEmitter{
 		this._id = false;
 		this._uri_params = {};
 		this._redrawn = false;
+
+		this.on('hook', ()=>{
+			$('input').each(function (index, element) {
+				if (!$(element).attr('maxlength')) {
+					$(element).attr('maxlength', 255);
+				}
+			});
+		})
 	}
 
 	changed(element) {
@@ -73,6 +81,7 @@ export default class View extends EventEmitter{
 
 	load(params) {
 		this.app.performUnmounts();
+		this.params = params;
 		return Promise.resolve(this._load(params))
 			.then(() => {
 				this.emit('load', params);
@@ -80,7 +89,6 @@ export default class View extends EventEmitter{
 	}
 
 	_load(params) {
-		this.params = params;
 	}
 
 	draw(html) {

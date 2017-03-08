@@ -1006,94 +1006,125 @@ export default class Application extends EventEmitter{
 	 */
 	_loadView(data, hiddenParams) {
 		const self = this;
+
+		if (data.data) { //backward compatibility.
+			data = data.data;
+		}
+
 		let fullParams;
+		if (data.params) {
+			fullParams = $.extend({}, data.params, hiddenParams);
+		}
+		else {
+			fullParams = $.extend({}, hiddenParams);
+		}
 
+		if (data.user && self.userVersion != data.user.version) {
+			self.clearViewCache();
+			self.setUserConfig(data.user);
+		}
 
+		// Application version changed server side, we have to reload the application.
+		if (this.getApplicationVersion() != data.version) {
+			location.reload();
+		}
 
-			if (data.data) { //backward compatibility.
-				data = data.data;
-			}
-
-			if (data.user && self.userVersion != data.user.version) {
-				self.clearViewCache();
-				self.setUserConfig(data.user);
-			}
-
-			// Application version changed server side, we have to reload the application.
-			if (this.getApplicationVersion() != data.version) {
-				location.reload();
-			}
-
-			return this._getViewObject(this.currentView).then((viewObject) => {
-
-				try {
-					window.view = viewObject;
-					viewObject.init(location.hash);
-					viewObject._validateable = (data.validateable || false);
-
-					//* BASED on kronos-lib/Kronos/Common/View.php -> function getContent *//
-					if (data.html) {
-						if (this.debug) {
-							console.debug('Using recieved html');
-						}
-						this._loadContent(viewObject, data.html);
-
-						// We store the html and json we received
-						this._setViewCache(this.currentView, data.html, false);
-					}
-					else if (this._isViewCached(this.currentView)) {
-						if (this.debug) {
-							console.debug('Using cached html');
-						}
-
-						// Get no html/params but the sent version is the same as the one we have, we can use it.
-						this._loadContent(viewObject, this._getViewCachedHTML(this.currentView));
-					}
-					else {
-						throw this._throw('View not cached and not recieved from html...', true);
-					}
-
-					if (data.params) {
-						fullParams = $.extend({}, data.params, hiddenParams);
-					}
-					else {
-						fullParams = $.extend({}, hiddenParams);
-					}
-
-					return Promise.resolve(viewObject.load(fullParams))
-						.then(()=>{
-							return Promise.resolve(self._hookView(viewObject));
-						})
-						.then(()=>{
-							return Promise.resolve(self._loadModel(viewObject, data.model));
-						})
-						.then(()=>{
-							return Promise.resolve(self._checkAnchor(viewObject));
-						})
-						.then(()=>{
-							return Promise.resolve(self._checkOnLoadScroll());
-						})
-						.then(()=>{
-							$('input').each(function (index, element) {
-								if (!$(element).attr('maxlength')) {
-									$(element).attr('maxlength', 255);
-								}
-							});
-
-							return Promise.resolve();
-						});
-				}
-				catch(error) {
-					return Promise.reject(error);
-				}
-			})
+		return this._getViewObject(this.currentView)
+			.then((viewObject) =>
+				self._initViewObject(viewObject, data)
+				.then(() => Promise.resolve(viewObject.load(fullParams)))
+				.then(() => Promise.resolve(self._loadContentData(viewObject, data)))
+				.then(() => Promise.resolve(self._hookView(viewObject)))
+				.then(() => Promise.resolve(self._loadModel(viewObject, data.model)))
+				.then(() => Promise.resolve(self._checkAnchor(viewObject)))
+				.then(() => Promise.resolve(self._checkOnLoadScroll()))
+			)
 			.catch((error) => {
 				this._stopObservation();
 				this._showFatalError(error);
-				throw error;
-			})
-
+				return Promise.reject(error);
+			});
 	}
+
+	_initViewObject(viewObject: View, data: {}): Promise {
+		window.view = viewObject;
+		viewObject._validateable = (data.validateable || false);
+		return Promise.resolve(viewObject.init(location.hash));
+	}
+
+	_loadContentData(viewObject: View, data: {}) {
+		//* BASED on kronos-lib/Kronos/Common/View.php -> function getContent *//
+		if (data.html) {
+			return Promise.resolve(this._loadContent(viewObject, data.html))
+				.then(()=>{
+					// We store the html and json we received
+					this._setViewCache(this.currentView, data.html, false);
+				});
+		}
+		else if (this._isViewCached(this.currentView)) {
+			// Get no html/params but the sent version is the same as the one we have, we can use it.
+			return Promise.resolve(this._loadContent(viewObject, this._getViewCachedHTML(this.currentView)));
+		}
+		else {
+			return Promise.reject(new Error('View not cached and not recieved from html...'));
+		}
+	}
+
+	/**
+	 *	Ask the view to draw the content if it can or we do it.
+	 *
+	 *	NOTE : If you want to support view redrawing, implement 'draw'.
+	 */
+	_loadContent(viewObject, html) {
+
+		if(typeof viewObject !== 'undefined' && typeof viewObject.draw == 'function') {
+			viewObject.draw(html);
+		}
+		else {
+			$('#content').html(html);
+		}
+
+		scrollTo(0, 0);
+	}
+
+	/**
+	 * Hook the view object to the current content
+	 */
+	_hookView(viewObject: View) {
+		const self = this;
+		if(typeof viewObject._preHook == 'function'){
+			viewObject._preHook();
+		}
+
+		return Promise.resolve(viewObject.hook()).then(() => {
+			return self._onViewHook(viewObject);
+		});
+	}
+
+	_onViewHook(viewObject) { }
+
+	_loadModel(viewObject: View, model) {
+		model = this.recursiveCleanFloats(model);
+
+		if(this.debug) {
+			console.debug(model);
+		}
+
+		this.emit('preInject');
+		viewObject.inject(model);
+		this.emit('postInject');
+		if(typeof viewObject._postInject == 'function'){
+			viewObject._postInject();
+		}
+
+		this._onViewInject(viewObject, model);
+
+		if ($('.page-title').length) {
+			window.document.title = ($('.page-title').text());
+		}
+	}
+
+	_onViewInject(viewObject: View, model) { }
 
 	_checkAnchor(viewObject: View){
 		var params = viewObject.parseHash(this.hash);
@@ -1140,38 +1171,6 @@ export default class Application extends EventEmitter{
 		delete this._onLoadScroll;
 	}
 
-	/**
-	 *	Ask the view to draw the content if it can or we do it.
-	 *
-	 *	NOTE : If you want to support view redrawing, implement 'draw'.
-	 */
-	_loadContent(viewObject, html) {
-
-		if(typeof viewObject !== 'undefined' && typeof viewObject.draw == 'function') {
-			viewObject.draw(html);
-		}
-		else {
-			$('#content').html(html);
-		}
-
-		scrollTo(0, 0);
-	}
-
-	/**
-	 * Hook the view object to the current content
-	 */
-	_hookView(viewObject: View) {
-		const self = this;
-		if(typeof viewObject._preHook == 'function'){
-			viewObject._preHook();
-		}
-
-		return Promise.resolve(viewObject.hook()).then(() => {
-			return self._onViewHook(viewObject);
-		});
-	}
-
-	_onViewHook(viewObject) { }
 
 	recursiveCleanFloats(model) {
 		var self = this;
@@ -1197,29 +1196,6 @@ export default class Application extends EventEmitter{
 
 		return model;
 	}
-
-	_loadModel(viewObject: View, model) {
-		model = this.recursiveCleanFloats(model);
-
-		if(this.debug) {
-			console.debug(model);
-		}
-
-		this.emit('preInject');
-		viewObject.inject(model);
-		this.emit('postInject');
-		if(typeof viewObject._postInject == 'function'){
-			viewObject._postInject();
-		}
-
-		this._onViewInject(viewObject, model);
-
-		if ($('.page-title').length) {
-			window.document.title = ($('.page-title').text());
-		}
-	}
-
-	_onViewInject(viewObject: View, model) { }
 
 
 	/**

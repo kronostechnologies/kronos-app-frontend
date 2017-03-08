@@ -8,11 +8,29 @@ export default class EditView extends View {
 
 	constructor(app: Application) {
 		super(app);
+		const self = this;
 		this._can_save = true;
 		this._modified = false;
 		this._soft_modified = false;
 		this._wasClosing = false;
 		this._validateSteps = [];
+
+
+		this.on('hook', ()=>{
+			let $contentForm = $('#content form');
+
+			$contentForm.on('change', ':input[name]:not(.no-form-change)', function() {
+				self.changed(this);
+			});
+
+			$contentForm.on('keypress', ':input[type=text]:not(.no-form-change),:input[type=password]:not(.no-form-change)', function() {
+				self.changed(this);
+			});
+			$('.number:not(.positive)').number();
+			$('.number.positive').number({positive: true});
+
+			this._initOnBeforeUnloadEvents();
+		});
 	}
 
 	init(hash) {
@@ -38,45 +56,26 @@ export default class EditView extends View {
 		}
 	}
 
-	hook(hash) {
+	_initOnBeforeUnloadEvents() {
 		const self = this;
-		if(!this._redrawn) {
-			if(this.app.debug) {
-				console.debug('Hooking view');
-			}
-
-			$('#content form').on('change', ':input[name]:not(.no-form-change)', function() {
-				self.changed(this);
-			});
-			$('#content form').on('keypress', ':input[type=text]:not(.no-form-change),:input[type=password]:not(.no-form-change)', function() {
-				self.changed(this);
-			});
-			$('.number:not(.positive)').number();
-			$('.number.positive').number({positive: true});
-
-			self.updateReturnToParentView();
-
-			// Prevent IE to prompt that a change occured when clicking on a link with href=javascript:
-			if(navigator.appName === 'Microsoft Internet Explorer') {
-				$(window).data('beforeunload', window.onbeforeunload);
-				$(document)
-					.on('mouseenter', 'a[href^="javascript:"]', () => {
-						window.onbeforeunload = null;
-					})
-					.on('mouseleave', 'a[href^="javascript:"]', () => {
-						window.onbeforeunload = $(window).data('beforeunload');
-					});
-			}
-
-			window.onbeforeunload = function(e) {
-				self.app._beforeUnload(e);
-				if(self._modified) {
-					return self.app._('SAVE_CHANGES_MESSAGE');
-				}
-			};
-
-			return this._hook(hash);
+		// Prevent IE to prompt that a change occured when clicking on a link with href=javascript:
+		if(navigator.appName === 'Microsoft Internet Explorer') {
+			$(window).data('beforeunload', window.onbeforeunload);
+			$(document)
+				.on('mouseenter', 'a[href^="javascript:"]', () => {
+					window.onbeforeunload = null;
+				})
+				.on('mouseleave', 'a[href^="javascript:"]', () => {
+					window.onbeforeunload = $(window).data('beforeunload');
+				});
 		}
+
+		window.onbeforeunload = function(e) {
+			self.app._beforeUnload(e);
+			if(self._modified) {
+				return self.app._('SAVE_CHANGES_MESSAGE');
+			}
+		};
 	}
 
 	inject(model) {

@@ -57,14 +57,11 @@ export default class View extends EventEmitter{
 
 	init(hash) {
 		const uri = this.parseHash(hash);
-
 		this._uri = uri;
 		this._view = uri.view;
 		this._id = uri.id;
 		this._uri_params = uri.params;
-
 		this._controls = {};
-
 		this._init(hash);
 	}
 
@@ -153,9 +150,10 @@ export default class View extends EventEmitter{
 			}
 
 			self.updateReturnToParentView();
-			return Promise.resolve(this._hook(hash)).then(()=>{
-				self.emit('hook', hash);
-			});
+			return Promise.resolve(this._hook(hash))
+				.then(()=>{
+					self.emit('hook', hash);
+				});
 		}
 		else {
 			return Promise.resolve();

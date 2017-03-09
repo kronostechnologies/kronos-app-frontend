@@ -12,6 +12,7 @@ export default class View extends EventEmitter{
 		this._id = false;
 		this._uri_params = {};
 		this._redrawn = false;
+		this._loadSteps = [(params) => this._load(params)];
 
 		this.on('hook', ()=>{
 			$('input').each(function (index, element) {
@@ -82,13 +83,19 @@ export default class View extends EventEmitter{
 	load(params) {
 		this.app.performUnmounts();
 		this.params = params;
-		return Promise.resolve(this._load(params))
+
+
+		return Promise.all(this._loadSteps.map((step) => step(params)))
 			.then(() => {
 				this.emit('load', params);
 			});
 	}
 
 	_load(params) {
+	}
+
+	addLoadStep(step: (params: {}) => Promise){
+		this._loadSteps.push(step);
 	}
 
 	draw(html) {

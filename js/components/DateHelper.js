@@ -125,6 +125,9 @@ export default class DateHelper {
 	getAge(date, now) {
 		date = this.parse(date);
 		now = this.parse(now) || new Date();
+		if(date === false || date === ''){
+			return '';
+		}
 
 		return parseInt(moment(now).diff(date, 'years'));
 	}

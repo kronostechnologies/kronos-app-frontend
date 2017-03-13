@@ -1,6 +1,6 @@
 // @flow
 
-import View from './View.js';
+import View from './View';
 
 declare var $: jQuery;
 
@@ -94,13 +94,11 @@ export default class EditView extends View {
 		$('#edit_form').off('**');
 		if(this._modified && this._can_save) {
 			this._wasClosing = true;
-
 			this.showSaveDialog(callback);
-
 			return false;
 		}
 
-		return View.prototype.close.call(this, callback);
+		return super.close(callback);
 	}
 
 	getSaveChangeDialogHtml() {
@@ -382,8 +380,6 @@ export default class EditView extends View {
 	_afterSave() {
 	}
 
-	_onClose() {
-	}
 
 	createModel() {
 		const self = this;

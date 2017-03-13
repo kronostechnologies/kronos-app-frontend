@@ -139,8 +139,6 @@ export default class Application extends EventEmitter{
 				}
 			}
 		});
-
-		this._init();
 	}
 
 	initBrowserDetection(){
@@ -185,9 +183,6 @@ export default class Application extends EventEmitter{
 		this._blackberry = (navigator.userAgent.match('/BlackBerry/') === 'BlackBerry' && this.browser.webkit);
 		this._palm_pre = (navigator.userAgent.match('/webOS/') === 'webOS' && this.browser.webkit);
 		this._mobile = (this._iPad || this._iPod || this._iPhone || this._blackberry || this._palm_pre);
-	}
-
-	_init() {
 	}
 
 	/**
@@ -419,10 +414,6 @@ export default class Application extends EventEmitter{
 		};
 
 		this._observe();
-
-		if(this._checkGears()) {
-			this._initGears();
-		}
 	}
 
 	hook(){
@@ -711,11 +702,7 @@ export default class Application extends EventEmitter{
 								}
 								else {
 									// Close current view
-									self._onViewClose(viewObject);
-									if(self.debug) {
-										console.debug('Closed view');
-									}
-
+									self.emit('viewClose', viewObject);
 									return state;
 								}
 							}
@@ -756,10 +743,6 @@ export default class Application extends EventEmitter{
 				self._fetchView(view);
 			}
 		});
-
-	}
-
-	_onViewClose(viewObject) {
 
 	}
 
@@ -827,10 +810,12 @@ export default class Application extends EventEmitter{
 		if(this._resume_hash) {
 			if(!stay && typeof stay != 'undefined') {
 
-				// Trigger _onViewClose eventually
-				this._getViewObject(this.currentView).then((viewObject) => {
-					self._onViewClose(viewObject);
-				}).catch(() => {});
+				// Trigger viewClose eventually
+				this._getViewObject(this.currentView)
+					.then((viewObject) => {
+						self.emit('viewClose', viewObject);
+					})
+					.catch(() => {});
 
 
 				// We're going where the user wanted to before the view cancelled it
@@ -1547,42 +1532,6 @@ export default class Application extends EventEmitter{
 		}
 
 		return array;
-	}
-
-	/**
-	 * Check if Google Gears is installed
-	 */
-	_checkGears() {
-		if (!window.google || !google.gears) {
-			if(this.debug)
-				console.debug('Google Gears is not installed');
-
-			return false;
-		}
-		else {
-			if(this.debug)
-				console.debug('Google Gears is installed');
-
-			return true;
-		}
-	}
-
-	/**
-	 * Initialize Google Gears
-	 */
-	_initGears() {
-		if(!this._checkGears()) return false;
-		return true;
-	}
-
-	/**
-	 * Add a view object and make sure it implements required fonction (debug only)
-	 */
-	registerView(view, viewObject) {
-
-		console.log('registerView() si deprecated. Use router.');
-
-		this._view_objects[view] = viewObject;
 	}
 
 

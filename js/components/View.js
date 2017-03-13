@@ -24,7 +24,6 @@ export default class View extends EventEmitter{
 	}
 
 	changed(element) {
-
 	}
 
 	parseHash(hash) {
@@ -70,20 +69,11 @@ export default class View extends EventEmitter{
 		this._view = uri.view;
 		this._id = uri.id;
 		this._uri_params = uri.params;
-		this._controls = {};
-		this._init(hash);
-	}
-
-	_init() {
-		if (this.app.debug) {
-			this.app._throw('View does not implement _init function');
-		}
 	}
 
 	load(params) {
 		this.app.performUnmounts();
 		this.params = params;
-
 
 		return Promise.all(this._loadSteps.map((step) => step(params)))
 			.then(() => {

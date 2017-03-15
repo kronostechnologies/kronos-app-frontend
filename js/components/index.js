@@ -6,6 +6,7 @@ import EditView from './EditView';
 import DateHelper from './DateHelper';
 import removeDiacritics from './removeDiacritics';
 import Router from './Router';
+import BrowserDetect from './BrowserDetect';
 
 export {
 	Application,
@@ -15,6 +16,7 @@ export {
 	sprintf,
 	DateHelper,
 	removeDiacritics,
-	jQueryExtend
+	jQueryExtend,
+	BrowserDetect
 };
 

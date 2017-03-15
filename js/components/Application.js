@@ -3,6 +3,7 @@
 import EventEmitter from 'events';
 //import jQuery from 'jquery'; // Faire un import de jquery semble faire un import distinct que celui du crm
 import Raven from 'raven-js';
+import BrowserDetect from "./BrowserDetect";
 
 // var $ = jQuery;
 declare var $;
@@ -71,7 +72,7 @@ export default class Application extends EventEmitter{
 
 		this.unmounts = [];
 
-		this.initBrowserDetection();
+		this.browser = new BrowserDetect(navigator.userAgent);
 	}
 
 	/**
@@ -139,50 +140,6 @@ export default class Application extends EventEmitter{
 				}
 			}
 		});
-	}
-
-	initBrowserDetection(){
-
-		// Taken from jquery-migrate
-		const uaMatch = function( ua ) {
-			ua = ua.toLowerCase();
-
-			var match = /(chrome)[ \/]([\w.]+)/.exec( ua ) ||
-				/(webkit)[ \/]([\w.]+)/.exec( ua ) ||
-				/(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
-				/(msie) ([\w.]+)/.exec( ua ) ||
-				ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
-				[];
-
-			return {
-				browser: match[ 1 ] || "",
-				version: match[ 2 ] || "0"
-			};
-		};
-		const matched = uaMatch(navigator.userAgent);
-		this.browser = {};
-		if ( matched.browser ) {
-			this.browser[ matched.browser ] = true;
-			this.browser.version = matched.version;
-		}
-
-		// Chrome is Webkit, but Webkit is also Safari.
-		if ( this.browser.chrome ) {
-			this.browser.webkit = true;
-		} else if ( browser.webkit ) {
-			this.browser.safari = true;
-		}
-
-		this._webkit = this.browser.webkit;
-		this._opera = this.browser.opera;
-		this._msie = this.browser.msie;
-		this._mozilla = this.browser.mozilla;
-		this._iPad = (navigator.userAgent.match(/iPad/) === 'iPad');
-		this._iPod = (navigator.userAgent.match(/iPod/) === 'iPod');
-		this._iPhone = (navigator.userAgent.match(/iPhone/) === 'iPhone');
-		this._blackberry = (navigator.userAgent.match('/BlackBerry/') === 'BlackBerry' && this.browser.webkit);
-		this._palm_pre = (navigator.userAgent.match('/webOS/') === 'webOS' && this.browser.webkit);
-		this._mobile = (this._iPad || this._iPod || this._iPhone || this._blackberry || this._palm_pre);
 	}
 
 	/**

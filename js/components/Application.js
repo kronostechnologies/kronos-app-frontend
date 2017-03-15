@@ -2787,7 +2787,7 @@ export default class Application extends EventEmitter{
 	}
 
 	isMobile() {
-		return navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/Pre/i) || navigator.userAgent.match(/Android/i);
+		return navigator.userAgent.match(/iPhone/i) !== null || navigator.userAgent.match(/iPod/i) !== null || navigator.userAgent.match(/Pre/i) !== null || navigator.userAgent.match(/Android/i) !== null;
 	}
 
 	/**

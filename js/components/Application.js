@@ -897,6 +897,13 @@ export default class Application extends EventEmitter{
 				success: function(response) {
 					self.view_fetching = false;
 					self._hideLoading();
+
+					/* Manage redirect responses from view calls. */
+					if (response.redirect) {
+						self.goTo(response.view);
+						return false;
+					}
+
 					if(response.status == 'error') {
 						var info = response.data;
 						if(info.code == 600) { // VIEW_CMD_ERROR;

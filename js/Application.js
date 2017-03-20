@@ -1,12 +1,10 @@
 // @flow
 
 import EventEmitter from 'events';
-//import jQuery from 'jquery'; // Faire un import de jquery semble faire un import distinct que celui du crm
 import Raven from 'raven-js';
 import BrowserDetect from "./BrowserDetect";
 
-// var $ = jQuery;
-declare var $;
+declare var $: jQuery;
 declare var window: Object;
 declare var document: Object;
 

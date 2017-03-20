@@ -123,7 +123,7 @@ export default class View extends EventEmitter{
 			console.debug('Drawing view');
 		}
 
-		const r = $('#content').html(html);
+		$('#content').html(html);
 		this._onDraw();
 	}
 

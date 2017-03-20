@@ -7,6 +7,7 @@ import DateHelper from './DateHelper';
 import removeDiacritics from './removeDiacritics';
 import Router from './Router';
 import BrowserDetect from './BrowserDetect';
+import AsyncTask from './AsyncTask';
 
 export {
 	Application,
@@ -17,6 +18,7 @@ export {
 	DateHelper,
 	removeDiacritics,
 	jQueryExtend,
-	BrowserDetect
+	BrowserDetect,
+	AsyncTask
 };
 

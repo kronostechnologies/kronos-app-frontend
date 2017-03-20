@@ -1,3 +1,5 @@
+declare var $: jQuery;
+
 function AsyncTask(options) {
 	var self = this;
 
@@ -259,3 +261,5 @@ AsyncTask.prototype = {
 		}
 	}
 };
+
+export default AsyncTask;

@@ -44,6 +44,7 @@
     "jquery": "^3.1.1",
     "jsx-control-statements": "^3.1.5",
     "mocha": "^3.2.0",
+    "node-fetch": "^1.6.3",
     "promise.prototype.finally": "^2.0.1",
     "raven-js": "^3.10.0",
     "sinon": "^1.17.7",

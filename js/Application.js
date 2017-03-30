@@ -2041,6 +2041,20 @@ export default class Application extends EventEmitter{
 	}
 
 	/**
+	 * Formats a float value to a format easily understandable for processing.
+	 */
+	formatMoneyForInput(value, precision) {
+		const formatNumberOptions = {
+			precision: precision ? precision : 2,
+			facultative_decimals: false,
+			decimal_separator: '.',
+			thousand_separator: ''
+		};
+
+		return this.formatNumber(value, formatNumberOptions);
+	}
+
+	/**
 	 * Format percent according to locale
 	 */
 	formatPercent(value, opts) {

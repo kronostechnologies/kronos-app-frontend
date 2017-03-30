@@ -11,10 +11,6 @@ declare type FetchOptions = {
 	credentials: "omit" | "same-origin" | "include"; //Authentication credentials mode. Default: "omit"
 };
 
-declare type ExtendedFetchOptions = FetchOptions & {
-
-};
-
 export class FetchAbortError{
 	constructor(response){
 		this.message = "Fetch was aborted";
@@ -30,23 +26,23 @@ export default class FetchService {
 		this.ongoingFetchPromises = [];
 	}
 
-	fetch(url: string, options: FetchOptions): Promise{
-		options = this._processOptions(options);
+	fetch(url: string, options: ExtendedFetchOptions): Promise{
+		options = this._processFetchOptions(options);
 		
 		let abortable = FetchService.makeAbortable(fetch(url, options));
 		this._registerFetchPromise(abortable);
 		return abortable.promise.then((response) => this._checkStatus(response));
 	}
 
-	fetchJson(url: string, options: FetchOptions): Promise{
+	fetchJson(url: string, options: ExtendedFetchOptions): Promise{
 		return this.fetch(url, options).then(FetchService.parseJSON);
 	}
 
-	fetchXml(url: string, options: FetchOptions): Promise{
+	fetchXml(url: string, options: ExtendedFetchOptions): Promise{
 		return this.fetch(url, options).then(FetchService.parseXML);
 	}
 
-	post(url: string, body: string, options: FetchOptions){
+	post(url: string, body: string, options: ExtendedFetchOptions){
 		let postOptions = {
 			method: "POST",
 			body
@@ -56,7 +52,7 @@ export default class FetchService {
 		return this.fetch(url, options);
 	}
 
-	postJson(url: string, body: string, options: FetchOptions): Promise{
+	postJson(url: string, body: string, options: ExtendedFetchOptions): Promise{
 		return this.post(url, body, options).then(FetchService.parseJSON);
 	}
 
@@ -70,7 +66,7 @@ export default class FetchService {
 		return 'index.php?k=' + encodeURIComponent(this.app.SESSION_KEY) + '&view=' + encodeURIComponent(view) + '&cmd=' + encodeURIComponent(cmd) + paramsString;
 	}
 
-	_processOptions(options: FetchOptions){
+	_processFetchOptions(options: FetchOptions){
 		let defaultOptions = {
 			credentials: 'same-origin'
 		};

@@ -8,6 +8,7 @@ import removeDiacritics from './removeDiacritics';
 import Router from './Router';
 import BrowserDetect from './BrowserDetect';
 import AsyncTask from './AsyncTask';
+import FetchService, {FetchAbortError} from './FetchService';
 
 export {
 	Application,
@@ -19,6 +20,8 @@ export {
 	removeDiacritics,
 	jQueryExtend,
 	BrowserDetect,
-	AsyncTask
+	AsyncTask,
+	FetchService,
+	FetchAbortError
 };
 

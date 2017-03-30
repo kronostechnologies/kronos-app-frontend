@@ -3,11 +3,20 @@
 import EventEmitter from 'events';
 import Raven from 'raven-js';
 import BrowserDetect from "./BrowserDetect";
-import FetchService, {FetchAbortError} from './Fetch';
+import FetchService, {FetchAbortError} from './FetchService';
 
 declare var $: jQuery;
 declare var window: Object;
 declare var document: Object;
+
+declare type FetchOptions = {
+	successCallback: (data)=> void; // Deprecated. Use Promise.then()
+	errorCallback: (error) => void; // Deprecated. Use Promise.catch()
+	showLoading: boolean;
+	showOverlay: boolean;
+	buttonSelector: string; // jQuery selector for button to be disabled
+	skipOverlayHandling: boolean;
+}
 
 export default class Application extends EventEmitter{
 
@@ -2502,6 +2511,8 @@ export default class Application extends EventEmitter{
 	}
 
 	abortOngoingXHR() {
+		this.fetchService.abortOngoingFetchPromises();
+
 		$.each(this._ongoing_xhrs, function(index, xhr) {
 			if(xhr !== undefined) {
 				xhr.abort();
@@ -2510,35 +2521,49 @@ export default class Application extends EventEmitter{
 		this._ongoing_xhrs = [];
 	}
 
-	// TODO: Rename me
-	fetchJson(url , options, callback, loading, errorCallback, button, skipOverlayHandling) {
+
+	// successCallback: (data)=> void; // Deprecated. Use Promise.then()
+	// errorCallback: (error) => void; // Deprecated. Use Promise.catch()
+	// showLoading: boolean;
+	// showOverlay: boolean;
+	// buttonSelector: string; // jQuery selector for button to be disabled
+	// skipOverlayHandling: boolean;
+
+	fetch(url , options: FetchOptions) {
+
 		const self = this;
 
-		if(!loading && !skipOverlayHandling) {
+		let showLoading = (options.showLoading === true);
+		let showOverlay = (options.showOverlay===true && ! showLoading);
+		if(showOverlay) {
 			this.showOverlay();
 		}
 
-		if(button) {
-			$(button).prop('disabled', true);
+		let $button = options.button ? $(button) : false;
+		if($button) {
+			$button.prop('disabled', true);
 		}
 
-		if(loading) {
+		if(showLoading) {
 			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
 			this._loadingTimeout = setTimeout(function() {
-				self._showLoading();
+				this._showLoading();
 			}, this._loadingDelay);
 		}
 
-		return this.fetchService.fetch(url, options)
-			.then(Fetch.parseJSON)
-			.finally(() => {
-				if(!skipOverlayHandling){
-					self.hideOverlay();
-					self._hideLoading();
-				}
 
-				if(button) {
-					$(button).prop('disabled', false);
+
+		return this.fetchService.fetch(url, options)
+			.then(FetchService.parseJSON)
+			.finally(() => {
+				if(showLoading){
+					this._hideLoading();
+				}
+				if(showOverlay){
+					this.hideOverlay();
+				}
+				if($button) {
+					$button.prop('disabled', false);
 				}
 			})
 			.then((data)=>{
@@ -2554,12 +2579,6 @@ export default class Application extends EventEmitter{
 					if(typeof errorCallback === 'function'){
 						errorCallback(data);
 					}
-					else if(typeof data.message !== 'undefined'){
-						self.showError(data.message);
-					}
-					else {
-						self.showError();
-					}
 
 					let error = new Error('Applicative XHR Error');
 					error.data = data;
@@ -2572,13 +2591,9 @@ export default class Application extends EventEmitter{
 				return data;
 			})
 			.catch((error)=>{
-				console.log(error);
 				if(! (error instanceof FetchAbortError) ){
 					if(typeof errorCallback === 'function') {
 						errorCallback();
-					}
-					else {
-						self.showError();
 					}
 				}
 
@@ -2586,17 +2601,37 @@ export default class Application extends EventEmitter{
 			});
 	}
 
-	get(view, cmd, paramsString, callback, loading, errorCallback, button, skipOverlayHandling): Promise {
-		let options = {};
-		return this.fetchJson(this.fetchService.getViewUrl(view, cmd, paramsString), options, callback, loading, errorCallback, button, skipOverlayHandling)
+	defaultFetchErrorCallback(data) {
+		if(typeof data.message !== 'undefined'){
+			this.showError(data.message);
+		}
+		else {
+			this.showError();
+		}
+	}
+
+	get(view, cmd, paramsString, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling): Promise {
+		let options = {
+			successCallback,
+			errorCallback : typeof errorCallback === 'function' ? errorCallback : ((data) => this.defaultFetchErrorCallback(data)),
+			buttonSelector,
+			showLoading,
+			showOverlay: (!showLoading && !skipOverlayHandling)
+		};
+		return this.fetch(this.fetchService.getViewUrl(view, cmd, paramsString), options)
 	}
 
 	post(view, cmd, paramsString, postString, callback, loading, errorCallback, button, skipOverlayHandling): Promise {
 		let options = {
 			method: 'POST',
-			body: postString
+			body: postString,
+			successCallback,
+			errorCallback : typeof errorCallback === 'function' ? errorCallback : ((data) => this.defaultFetchErrorCallback(data)),
+			buttonSelector,
+			showLoading,
+			showOverlay: (!showLoading && !skipOverlayHandling)
 		};
-		return this.fetchJson(this.fetchService.getViewUrl(view, cmd, paramsString), options, callback, loading, errorCallback, button, skipOverlayHandling)
+		return this.fetch(this.fetchService.getViewUrl(view, cmd, paramsString), options, callback, loading, errorCallback, button, skipOverlayHandling)
 	}
 
 	datepicker(selector, options) {

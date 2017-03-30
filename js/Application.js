@@ -3,7 +3,7 @@
 import EventEmitter from 'events';
 import Raven from 'raven-js';
 import BrowserDetect from "./BrowserDetect";
-import Fetch, {FetchAbortError} from './Fetch';
+import FetchService, {FetchAbortError} from './Fetch';
 
 declare var $: jQuery;
 declare var window: Object;
@@ -73,7 +73,7 @@ export default class Application extends EventEmitter{
 
 		this.browser = new BrowserDetect(navigator.userAgent);
 
-		this._fetch = new Fetch(this);
+		this.fetchService = new FetchService(this);
 		this.detectedExpiredSessionTimeout=false;
 		this.detectedExpiredSessionGoTo=false;
 		this.detectedNetworkErrorTimeout=false;
@@ -2529,7 +2529,7 @@ export default class Application extends EventEmitter{
 			}, this._loadingDelay);
 		}
 
-		return this._fetch.fetch(url, options)
+		return this.fetchService.fetch(url, options)
 			.then(Fetch.parseJSON)
 			.finally(() => {
 				if(!skipOverlayHandling){
@@ -2588,7 +2588,7 @@ export default class Application extends EventEmitter{
 
 	get(view, cmd, paramsString, callback, loading, errorCallback, button, skipOverlayHandling): Promise {
 		let options = {};
-		return this.fetchJson(this._fetch.getViewUrl(view, cmd, paramsString), options, callback, loading, errorCallback, button, skipOverlayHandling)
+		return this.fetchJson(this.fetchService.getViewUrl(view, cmd, paramsString), options, callback, loading, errorCallback, button, skipOverlayHandling)
 	}
 
 	post(view, cmd, paramsString, postString, callback, loading, errorCallback, button, skipOverlayHandling): Promise {
@@ -2596,7 +2596,7 @@ export default class Application extends EventEmitter{
 			method: 'POST',
 			body: postString
 		};
-		return this.fetchJson(this._fetch.getViewUrl(view, cmd, paramsString), options, callback, loading, errorCallback, button, skipOverlayHandling)
+		return this.fetchJson(this.fetchService.getViewUrl(view, cmd, paramsString), options, callback, loading, errorCallback, button, skipOverlayHandling)
 	}
 
 	datepicker(selector, options) {

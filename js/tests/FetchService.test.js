@@ -3,14 +3,14 @@ import chaiAsPromised from 'chai-as-promised';
 import {Response} from 'node-fetch'
 import fetchMock from 'fetch-mock';
 import sinon from 'sinon';
-import Fetch, {FetchAbortError} from '../Fetch'
+import FetchService, {FetchAbortError} from '../FetchService'
 import { DOMParser } from 'xmldom'
 
 global.DOMParser = DOMParser;
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
-describe('Fetch', () => {
+describe('FetchService', () => {
 
 	const AN_URL = '/url/';
 	const TEXT_RESPONSE_DATA = 'HELLO WORLD';
@@ -48,7 +48,7 @@ describe('Fetch', () => {
 
 	const sandbox = sinon.sandbox.create();
 
-	let fetch;
+	let fetchService;
 
 	beforeEach(() => {
 		AN_ERROR_RESPONSE = new Response(AN_EMPTY_BODY, {status: 500});
@@ -59,7 +59,7 @@ describe('Fetch', () => {
 		AN_UNAUTHORIZED_RESPONSE_WITH_VIEW = new Response(JSON.stringify({view: A_VIEW_LOCATION}), {status: 401});
 		detectedNetworkErrorStub = sandbox.stub(app, 'detectedNetworkError');
 		detectedExpiredSessionStub = sandbox.stub(app, 'detectedExpiredSession');
-		fetch = new Fetch(app);
+		fetchService = new FetchService(app);
 	});
 
 	afterEach(() => {
@@ -74,7 +74,7 @@ describe('Fetch', () => {
 			let response;
 			beforeEach(() => {
 				fetchMock.get(AN_URL, TEXT_RESPONSE_DATA);
-				response = fetch.fetch(AN_URL);
+				response = fetchService.fetch(AN_URL);
 			});
 
 			it('should call fetch with the url', () => {
@@ -82,7 +82,7 @@ describe('Fetch', () => {
 			});
 
 			it('should eventually return a Response object', () => {
-				response = response.then(Fetch.parseText);
+				response = response.then(FetchService.parseText);
 				return expect(response).to.eventually.equals(TEXT_RESPONSE_DATA);
 			});
 
@@ -106,7 +106,7 @@ describe('Fetch', () => {
 			let response;
 			beforeEach(() => {
 				fetchMock.get(AN_URL, AN_ERROR_RESPONSE);
-				response = fetch.fetch(AN_URL);
+				response = fetchService.fetch(AN_URL);
 			});
 
 			it('should be rejected with Error', () => {
@@ -125,7 +125,7 @@ describe('Fetch', () => {
 			let response;
 			beforeEach(() => {
 				fetchMock.get(AN_URL, AN_ABORT_RESPONSE);
-				response = fetch.fetch(AN_URL);
+				response = fetchService.fetch(AN_URL);
 			});
 
 			it('should be rejected with FetchAbortError', () => {
@@ -140,7 +140,7 @@ describe('Fetch', () => {
 			let response;
 			beforeEach(() => {
 				fetchMock.get(AN_URL, A_EMPTY_RESPONSE);
-				response = fetch.fetch(AN_URL);
+				response = fetchService.fetch(AN_URL);
 			});
 
 			it('should be rejected with FetchAbortError', () => {
@@ -159,7 +159,7 @@ describe('Fetch', () => {
 			let response;
 			beforeEach(() => {
 				fetchMock.get(AN_URL, AN_UNAUTHORIZED_RESPONSE);
-				response = fetch.fetch(AN_URL);
+				response = fetchService.fetch(AN_URL);
 			});
 
 			it('should be rejected with FetchAbortError', () => {
@@ -178,7 +178,7 @@ describe('Fetch', () => {
 			let response;
 			beforeEach(() => {
 				fetchMock.get(AN_URL, AN_UNAUTHORIZED_RESPONSE_WITH_VIEW);
-				response = fetch.fetch(AN_URL);
+				response = fetchService.fetch(AN_URL);
 			});
 
 			it('should be rejected with FetchAbortError', () => {
@@ -203,7 +203,7 @@ describe('Fetch', () => {
 		let response;
 		beforeEach(() => {
 			fetchMock.get(AN_URL, JSON_RESPONSE_DATA);
-			response = fetch.fetchJson(AN_URL);
+			response = fetchService.fetchJson(AN_URL);
 		});
 
 		it('should eventually return the response', () => {
@@ -216,7 +216,7 @@ describe('Fetch', () => {
 		let response;
 		beforeEach(() => {
 			fetchMock.get(AN_URL, XML_RESPONSE_DATA);
-			response = fetch.fetchXml(AN_URL);
+			response = fetchService.fetchXml(AN_URL);
 		});
 
 		it('should eventually return the response dom document', () => {
@@ -233,7 +233,7 @@ describe('Fetch', () => {
 		let response;
 		beforeEach(() => {
 			fetchMock.post(AN_URL, TEXT_RESPONSE_DATA);
-			response = fetch.post(AN_URL, A_POST_STRING);
+			response = fetchService.post(AN_URL, A_POST_STRING);
 		});
 
 		it('should call fetch with the url', () => {
@@ -253,7 +253,7 @@ describe('Fetch', () => {
 		});
 
 		it('should eventually return a Response object', () => {
-			response = response.then(Fetch.parseText);
+			response = response.then(FetchService.parseText);
 			return expect(response).to.eventually.equals(TEXT_RESPONSE_DATA);
 		});
 	});
@@ -263,7 +263,7 @@ describe('Fetch', () => {
 		let response;
 		beforeEach(() => {
 			fetchMock.post(AN_URL, JSON_RESPONSE_DATA);
-			response = fetch.postJson(AN_URL, A_POST_STRING);
+			response = fetchService.postJson(AN_URL, A_POST_STRING);
 		});
 
 		it('should set the method options to POST', () => {
@@ -285,7 +285,7 @@ describe('Fetch', () => {
 
 	describe('getViewUrl', () => {
 		it('should return the view url', () => {
-			let url = fetch.getViewUrl(A_VIEW, A_VIEW_CMD, A_VIEW_PARAM_STRING);
+			let url = fetchService.getViewUrl(A_VIEW, A_VIEW_CMD, A_VIEW_PARAM_STRING);
 			expect(url).to.equal(A_VIEW_CMD_URL);
 		});
 	});

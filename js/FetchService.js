@@ -11,6 +11,10 @@ declare type FetchOptions = {
 	credentials: "omit" | "same-origin" | "include"; //Authentication credentials mode. Default: "omit"
 };
 
+declare type ExtendedFetchOptions = FetchOptions & {
+
+};
+
 export class FetchAbortError{
 	constructor(response){
 		this.message = "Fetch was aborted";
@@ -19,23 +23,27 @@ export class FetchAbortError{
 	}
 }
 
-export default class Fetch {
+export default class FetchService {
 
 	constructor(app: Application){
 		this.app = app;
+		this.ongoingFetchPromises = [];
 	}
 
 	fetch(url: string, options: FetchOptions): Promise{
 		options = this._processOptions(options);
-		return fetch(url, options).then((response) => this._checkStatus(response));
+		
+		let abortable = FetchService.makeAbortable(fetch(url, options));
+		this._registerFetchPromise(abortable);
+		return abortable.promise.then((response) => this._checkStatus(response));
 	}
 
 	fetchJson(url: string, options: FetchOptions): Promise{
-		return this.fetch(url, options).then(Fetch.parseJSON);
+		return this.fetch(url, options).then(FetchService.parseJSON);
 	}
 
 	fetchXml(url: string, options: FetchOptions): Promise{
-		return this.fetch(url, options).then(Fetch.parseXML);
+		return this.fetch(url, options).then(FetchService.parseXML);
 	}
 
 	post(url: string, body: string, options: FetchOptions){
@@ -49,13 +57,12 @@ export default class Fetch {
 	}
 
 	postJson(url: string, body: string, options: FetchOptions): Promise{
-		return this.post(url, body, options).then(Fetch.parseJSON);
+		return this.post(url, body, options).then(FetchService.parseJSON);
 	}
-
 
 	getViewUrl(view, cmd, paramsString){
 		if(paramsString.length > 0) {
-			if(paramsString[0] != '&') {
+			if(paramsString[0] !== '&') {
 				paramsString = '&'+paramsString;
 			}
 		}
@@ -73,6 +80,24 @@ export default class Fetch {
 		return options;
 	}
 
+	abortOngoingFetchPromises() {
+		let p = this.ongoingFetchPromises.pop();
+		while(typeof ongoingFetchPromises !== 'undefined'){
+			p.abort();
+			p = this.ongoingFetchPromises.pop();
+		}
+	}
+
+	_registerFetchPromise(p) {
+		this.ongoingFetchPromises.push(p);
+	}
+
+	_unregisterFetchPromise(p) {
+		const index = this.ongoingFetchPromises.indexOf(p);
+		if(index >= 0) {
+			this.ongoingFetchPromises.splice(index, 1);
+		}
+	}
 
 	_checkStatus(response) {
 		if(response.statusText === 'abort'){
@@ -80,7 +105,6 @@ export default class Fetch {
 		}
 
 		if(response.status === 401){
-
 			return this._getViewFromResponse(response)
 				.then((view) => {
 					this.app.detectedExpiredSession(view);
@@ -91,7 +115,6 @@ export default class Fetch {
 		}
 
 		if(response.status === 0){
-
 			return this._getViewFromResponse(response)
 				.then((view) => {
 					this.app.detectedNetworkError(view);
@@ -99,8 +122,6 @@ export default class Fetch {
 				.then(() => {
 					throw new FetchAbortError(response);
 				});
-
-			throw new FetchAbortError(response);
 		}
 
 		if (response.status >= 200 && response.status < 300) {
@@ -114,7 +135,7 @@ export default class Fetch {
 	}
 
 	_getViewFromResponse(response){
-		return Fetch.parseJSON(response)
+		return FetchService.parseJSON(response)
 			.then((data)=>{
 				if(data.view){
 					return data.view;
@@ -136,7 +157,24 @@ export default class Fetch {
 	}
 
 	static parseXML(response) {
-		return Fetch.parseText(response).then((xml) => (new DOMParser()).parseFromString(xml, "text/xml"));
+		return FetchService.parseText(response).then((xml) => (new DOMParser()).parseFromString(xml, "text/xml"));
 	}
 
+	static makeAbortable(promise) {
+		let hasAborted_ = false;
+
+		const wrappedPromise = new Promise((resolve, reject) => {
+			promise.then(
+				(val) => hasAborted_ ? reject(new FetchAbortError(val)) : resolve(val),
+				(error) => hasAborted_ ? reject(new FetchAbortError(error)) : reject(error)
+			);
+		});
+
+		return {
+			promise: wrappedPromise,
+			abort() {
+				hasAborted_ = true;
+			},
+		};
+	}
 }

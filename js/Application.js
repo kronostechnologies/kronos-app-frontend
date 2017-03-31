@@ -2621,12 +2621,15 @@ export default class Application extends EventEmitter{
 			}
 
 			if(error instanceof FetchResponseDataError){
+				console.log(error);
 				if(error.data){
 					data = error.data;
 					errorMessage = data.message;
 				}
 			}
 		}
+
+		console.log(errorMessage);
 
 		if(typeof errorCallback === 'function') {
 			errorCallback(data);

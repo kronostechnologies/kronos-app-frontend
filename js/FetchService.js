@@ -1,10 +1,10 @@
-// import type {fetch, Response} from 'whatwg-fetch'
+// @flow
 import 'whatwg-fetch'
 import type Application from './Application';
 
-declare type RequestBody = string | FormData | Blob;
+export type RequestBody = string | FormData | Blob;
 
-declare type FetchOptions = {
+export type FetchOptions = {
 	method: string; //HTTP request method. Default: "GET"
 	body: RequestBody; // HTTP request body
 	headers: {}; // Default: {}
@@ -19,6 +19,13 @@ export class FetchAbortError{
 	}
 }
 
+export class FetchResponseDataError {
+	constructor(data){
+		this.message = "Response data status error";
+		this.data = data;
+	}
+}
+
 export default class FetchService {
 
 	constructor(app: Application){
@@ -26,7 +33,7 @@ export default class FetchService {
 		this.ongoingFetchPromises = [];
 	}
 
-	fetch(url: string, options: ExtendedFetchOptions): Promise{
+	fetch(url: string, options: FetchOptions): Promise{
 		options = this._processFetchOptions(options);
 		
 		let abortable = FetchService.makeAbortable(fetch(url, options));
@@ -34,15 +41,15 @@ export default class FetchService {
 		return abortable.promise.then((response) => this._checkStatus(response));
 	}
 
-	fetchJson(url: string, options: ExtendedFetchOptions): Promise{
+	fetchJson(url: string, options: FetchOptions): Promise{
 		return this.fetch(url, options).then(FetchService.parseJSON);
 	}
 
-	fetchXml(url: string, options: ExtendedFetchOptions): Promise{
+	fetchXml(url: string, options: FetchOptions): Promise{
 		return this.fetch(url, options).then(FetchService.parseXML);
 	}
 
-	post(url: string, body: string, options: ExtendedFetchOptions){
+	post(url: string, body: string, options: FetchOptions){
 		let postOptions = {
 			method: "POST",
 			body
@@ -52,18 +59,8 @@ export default class FetchService {
 		return this.fetch(url, options);
 	}
 
-	postJson(url: string, body: string, options: ExtendedFetchOptions): Promise{
+	postJson(url: string, body: string, options: FetchOptions): Promise{
 		return this.post(url, body, options).then(FetchService.parseJSON);
-	}
-
-	getViewUrl(view, cmd, paramsString){
-		if(paramsString.length > 0) {
-			if(paramsString[0] !== '&') {
-				paramsString = '&'+paramsString;
-			}
-		}
-
-		return 'index.php?k=' + encodeURIComponent(this.app.SESSION_KEY) + '&view=' + encodeURIComponent(view) + '&cmd=' + encodeURIComponent(cmd) + paramsString;
 	}
 
 	_processFetchOptions(options: FetchOptions){
@@ -153,7 +150,28 @@ export default class FetchService {
 	}
 
 	static parseXML(response) {
-		return FetchService.parseText(response).then((xml) => (new DOMParser()).parseFromString(xml, "text/xml"));
+		return FetchService.parseText(response).then((xml) => (new DOMParser()).parseFromString(xml, "text/xml"))
+	}
+
+	/**
+	 * Handle standard application response data
+	 */
+	static handleApplicationResponseData(data: {}) : Promise<{}> {
+		let status = data.status;
+
+		// TODO: On devrait une fois pour toute faire le tour de l'app pour voir où c'est nécessaire
+		if(typeof data.data !== 'undefined'){
+			data = data.data;
+			if(data.status){
+				status = data.status;
+			}
+		}
+
+		if(status === 'error') {
+			throw new FetchResponseDataError(data);
+		}
+
+		return data;
 	}
 
 	static makeAbortable(promise) {

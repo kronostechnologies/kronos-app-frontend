@@ -3,7 +3,7 @@
 import EventEmitter from 'events';
 import Raven from 'raven-js';
 import BrowserDetect from "./BrowserDetect";
-import FetchService, {FetchAbortError} from './FetchService';
+import FetchService, {FetchAbortError, FetchResponseDataError} from './FetchService';
 
 declare var $: jQuery;
 declare var window: Object;
@@ -20,7 +20,7 @@ declare type FetchOptions = {
 
 export default class Application extends EventEmitter{
 
-	constructor(router: Router) {
+	constructor(router: Router, dependencies: {} = {}) {
 		super();
 		this.router = router;
 
@@ -80,9 +80,11 @@ export default class Application extends EventEmitter{
 
 		this.unmounts = [];
 
-		this.browser = new BrowserDetect(navigator.userAgent);
+
+		this.browser = dependencies.browserDetect || new BrowserDetect(navigator.userAgent);
 
 		this.fetchService = new FetchService(this);
+
 		this.detectedExpiredSessionTimeout=false;
 		this.detectedExpiredSessionGoTo=false;
 		this.detectedNetworkErrorTimeout=false;
@@ -1636,6 +1638,7 @@ export default class Application extends EventEmitter{
 						</p></div>';
 	}
 
+
 	showError(message, onHideCallback) {
 		const self = this;
 		self.showModalDialog(self.getShowErrorHTML(message), 'fast', function() {
@@ -2521,17 +2524,17 @@ export default class Application extends EventEmitter{
 		this._ongoing_xhrs = [];
 	}
 
+	getViewUrl(view, cmd, paramsString){
+		if(paramsString.length > 0) {
+			if(paramsString[0] !== '&') {
+				paramsString = '&'+paramsString;
+			}
+		}
 
-	// successCallback: (data)=> void; // Deprecated. Use Promise.then()
-	// errorCallback: (error) => void; // Deprecated. Use Promise.catch()
-	// showLoading: boolean;
-	// showOverlay: boolean;
-	// buttonSelector: string; // jQuery selector for button to be disabled
-	// skipOverlayHandling: boolean;
+		return 'index.php?k=' + encodeURIComponent(this.SESSION_KEY) + '&view=' + encodeURIComponent(view) + '&cmd=' + encodeURIComponent(cmd) + paramsString;
+	}
 
 	fetch(url , options: FetchOptions) {
-
-		const self = this;
 
 		let showLoading = (options.showLoading === true);
 		let showOverlay = (options.showOverlay===true && ! showLoading);
@@ -2551,10 +2554,7 @@ export default class Application extends EventEmitter{
 			}, this._loadingDelay);
 		}
 
-
-
 		return this.fetchService.fetch(url, options)
-			.then(FetchService.parseJSON)
 			.finally(() => {
 				if(showLoading){
 					this._hideLoading();
@@ -2565,73 +2565,75 @@ export default class Application extends EventEmitter{
 				if($button) {
 					$button.prop('disabled', false);
 				}
-			})
-			.then((data)=>{
-				let status = data.status;
-				if(typeof data.data !== 'undefined'){
-					data = data.data;
-					if(data.status){
-						status = data.status;
-					}
-				}
-
-				if(status === 'error') {
-					if(typeof errorCallback === 'function'){
-						errorCallback(data);
-					}
-
-					let error = new Error('Applicative XHR Error');
-					error.data = data;
-					throw error;
-				}
-				else if(typeof callback === 'function') {
-					callback(data);
-				}
-
-				return data;
-			})
-			.catch((error)=>{
-				if(! (error instanceof FetchAbortError) ){
-					if(typeof errorCallback === 'function') {
-						errorCallback();
-					}
-				}
-
-				throw error;
 			});
-	}
-
-	defaultFetchErrorCallback(data) {
-		if(typeof data.message !== 'undefined'){
-			this.showError(data.message);
-		}
-		else {
-			this.showError();
-		}
 	}
 
 	get(view, cmd, paramsString, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling): Promise {
 		let options = {
-			successCallback,
-			errorCallback : typeof errorCallback === 'function' ? errorCallback : ((data) => this.defaultFetchErrorCallback(data)),
 			buttonSelector,
 			showLoading,
 			showOverlay: (!showLoading && !skipOverlayHandling)
 		};
-		return this.fetch(this.fetchService.getViewUrl(view, cmd, paramsString), options)
+		return this.fetch(this.getViewUrl(view, cmd, paramsString), options)
+			.then(FetchService.parseJSON)
+			.then(FetchService.handleApplicationResponseData)
+			.then((data) => {
+				if(typeof successCallback === 'function'){
+					successCallback(data);
+				}
+				return data;
+			})
+			.catch((error) => {
+				this.handleFetchError(error, errorCallback);
+				throw error;
+			});
 	}
 
-	post(view, cmd, paramsString, postString, callback, loading, errorCallback, button, skipOverlayHandling): Promise {
+	post(view, cmd, paramsString, body, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling): Promise {
 		let options = {
 			method: 'POST',
-			body: postString,
-			successCallback,
-			errorCallback : typeof errorCallback === 'function' ? errorCallback : ((data) => this.defaultFetchErrorCallback(data)),
+			body,
 			buttonSelector,
 			showLoading,
 			showOverlay: (!showLoading && !skipOverlayHandling)
 		};
-		return this.fetch(this.fetchService.getViewUrl(view, cmd, paramsString), options, callback, loading, errorCallback, button, skipOverlayHandling)
+		return this.fetch(this.getViewUrl(view, cmd, paramsString), options)
+			.then(FetchService.parseJSON)
+			.then(FetchService.handleApplicationResponseData)
+			.then((data) => {
+				if(typeof successCallback === 'function'){
+					successCallback(data);
+				}
+				return data;
+			})
+			.catch((error) => {
+				this.handleFetchError(error, errorCallback);
+				throw error;
+			});
+	}
+
+	handleFetchError(error, errorCallback) {
+		let errorMessage;
+		let data;
+		if(typeof error === 'object'){
+			if(error instanceof FetchAbortError){
+				return;
+			}
+
+			if(error instanceof FetchResponseDataError){
+				if(error.data){
+					data = error.data;
+					errorMessage = data.message;
+				}
+			}
+		}
+
+		if(typeof errorCallback === 'function') {
+			errorCallback(data);
+		}
+		else {
+			this.showError(errorMessage);
+		}
 	}
 
 	datepicker(selector, options) {

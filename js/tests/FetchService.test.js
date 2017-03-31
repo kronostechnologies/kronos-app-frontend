@@ -22,11 +22,8 @@ describe('FetchService', () => {
 	const A_POST_STRING = '&key=value';
 	const A_VIEW_LOCATION = '#goto_my_view';
 
-	const A_VIEW = 'Contact/View';
-	const A_VIEW_CMD = 'doSomeStuff';
-	const A_VIEW_PARAM_STRING = '&param=XXX';
+	
 	const A_SESSKEY = 'ABCDEF';
-	const A_VIEW_CMD_URL = 'index.php?k=ABCDEF&view=Contact%2FView&cmd=doSomeStuff&param=XXX';
 
 
 	let AN_ERROR_RESPONSE;
@@ -282,12 +279,6 @@ describe('FetchService', () => {
 			return expect(response).to.eventually.deep.equals(JSON_RESPONSE_DATA);
 		});
 	});
-
-	describe('getViewUrl', () => {
-		it('should return the view url', () => {
-			let url = fetchService.getViewUrl(A_VIEW, A_VIEW_CMD, A_VIEW_PARAM_STRING);
-			expect(url).to.equal(A_VIEW_CMD_URL);
-		});
-	});
+	
 
 });

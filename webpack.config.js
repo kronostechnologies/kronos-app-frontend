@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = {
 	entry: {
-		'kronos-app-frontend': "./js/index.js",
+		'kronos-app-frontend': "./js/index.js"
 	},
 	output: {
 		path: './js/bundle',

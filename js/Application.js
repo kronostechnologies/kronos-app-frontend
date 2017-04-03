@@ -3,14 +3,24 @@
 import EventEmitter from 'events';
 import Raven from 'raven-js';
 import BrowserDetect from "./BrowserDetect";
+import FetchService, {FetchAbortError, FetchResponseDataError} from './FetchService';
 
 declare var $: jQuery;
 declare var window: Object;
 declare var document: Object;
 
+declare type FetchOptions = {
+	successCallback: (data)=> void; // Deprecated. Use Promise.then()
+	errorCallback: (error) => void; // Deprecated. Use Promise.catch()
+	showLoading: boolean;
+	showOverlay: boolean;
+	buttonSelector: string; // jQuery selector for button to be disabled
+	skipOverlayHandling: boolean;
+}
+
 export default class Application extends EventEmitter{
 
-	constructor(router: Router) {
+	constructor(router: Router, dependencies: {} = {}) {
 		super();
 		this.router = router;
 
@@ -70,7 +80,17 @@ export default class Application extends EventEmitter{
 
 		this.unmounts = [];
 
-		this.browser = new BrowserDetect(navigator.userAgent);
+
+		this.browser = dependencies.browserDetect || new BrowserDetect(navigator.userAgent);
+
+		this.fetchService = new FetchService(this);
+
+		this.detectedExpiredSessionTimeout=false;
+		this.detectedExpiredSessionGoTo=false;
+		this.detectedNetworkErrorTimeout=false;
+		this.detectedNetworkErrorGoTo=false;
+
+		this.ravenEnabled = false;
 	}
 
 	/**
@@ -114,6 +134,21 @@ export default class Application extends EventEmitter{
 
 			return self._onError(description, page, line);
 		};
+
+		window.addEventListener("unhandledrejection", (event) => {
+			let error = event.reason;
+
+			if(error instanceof FetchAbortError){
+				event.preventDefault();
+				return;
+			}
+
+			console.warn("WARNING: Unhandled promise rejection. Shame on you! Reason: " + event.reason);
+
+			if(this.ravenEnabled){
+				Raven.captureException(event.reason);
+			}
+		});
 
 		// Page change, tab closing and window closing catching function
 		window.onbeforeunload = function () {
@@ -191,7 +226,7 @@ export default class Application extends EventEmitter{
 		}
 
 		if (config && config.sentry) {
-			Raven.config('https://' + config.sentry.key + '@app.getsentry.com/' + config.sentry.project, { release: config.application_version }).install();
+			Raven.config('https://' + config.sentry.key + '@app.getsentry.com/' + config.sentry.project, { release: config.application_version });
 
 			Raven.setTagsContext({
 				version: config.application_version
@@ -206,6 +241,10 @@ export default class Application extends EventEmitter{
 			Raven.setExtraContext({
 				transaction: config.kronos_transaction_id,
 			});
+
+			Raven.install();
+
+			this.ravenEnabled = true;
 		}
 
 		this._configure(config);
@@ -1620,6 +1659,7 @@ export default class Application extends EventEmitter{
 						</p></div>';
 	}
 
+
 	showError(message, onHideCallback) {
 		const self = this;
 		self.showModalDialog(self.getShowErrorHTML(message), 'fast', function() {
@@ -1628,6 +1668,48 @@ export default class Application extends EventEmitter{
 				if (onHideCallback) { onHideCallback(); }
 			});
 		});
+	}
+
+	/**
+	 * Called when expired session is detected by an XHR.  Will eventually show the error message.
+	 * @param goTo
+	 */
+	detectedExpiredSession(goTo){
+		if(!this.detectedExpiredSessionTimeout){
+			this.detectedExpiredSessionGoTo = goTo;
+			this.detectedExpiredSessionTimeout = setTimeout(()=>{
+				this.showSessionExpiredError(this.detectedExpiredSessionGoTo);
+			}, 100);
+		}
+	}
+
+	clearDetectedExpiredSession(){
+		this.detectedExpiredSessionGoTo = false;
+		if(this.detectedExpiredSessionTimeout){
+			clearTimeout(this.detectedExpiredSessionTimeout);
+			this.detectedExpiredSessionTimeout = false;
+		}
+	}
+
+	/**
+	 * Called when network error is detected by an XHR.  Will eventually show the error message.
+	 * @param goTo
+	 */
+	detectedNetworkError(goTo){
+		if(!this.detectedNetworkErrorTimeout){
+			this.detectedNetworkErrorGoTo = goTo;
+			this.detectedNetworkErrorTimeout = setTimeout(()=>{
+				this.showXHRNetworkErrorError(this.detectedNetworkErrorGoTo);
+			}, 100);
+		}
+	}
+
+	clearDetectedNetworkError(){
+		this.detectedNetworkErrorGoTo = false;
+		if(this.detectedNetworkErrorTimeout){
+			clearTimeout(this.detectedNetworkErrorTimeout);
+			this.detectedNetworkErrorTimeout = false;
+		}
 	}
 
 	getShowSessionExpiredError() {
@@ -1649,6 +1731,7 @@ export default class Application extends EventEmitter{
 		self.showModalDialog(self.getShowSessionExpiredError(), 'fast', function() {
 			$('#hook_session_expired_error_close').safeClick(function() {
 				document.location = location;
+				self.clearDetectedExpiredSession();
 			});
 		});
 	}
@@ -1672,6 +1755,7 @@ export default class Application extends EventEmitter{
 		self.showModalDialog(self.getShowXHRNetworkError(), 'fast', function() {
 			$('#hook_xhr_network_error_close').safeClick(function() {
 				document.location = location;
+				self.clearDetectedNetworkError();
 			});
 		});
 	}
@@ -2465,6 +2549,8 @@ export default class Application extends EventEmitter{
 	}
 
 	abortOngoingXHR() {
+		this.fetchService.abortOngoingFetchPromises();
+
 		$.each(this._ongoing_xhrs, function(index, xhr) {
 			if(xhr !== undefined) {
 				xhr.abort();
@@ -2473,219 +2559,117 @@ export default class Application extends EventEmitter{
 		this._ongoing_xhrs = [];
 	}
 
-	ajax(view, cmd, paramsString, settings: {}) : Promise {
-		const self = this;
+	getViewUrl(view, cmd, paramsString){
 		if(paramsString.length > 0) {
-			if(paramsString[0] != '&') {
+			if(paramsString[0] !== '&') {
 				paramsString = '&'+paramsString;
 			}
 		}
 
-		Object.assign(settings, {
-			url:  'index.php?k=' + self.SESSION_KEY + '&view=' + view + '&cmd=' + cmd + paramsString,
-			headers: Object.assign( settings.headers || {} , self.getXSRFHeaders()),
-		});
-
-		const xhrRequest = $.ajax(settings);
-		self.registerXHR(xhrRequest);
-
-		xhrRequest.done(function(data, textStatus, jqXHR) {
-			self.unregisterXHR(jqXHR);
-		}).fail(function(jqXHR) {
-			self.unregisterXHR(jqXHR);
-		});
-
-		// Return real Promise. Not jQuery.Deferred
-		return new Promise((resolve, reject) => {
-			xhrRequest.then(
-				(data, textStatus, jqXHR) => {;
-					resolve({data, textStatus, jqXHR});
-				},
-				(jqXHR, textStatus, errorThrown) => {
-					// validateXHR should be called again by client
-					self.validateXHR(jqXHR).then(()=> {
-						reject({jqXHR, textStatus, errorThrown});
-					});
-				}
-			);
-		});
+		return 'index.php?k=' + encodeURIComponent(this.SESSION_KEY) + '&view=' + encodeURIComponent(view) + '&cmd=' + encodeURIComponent(cmd) + paramsString;
 	}
 
-	get(view, cmd, paramsString, callback, loading, errorCallback, button, skipOverlayHandling): Promise {
+	fetch(url , options: FetchOptions) {
 
-		const self = this;
-
-		if(!loading && !skipOverlayHandling) {
+		let showLoading = (options.showLoading === true);
+		let showOverlay = (options.showOverlay===true && ! showLoading);
+		if(showOverlay) {
 			this.showOverlay();
 		}
 
-		if(button)
-			$(button).prop('disabled', true);
+		let $button = options.button ? $(button) : false;
+		if($button) {
+			$button.prop('disabled', true);
+		}
 
-
-		const xhrResult = self.ajax(view, cmd, paramsString, {
-			type : 'GET',
-			dataType:'json'})
-			.then(
-				({data, textStatus, jqXHR}) => {
-					if(!skipOverlayHandling){
-						self.hideOverlay();
-						self._hideLoading();
-					}
-
-					if(button)
-						$(button).prop('disabled', false);
-
-					if(typeof data.data != 'undefined'){
-						data = data.data;
-					}
-
-					if(data.status && data.status == 'error') {
-						if(typeof errorCallback == 'function'){
-							errorCallback(data );
-						}
-						else if(typeof data.message != 'undefined'){
-							self.showError(data.message);
-						}
-						else {
-							self.showError();
-						}
-					}
-					else if(typeof callback == 'function') {
-						callback(data);
-					}
-
-					return Promise.resolve({data, textStatus, jqXHR});
-				},
-				({jqXHR, textStatus, errorThrown}) => {
-
-					if(!skipOverlayHandling) {
-						self.hideOverlay();
-						self._hideLoading();
-					}
-
-					if(button) {
-						$(button).prop('disabled', false);
-					}
-
-					return self.validateXHR(jqXHR).then((isValidXHR)=> {
-						if(isValidXHR){
-							if(self.debug) {
-								console.debug('AJAX query error');
-								console.debug(textStatus);
-								console.debug(errorThrown);
-							}
-
-							if(typeof errorCallback == 'function') {
-								errorCallback();
-							}
-							else {
-								self.showError();
-							}
-						}
-
-						return Promise.resolve({jqXHR, textStatus, errorThrown});
-					});
-				}
-			);
-
-		if(loading) {
+		if(showLoading) {
 			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
-			this._loadingTimeout = setTimeout(function() {
-				self._showLoading();
+			this._loadingTimeout = setTimeout(() => {
+				this._showLoading();
 			}, this._loadingDelay);
 		}
 
-		return xhrResult;
+		return this.fetchService.fetch(url, options)
+			.finally(() => {
+				if(showLoading){
+					this._hideLoading();
+				}
+				if(showOverlay){
+					this.hideOverlay();
+				}
+				if($button) {
+					$button.prop('disabled', false);
+				}
+			});
 	}
 
-	post(view, cmd, paramsString, postString, callback, loading, errorCallback, button, skipOverlayHandling): Promise {
-		const self = this;
+	get(view, cmd, paramsString, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling): Promise {
+		let options = {
+			buttonSelector,
+			showLoading,
+			showOverlay: (!showLoading && !skipOverlayHandling)
+		};
+		return this.fetch(this.getViewUrl(view, cmd, paramsString), options)
+			.then(FetchService.parseJSON)
+			.then(FetchService.handleApplicationResponseData)
+			.then((data) => {
+				if(typeof successCallback === 'function'){
+					successCallback(data);
+				}
+				return data;
+			})
+			.catch((error) => {
+				this.handleFetchError(error, errorCallback);
+				throw error;
+			});
+	}
 
-		if(!loading && !skipOverlayHandling) {
-			this.showOverlay();
+	post(view, cmd, paramsString, body, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling): Promise {
+		let options = {
+			method: 'POST',
+			body,
+			buttonSelector,
+			showLoading,
+			showOverlay: (!showLoading && !skipOverlayHandling)
+		};
+		return this.fetch(this.getViewUrl(view, cmd, paramsString), options)
+			.then(FetchService.parseJSON)
+			.then(FetchService.handleApplicationResponseData)
+			.then((data) => {
+				if(typeof successCallback === 'function'){
+					successCallback(data);
+				}
+				return data;
+			})
+			.catch((error) => {
+				this.handleFetchError(error, errorCallback);
+				throw error;
+			});
+	}
+
+	handleFetchError(error, errorCallback) {
+		let errorMessage;
+		let data;
+		if(typeof error === 'object'){
+			if(error instanceof FetchAbortError){
+				return;
+			}
+
+			if(error instanceof FetchResponseDataError){
+				console.log(error);
+				if(error.data){
+					data = error.data;
+					errorMessage = data.message;
+				}
+			}
 		}
 
-		if(button)
-			$(button).prop('disabled', true);
-
-		const xhrResult = self.ajax(view, cmd, paramsString, {
-			type: 'POST',
-			data: postString,
-			dataType:'json',
-			ajaxStop: function(){
-				self.ajaxQueryLoading = false;
-			}
-		}).then(
-			({data, textStatus, jqXHR}) => {
-				if(!skipOverlayHandling) {
-					self.hideOverlay();
-					self._hideLoading();
-				}
-
-				if(button)
-					$(button).prop('disabled', false);
-
-				if(typeof data.data != 'undefined'){
-					data = data.data;
-				}
-
-				if(data.status && data.status == 'error') {
-					if(typeof errorCallback == 'function'){
-						errorCallback(data);
-					}
-					else if(typeof data.message != 'undefined'){
-						self.showError(data.message);
-					}
-					else {
-						self.showError();
-					}
-				}
-				else if(typeof callback == 'function') {
-					callback(data);
-				}
-
-				return Promise.resolve({data, textStatus, jqXHR});
-			},
-			({jqXHR, textStatus, errorThrown}) => {
-				if(!skipOverlayHandling) {
-					self.hideOverlay();
-					self._hideLoading();
-				}
-
-				if(button) {
-					$(button).prop('disabled', false);
-				}
-
-				return self.validateXHR(jqXHR).then((isValidXHR)=> {
-					if(isValidXHR){
-						if(self.debug) {
-							console.debug('AJAX query error');
-							console.debug(textStatus);
-							console.debug(errorThrown);
-						}
-
-						if(typeof errorCallback == 'function') {
-							errorCallback();
-						}
-						else {
-							self.showError();
-						}
-					}
-
-					return Promise.resolve({jqXHR, textStatus, errorThrown});
-				});
-			}
-		);
-
-		if(loading) {
-			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
-			this._loadingTimeout = setTimeout(function() {
-				self._showLoading();
-			}, this._loadingDelay);
+		if(typeof errorCallback === 'function') {
+			errorCallback(data);
 		}
-
-		return xhrResult;
+		else {
+			this.showError(errorMessage);
+		}
 	}
 
 	datepicker(selector, options) {

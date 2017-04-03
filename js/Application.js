@@ -2569,7 +2569,7 @@ export default class Application extends EventEmitter{
 		return 'index.php?k=' + encodeURIComponent(this.SESSION_KEY) + '&view=' + encodeURIComponent(view) + '&cmd=' + encodeURIComponent(cmd) + paramsString;
 	}
 
-	fetch(url , options: FetchOptions) {
+	fetch(url , options: FetchOptions): Promise {
 
 		let showLoading = (options.showLoading === true);
 		let showOverlay = (options.showOverlay===true && ! showLoading);
@@ -2601,6 +2601,12 @@ export default class Application extends EventEmitter{
 					$button.prop('disabled', false);
 				}
 			});
+	}
+
+	fetchJson(url: string, options: FetchOptions): Promise{
+		return this.fetch(url, options)
+			.then(FetchService.parseJSON)
+			.then(FetchService.handleApplicationResponseData);
 	}
 
 	get(view, cmd, paramsString, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling): Promise {

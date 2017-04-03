@@ -69,8 +69,12 @@ export default class FetchService {
 			credentials: 'same-origin'
 		};
 
+		let defaultHeaders = {
+			'X-Requested-With': 'XMLHttpRequest'
+		};
+
 		options = Object.assign({}, defaultOptions, options);
-		options.headers = Object.assign({}, this.app.getXSRFHeaders(), options.headers);
+		options.headers = Object.assign({}, defaultHeaders, this.app.getXSRFHeaders(), options.headers);
 		return options;
 	}
 

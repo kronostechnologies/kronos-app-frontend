@@ -2570,6 +2570,9 @@ export default class Application extends EventEmitter{
 	}
 
 	fetch(url , options: FetchOptions): Promise {
+		if(!options){
+			options = {};
+		}
 
 		let showLoading = (options.showLoading === true);
 		let showOverlay = (options.showOverlay===true && ! showLoading);

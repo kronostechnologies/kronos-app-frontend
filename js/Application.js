@@ -2570,7 +2570,7 @@ export default class Application extends EventEmitter{
 
 		if(showLoading) {
 			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
-			this._loadingTimeout = setTimeout(function() {
+			this._loadingTimeout = setTimeout(() => {
 				this._showLoading();
 			}, this._loadingDelay);
 		}
@@ -2649,8 +2649,6 @@ export default class Application extends EventEmitter{
 				}
 			}
 		}
-
-		console.log(errorMessage);
 
 		if(typeof errorCallback === 'function') {
 			errorCallback(data);

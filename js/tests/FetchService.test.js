@@ -124,7 +124,7 @@ describe('FetchService', () => {
 				fetchMock.get(AN_URL, AN_ABORT_RESPONSE);
 				response = fetchService.fetch(AN_URL);
 			});
-
+			
 			it('should be rejected with FetchAbortError', () => {
 				return expect(response).to.eventually.be.rejected
 					.and.be.an.instanceOf(FetchAbortError);

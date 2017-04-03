@@ -1,5 +1,6 @@
 // @flow
 import 'whatwg-fetch'
+import ExtendableError from 'es6-error';
 import type Application from './Application';
 
 export type RequestBody = string | FormData | Blob;
@@ -11,17 +12,17 @@ export type FetchOptions = {
 	credentials: "omit" | "same-origin" | "include"; //Authentication credentials mode. Default: "omit"
 };
 
-export class FetchAbortError{
-	constructor(response){
-		this.message = "Fetch was aborted";
+export class FetchAbortError extends ExtendableError {
+	constructor(response= {}, message = "Fetch was aborted"){
+		super(message);
 		this.abort = true;
 		this.response = response;
 	}
 }
 
-export class FetchResponseDataError {
-	constructor(data){
-		this.message = "Response data status error";
+export class FetchResponseDataError extends ExtendableError {
+	constructor(data = {}, message = "Response data status error"){
+		super(message);
 		this.data = data;
 	}
 }

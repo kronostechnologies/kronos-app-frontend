@@ -25,6 +25,7 @@
     "babel-root-import": "^4.1.5",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
+    "es6-error": "^4.0.2",
     "eslint": "^3.14.0",
     "eslint-config-airbnb": "^14.0.0",
     "eslint-plugin-flowtype": "^2.30.0",

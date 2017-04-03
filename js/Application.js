@@ -89,6 +89,8 @@ export default class Application extends EventEmitter{
 		this.detectedExpiredSessionGoTo=false;
 		this.detectedNetworkErrorTimeout=false;
 		this.detectedNetworkErrorGoTo=false;
+
+		this.ravenEnabled = false;
 	}
 
 	/**
@@ -132,6 +134,19 @@ export default class Application extends EventEmitter{
 
 			return self._onError(description, page, line);
 		};
+
+		window.addEventListener("unhandledrejection", function (event) {
+			let error = event.reason;
+
+			if(error instanceof FetchAbortError){
+				return;
+			}
+			console.warn("WARNING: Unhandled promise rejection. Shame on you! Reason: " + event.reason);
+
+			if(self.ravenEnabled){
+				Raven.captureException(event.reason);
+			}
+		});
 
 		// Page change, tab closing and window closing catching function
 		window.onbeforeunload = function () {
@@ -209,7 +224,7 @@ export default class Application extends EventEmitter{
 		}
 
 		if (config && config.sentry) {
-			Raven.config('https://' + config.sentry.key + '@app.getsentry.com/' + config.sentry.project, { release: config.application_version }).install();
+			Raven.config('https://' + config.sentry.key + '@app.getsentry.com/' + config.sentry.project, { release: config.application_version });
 
 			Raven.setTagsContext({
 				version: config.application_version
@@ -224,6 +239,10 @@ export default class Application extends EventEmitter{
 			Raven.setExtraContext({
 				transaction: config.kronos_transaction_id,
 			});
+
+			Raven.install();
+
+			this.ravenEnabled = true;
 		}
 
 		this._configure(config);

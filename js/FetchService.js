@@ -75,10 +75,10 @@ export default class FetchService {
 	}
 
 	abortOngoingFetchPromises() {
-		let p = this.ongoingFetchPromises.pop();
-		while(typeof ongoingFetchPromises !== 'undefined'){
-			p.abort();
-			p = this.ongoingFetchPromises.pop();
+		let promise = this.ongoingFetchPromises.pop();
+		while(typeof promise !== 'undefined'){
+			promise.abort();
+			promise = this.ongoingFetchPromises.pop();
 		}
 	}
 
@@ -189,7 +189,7 @@ export default class FetchService {
 			promise: wrappedPromise,
 			abort() {
 				hasAborted_ = true;
-			},
+			}
 		};
 	}
 }

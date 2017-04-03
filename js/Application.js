@@ -135,15 +135,17 @@ export default class Application extends EventEmitter{
 			return self._onError(description, page, line);
 		};
 
-		window.addEventListener("unhandledrejection", function (event) {
+		window.addEventListener("unhandledrejection", (event) => {
 			let error = event.reason;
 
 			if(error instanceof FetchAbortError){
+				event.preventDefault();
 				return;
 			}
+
 			console.warn("WARNING: Unhandled promise rejection. Shame on you! Reason: " + event.reason);
 
-			if(self.ravenEnabled){
+			if(this.ravenEnabled){
 				Raven.captureException(event.reason);
 			}
 		});

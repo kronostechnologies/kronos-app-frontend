@@ -2633,10 +2633,10 @@ export default class Application extends EventEmitter{
 			});
 	}
 
-	post(view, cmd, paramsString, body, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling): Promise {
+	post(view, cmd, paramsString, postString, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling): Promise {
 		let options = {
 			method: 'POST',
-			body,
+			body: new URLSearchParams(postString),
 			buttonSelector,
 			showLoading,
 			showOverlay: (!showLoading && !skipOverlayHandling)

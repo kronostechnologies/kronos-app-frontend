@@ -1,6 +1,8 @@
 // @flow
 
 import View from './View';
+import SaveDialog from "./SaveDialog";
+import {FetchAbortError, FetchResponseDataError} from './FetchService';
 
 declare var $: jQuery;
 
@@ -12,7 +14,6 @@ export default class EditView extends View {
 		this._can_save = true;
 		this._modified = false;
 		this._soft_modified = false;
-		this._wasClosing = false;
 		this._validateSteps = [];
 
 
@@ -31,26 +32,41 @@ export default class EditView extends View {
 
 			this._initOnBeforeUnloadEvents();
 		});
-	}
 
-	init(hash) {
-		super.init(hash);
-		this._wasClosing = false;
+		this.on('close', () => {
+			$('#edit_form').off('**'); // FNA specific
+			this._restoreOnBeforeUnloadEvents();
+		});
+
+		this.on('saveInit', (saveResponse)=>{
+			this._restoreOnBeforeUnloadEvents();
+		});
+
+		this.on('saveStart', ()=>{
+			$('input[type=submit],input[type=button]').prop('disabled', true);
+
+			this.app.showOverlay();
+		});
+
+		this.on('save', (saveResponse)=>{
+			if(saveResponse.cancel){
+				this._initOnBeforeUnloadEvents();
+			}
+		});
+
+		this.on('saveEnd', ()=>{
+			this.app.hideOverlay();
+			$('input[type=submit],input[type=button]').prop('disabled', false);
+		});
 	}
 
 	changed(element) {
-		if(this.app.debug) {
-			console.debug('changed');
-		}
 		if(!this._modified) {
 			this._modified = true;
 		}
 	}
 
 	softModified() {
-		if(this.app.debug) {
-			console.debug('soft modified');
-		}
 		if(!this._soft_modified) {
 			this._soft_modified = true;
 		}
@@ -58,24 +74,34 @@ export default class EditView extends View {
 
 	_initOnBeforeUnloadEvents() {
 		const self = this;
+
+		this._onBeforeUnloadBackup = window.onbeforeunload;
+
+		let onBeforeUnload = (event)=>{
+			if(typeof this._onBeforeUnloadBackup !== 'undefined'){
+				this._onBeforeUnloadBackup(event);
+			}
+			if(this._modified) {
+				return this.app._('SAVE_CHANGES_MESSAGE');
+			}
+		};
+
 		// Prevent IE to prompt that a change occured when clicking on a link with href=javascript:
 		if(navigator.appName === 'Microsoft Internet Explorer') {
-			$(window).data('beforeunload', window.onbeforeunload);
 			$(document)
 				.on('mouseenter', 'a[href^="javascript:"]', () => {
 					window.onbeforeunload = null;
 				})
 				.on('mouseleave', 'a[href^="javascript:"]', () => {
-					window.onbeforeunload = $(window).data('beforeunload');
+					window.onbeforeunload = onBeforeUnload;
 				});
 		}
 
-		window.onbeforeunload = function(e) {
-			self.app._beforeUnload(e);
-			if(self._modified) {
-				return self.app._('SAVE_CHANGES_MESSAGE');
-			}
-		};
+		window.onbeforeunload = onBeforeUnload;
+	}
+
+	_restoreOnBeforeUnloadEvents(){
+		window.onbeforeunload = this._onBeforeUnloadBackup;
 	}
 
 	inject(model) {
@@ -90,15 +116,21 @@ export default class EditView extends View {
 		this._modified = false;
 	}
 
-	close(callback) {
-		$('#edit_form').off('**');
+	close() {
 		if(this._modified && this._can_save) {
-			this._wasClosing = true;
-			this.showSaveDialog(callback);
-			return false;
+			return this.showSaveDialog()
+				.then((saveDialogResponse)=>{
+
+					if(saveDialogResponse.cancel){
+						return	{cancel: true};
+					}
+
+					return super.close();
+				});
+
 		}
 
-		return super.close(callback);
+		return super.close();
 	}
 
 	getSaveChangeDialogHtml() {
@@ -114,234 +146,106 @@ export default class EditView extends View {
 	}
 
 	showSaveDialog(callback) {
-		const self = this;
-		if(typeof callback !== 'function') {
-			callback = () => {
-			};
-		}
-		self.app.showModalDialog(self.getSaveChangeDialogHtml(), 'normal', () => {
-			$('#hook_do_save_changes').safeClick(() => {
-				self.app.hideModalDialog('normal', () => {
-					self.save(false,
-						() => {
-							callback('save');
-							self.resume();
-						}, false, true,
-						() => {
-							self.stop();
-							callback('cancel');
-						});
-				});
+		let dialog = new SaveDialog(this);
+		return dialog.show()
+			.then((response) => {
+				if(typeof callback === 'function'){
+					callback(response);
+				}
+				return response;
 			});
-
-			$('#hook_do_not_save_changes').safeClick(() => {
-				self.app.hideModalDialog('normal', () => {
-					window.onbeforeunload = function(e) {
-						return self.app._beforeUnload(e);
-					};
-
-					if(!self._canClose()) {
-						self._onCancelClose();
-
-						self.stop();
-						callback('cancel');
-					}
-					else {
-						self._modified = false; // We don't care about changes.
-						self.resume();
-						callback('resume');
-					}
-				});
-			});
-
-			$('#hook_cancel_save_changes').safeClick(() => {
-				self.app.hideModalDialog('normal', () => {
-					self.stop();
-					callback('cancel');
-				});
-			});
-		});
 	}
 
+	save(){
+		const self = this;
 
-	/**
-	 * Save the form
-	 * @param hash Goto Hash after save
-	 * @param success_callback (data: {}, saved: int) => void
-	 *  Called after saving or when there is nothing to save.
-	 *  data: Actual saved data
-	 *  saved: true is the form was saved.  false if it was not modified or has nothing to save
-	 * @param error_callback Called on error
-	 * @param stay After save, stay on same page
-	 * @param cancel_callback Called when save aborted due to validation
-	 */
-	save(hash, success_callback, error_callback, stay, cancel_callback) {
+		this.emit('saveInit');
 
-		var self = this;
-
-		// Shift parameters
-		if(typeof hash == 'function') {
-			if(typeof stay == 'function') {
-				cancel_callback = stay;
-			}
-			stay = error_callback;
-			if(typeof success_callback == 'function') {
-				error_callback = success_callback;
-			}
-			success_callback = hash;
-			hash = false;
-		}
-
-		// Form is closing.
-		if(this._wasClosing) {
-
-			// Abort operation if form is not allowed to close
-			if(!this._canClose()) {
-				this._onCancelClose();
-				return;
-			}
-
-			// Should always redirect to close target after save.
-			hash = this.app.getResumeHash();
-		}
-
-		// When form is not allowed to save or not modified. Just redirect to hash
+		// When form is not allowed to save or not modified. Do nothing
 		if(!this._can_save || (!this._modified && !this._soft_modified)) {
-			if(typeof success_callback == 'function') {
-				success_callback({}, false);
-			}
-			this._saveRedirect(hash, stay);
-			return;
+			return Promise.resolve({ok: true});
 		}
-
-		// Validate form and save if valid
-		Promise.resolve(this.validate())
-			.then(function(result) {
+		return Promise.resolve(this.validate())
+			.then((result) => {
 				if(!result) {
-					if(typeof cancel_callback == 'function') {
-						cancel_callback();
-					}
-
-					return;
+					// Cancelled because of validations
+					return Promise.resolve({cancel: true});
 				}
 
-				self._doSave(hash, success_callback, error_callback, stay);
-			});
-	}
+				this.emit('saveStart');
 
-	/**
-	 * Actual saving method after all validations
-	 */
-	_doSave(hash, success_callback, error_callback, stay, cancel_callback) {
-		const self = this;
+				// Perform save XHR
+				let params = '&id=' + encodeURIComponent(this._id) + this._onSave();
+				let url = this.app.getViewUrl(this._view, 'save', params);
+				return this.app.fetchJson(url, {
+					method: 'POST',
+					body: new URLSearchParams(this._saveBuildPost())
+				})
+					.then((data)=>{
+						if(!data) {
+							data = {};
+						}
 
-		this._onSaveStart();
+						if(!this.handleServerSideValidationErrors(data)) {
+							return Promise.resolve({cancel: true});
+						}
 
-		$('input[type=submit],input[type=button]').prop('disabled', true);
+						if(data.status === 'error') {
+							throw new FetchResponseDataError(data);
+						}
 
-		self.app.showOverlay();
+						this._modified = false;
 
-		let params = this._onSave();
-
-		window.onbeforeunload = function(e) {
-			return self.app._beforeUnload(e);
-		};
-
-		$.ajax({
-			url: 'index.php?k=' + self.app.SESSION_KEY + '&view=' + this._view + '&cmd=save&id=' + this._id + params,
-			type: 'POST',
-			data: this._saveBuildPost(),
-			dataType: 'json',
-			headers: self.app.getXSRFHeaders(),
-			success: function(data) {
-
-				if(!data) {
-					data = {};
-				}
-
-				self.app.hideOverlay();
-				$('input[type=submit],input[type=button]').prop('disabled', false);
-
-				var validationErrors = data.validation_errors;
-				if(validationErrors === undefined) {
-					validationErrors = (data.data) ? data.data.validation_errors : validationErrors;
-				}
-				if(validationErrors && validationErrors.length) {
-					$.each(validationErrors, function(i, err) {
-						$('#' + err.field).hintError(err.message);
+						return Promise.resolve({ok: true, saved:true, data});
+					})
+					.finally(()=>{
+						this.emit('saveEnd');
+					})
+					.then((saveResponse)=>{
+						this.emit('save', saveResponse);
+						return saveResponse;
 					});
+			});
 
-					if(typeof cancel_callback == 'function') {
-						cancel_callback();
-					}
-					return;
-				}
-
-				if(data.status == 'error') {
-					if(self.app.debug) {
-						console.debug('Save failed with error : ' + data.message);
-					}
-
-					if(typeof error_callback == 'function') {
-						error_callback(data);
-						error_callback = null;
-					}
-					else {
-						self.app.showError(self.app._('SAVE_ERROR_OCCURED'));
-					}
-
-					return;
-				}
-
-				self._modified = false;
-
-				self._afterSave();
-				if(typeof success_callback == 'function') {
-					success_callback(data, true);
-					success_callback = null;
-				}
-
-				self._saveRedirect(hash, stay);
-			},
-			error: function(jqXHR, status, error) {
-				self._saveErrorHandler(jqXHR, status, error, error_callback);
-			}
-		});
 	}
 
-	_saveRedirect(hash, stay) {
-		if(stay) {
-			return;
+	handleServerSideValidationErrors(data){
+		let validationErrors = data.validation_errors;
+		if(validationErrors === undefined) {
+			validationErrors = (data.data) ? data.data.validation_errors : validationErrors;
+		}
+		if(validationErrors && validationErrors.length) {
+			$.each(validationErrors, function(i, err) {
+				$('#' + err.field).hintError(err.message);
+			});
+
+			false;
 		}
 
-		this._onClose();
-
-		if(typeof hash === 'string') {
-			this.app.goTo(hash);
-		}
-		else {
-			this.app.goBack();
-		}
+		return true;
 	}
 
-	_saveErrorHandler(jqXHR, status, error, error_callback) {
-
-		this.app.hideOverlay();
-		$('input[type=submit]').prop('disabled', false);
-
-		this.validateXHR(jqXHR).then((isValidXHR)=> {
-			if(!isValidXHR){
-				return;
-			}
-			if(typeof error_callback == 'function') {
-				error_callback(false);
-				error_callback = null;
-			}
-			else {
-				this.app.showError(this.app._('SAVE_ERROR_OCCURED'));
-			}
-		});
+	showSaveErrorMessage(){
+		this.app.showError(this.app._('SAVE_ERROR_OCCURED'));
 	}
+
+
+	// _saveRedirect(hash, stay) {
+	//
+	// 	console.log('_saveRedirect(' + hash + ')' + (stay ? 'stay' : ''))
+	// 	if(stay) {
+	// 		return;
+	// 	}
+	//
+	// 	this._onClose();
+	//
+	// 	if(typeof hash === 'string') {
+	// 		this.app.goTo(hash);
+	// 	}
+	// 	else {
+	// 		this.app.goBack();
+	// 	}
+	// }
 
 	_saveBuildPost() {
 		return '&model=' + encodeURIComponent($.toJSON(this.createModel()));
@@ -370,16 +274,10 @@ export default class EditView extends View {
 		this._validateSteps.push(fn);
 	}
 
-	_onSaveStart() {
-	}
 
 	_onSave() {
 		return '';
 	}
-
-	_afterSave() {
-	}
-
 
 	createModel() {
 		const self = this;
@@ -465,26 +363,5 @@ export default class EditView extends View {
 		}
 
 		return model;
-	}
-
-	cancel(hash) {
-		this._modified = false;
-		$('input[type=submit],input[type=button]').prop('disabled', false);
-		this.app.goBack(hash);
-	}
-
-	cancelTo(hash) {
-		this._modified = false;
-		$('input[type=submit],input[type=button]').prop('disabled', false);
-		hash = hash || '';
-		this.app.navigateBackTo(hash);
-	}
-
-	resume() {
-		this.app.resume(false);
-	}
-
-	stop() {
-		this.app.resume(true);
 	}
 }

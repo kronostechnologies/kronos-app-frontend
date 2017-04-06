@@ -188,19 +188,23 @@ export default class View extends EventEmitter{
 	}
 
 	close(callback) {
-		const canClose = this._canClose();
+		return Promise.resolve(this._canClose())
+			.then((canClose)=>{
+				if (!canClose) {
+					return Promise.resolve(this._onCancelClose())
+						.then(() => ({cancel: true}));
+				}
 
-		if (!canClose) {
-			this._onCancelClose();
-		} else {
-			this.emit('close');
-			this._onClose();
-		}
-		if (typeof callback === 'function') {
-			callback();
-		}
+				this.emit('close');
+				return { ok: true };
+			})
+			.then((closeState)=>{
+				if (typeof callback === 'function') {
+					callback(closeState);
+				}
 
-		return canClose;
+				return closeState;
+			});
 	}
 
 	_canClose() {
@@ -211,9 +215,6 @@ export default class View extends EventEmitter{
 		if (this.app.debug) {
 			this.app._throw('View does not implement _onCancelClose function');
 		}
-	}
-
-	_onClose() {
 	}
 
 	pushParentView(view_name) {

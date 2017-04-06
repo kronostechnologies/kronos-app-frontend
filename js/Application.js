@@ -46,7 +46,6 @@ export default class Application extends EventEmitter{
 		this._is_observing_hash = false;
 		this._hash_changed_while_not_observing = true;
 		this.hash = false;
-		this._resume_hash = '';
 		this._history = [];
 
 		// User related informations
@@ -526,7 +525,7 @@ export default class Application extends EventEmitter{
 
 				// ... revert page change ...
 				self.hash = self.stepBack();
-				self._history.push(self.hash);
+				self.addHistory(self.hash);
 
 				// ... and then start to observe again
 				self._observe();
@@ -610,9 +609,7 @@ export default class Application extends EventEmitter{
 	 * Get location hash and check if it changed
 	 */
 	_checkHash() {
-		const self = this;
 		let view;
-
 		if(this.view_fetching || this.hash === location.hash) {
 			return;
 		}
@@ -625,7 +622,7 @@ export default class Application extends EventEmitter{
 		this.hash = location.hash;
 
 		// Get the requested view
-		if(!this.hash || this.hash == '#') {
+		if(!this.hash || this.hash === '#') {
 			this.goTo(this.default_view);
 			return false;
 		}
@@ -657,49 +654,47 @@ export default class Application extends EventEmitter{
 		};
 
 		let fetchViewPromise = Promise.resolve(initialState);
-
-		if(self.currentView){
+		if(this.currentView){
 			fetchViewPromise = fetchViewPromise
 				.then((state) => {
-					return self._getViewObject(self.currentView)
+					return this._getViewObject(this.currentView)
 						.then((viewObject)=> {
 
 							// Are we staying in the same view ?
 							// Did the the view handled the hash change ?
-							if(view === self.currentView && viewObject.onHashChange(self.hash)) {
+							if(view === this.currentView && viewObject.onHashChange(this.hash)) {
 								state.fetch = false;
 								return state;
 							}
 
-							// If we where in a view and we're not resuming navigation (see Test form for more detail) we can ask to view to close;
-							if(self.currentView && !self._resume_hash) {
+							// If we where in a view ask to view to close;
+							if(this.currentView) {
 
-								if(!viewObject.close(self.hash)) { // Can we continue ?
-									// Cannot close current view abort view change
-									if(self.debug) {
-										console.debug('View coulnd\'t close');
+								return viewObject.close().then((closeResponse) => {
+									if(closeResponse.cancel){
+										// Cannot close current view abort view change
+										if(this.debug) {
+											console.debug('View coulnd\'t close');
+										}
+
+										// Temporarily stop the hash observation loop so we can ...
+										this._stopObservation();
+										// ... keep where the user wanted to go and stay where we were ...
+										this.hash = this.stepBack();
+										// ... and then start to observe again
+										this._observe();
+
+										state.cancel = true;
+										return state;
 									}
 
-									// Temporarily stop the hash observation loop so we can ...
-									self._stopObservation();
-
-									// ... keep where the user wanted to go and stay where we were ...
-									self._resume_hash = self.hash;
-									self.hash = self.stepBack();
-
-									// ... and then start to observe again
-									self._observe();
-
-									state.cancel = true;
-									return state;
-
-								}
-								else {
 									// Close current view
-									self.emit('viewClose', viewObject);
+									this.emit('viewClose', viewObject);
 									return state;
-								}
+								});
 							}
+
+							return state;
 						})
 						.catch(() => state); // Forward state
 				});
@@ -710,31 +705,24 @@ export default class Application extends EventEmitter{
 				return false;
 			}
 
-			// We don't need that information anymore. It can block us from getting away from the current view if we don't
-			self._resume_hash = false;
-
 			// We don't keep page reloads in history
-			if(self._force_clear){
-				self.addHistory(self.hash);
-				self._force_clear = false;
+			if(this._force_clear){
+				this.addHistory(this.hash);
+				this._force_clear = false;
 			}
-			else if(!self._detectStepBack(self.hash)) {
-				self.addHistory(self.hash);
+			else if(!this._detectStepBack(this.hash)) {
+				this.addHistory(this.hash);
 			}
 
 			if(state.fetch){
-				if(self.debug) {
-					console.debug('View : '+view);
-				}
-
 				// Just to be sure we leave nothing behind
-				self.hideModalDialogNow();
+				this.hideModalDialogNow();
 
 				// Highlight the right menu
-				self._selectViewMenu(view);
+				this._selectViewMenu(view);
 
 				// It's time to change the view
-				self._fetchView(view);
+				this._fetchView(view);
 			}
 		});
 
@@ -794,50 +782,6 @@ export default class Application extends EventEmitter{
 
 		location.hash = hash;
 		location.reload();
-	}
-
-	/**
-	 * Resume user navigation, or not. If view could not close, we stored the hash into _resume_hash to be able to resume when the time comes
-	 */
-	resume(stay) {
-		var self = this;
-		if(this._resume_hash) {
-			if(!stay && typeof stay != 'undefined') {
-
-				// Trigger viewClose eventually
-				this._getViewObject(this.currentView)
-					.then((viewObject) => {
-						self.emit('viewClose', viewObject);
-					})
-					.catch(() => {});
-
-
-				// We're going where the user wanted to before the view cancelled it
-				this.currentView = false;
-
-				var hash = this._resume_hash; // Using temporary variable to be sure hash observation loop does not mess with this
-				this._resume_hash = false;
-
-				location.hash = hash;
-
-				if(this.debug) {
-					console.debug('View closed, resuming');
-				}
-			}
-			else {
-				this._resume_hash = false;
-
-				this.addHistory(location.hash);
-
-				if(this.debug) {
-					console.debug('View cancelled closing');
-				}
-			}
-		}
-	}
-
-	getResumeHash() {
-		return this._resume_hash;
 	}
 
 	/**
@@ -1378,6 +1322,7 @@ export default class Application extends EventEmitter{
 			this._history.push({hash: hash, context : {}});
 	}
 
+
 	/**
 	 * Tries to detect if the browser navigation buttons where used
 	 */
@@ -1507,10 +1452,13 @@ export default class Application extends EventEmitter{
 	}
 
 	getContext() {
-		if(this._history && this._history.length > 0 && $.isPlainObject(this._history[this._history.length - 1].context))
-			return this._history[this._history.length - 1].context;
-		else
+		if(!this._history.length){
 			return {};
+		}
+
+		let lastItem = this._history[this._history.length - 1];
+		let context = lastItem.context || {};
+		return context;
 	}
 
 	/**
@@ -1575,38 +1523,45 @@ export default class Application extends EventEmitter{
 	 * @param content HTML to put inside de dialog
 	 * @param speed Dialog animation speed
 	 * @param callback Function to call once the animation is done
+	 * @return Promise for modal root element
 	 */
-	showModalDialog(content, speed, callback, width) {
-		var self = this;
-		if(this.debug)
-			console.debug('Show modal dialog');
-
+	showModalDialog(content, speed, callback, width): Promise<jQuery> {
+		const self = this;
 		this.showOverlay('#000', 0.4);
 
-		$('body').append(
-			$('<div></div>')
-				.addClass('modal')
-				.attr('id', 'modal_dialog')
-				.css({
-					'display': 'none',
-					'top': self._scrollTop() + 'px'
-				})
-				.append(
-					$('<div></div>')
-						.addClass('modal-2')
-						.append(
-							$('<div></div>')
-								.addClass('sprite modal-3')
-								.append(content)
-						)
-				)
+		let $modal2 = $('<div></div>')
+			.addClass('modal-2')
+			.append(
+				$('<div></div>')
+				.addClass('sprite modal-3')
+				.append(content)
 		);
 
 		if(width) {
-			$('#modal_dialog .modal-2').css('width', width);
+			$modal2.css('width', width);
 		}
 
-		$('#modal_dialog').slideDown(speed, callback);
+		let $modalDialog = $('<div></div>')
+			.addClass('modal')
+			.attr('id', 'modal_dialog')
+			.css({
+				'display': 'none',
+				'top': self._scrollTop() + 'px'
+			})
+			.append($modal2);
+
+		$('body').append($modalDialog);
+
+		return new Promise((resolve) => {
+			$modalDialog.slideDown(speed, resolve);
+		})
+		.then(()=> {
+			if(typeof callback === 'function') {
+				callback($modalDialog);
+			}
+
+			return $modalDialog;
+		});
 	}
 
 	/**
@@ -1618,19 +1573,22 @@ export default class Application extends EventEmitter{
 	 *  false if it should be removed (default)
 	 */
 	hideModalDialog(speed, callback, use_detach) {
-		const self = this;
-		if(this.debug)
-			console.debug('Hide modal dialog');
-
-		$('#modal_dialog').fadeOut(speed, function() {
-			self.hideOverlay();
+		let $modalDialog = $('#modal_dialog');
+		return new Promise((resolve) => {
+			$modalDialog.fadeOut(speed, resolve);
+		})
+		.then(()=>{
+			this.hideOverlay();
 			if(use_detach){
-				$('#modal_dialog').detach();
+				$modalDialog.detach();
 			}
 			else{
-				$('#modal_dialog').remove();
+				$modalDialog.remove();
 			}
-			if(typeof callback == 'function') callback();
+
+			if(typeof callback === 'function') {
+				callback();
+			}
 		});
 	}
 

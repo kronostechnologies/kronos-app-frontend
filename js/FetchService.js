@@ -2,13 +2,14 @@
 import 'whatwg-fetch'
 import ExtendableError from 'es6-error';
 import type Application from './Application';
+import encodeParam from 'jquery-param';
 
-export type RequestBody = string | FormData | Blob;
+export type RequestBody = string | FormData | URLSearchParams | Blob;
 
 export type FetchOptions = {
 	method: string; //HTTP request method. Default: "GET"
 	body: RequestBody; // HTTP request body
-	headers: {}; // Default: {}
+	headers: {} | Headers; // Default: {}
 	credentials: "omit" | "same-origin" | "include"; //Authentication credentials mode. Default: "omit"
 };
 
@@ -36,7 +37,6 @@ export default class FetchService {
 
 	fetch(url: string, options: FetchOptions): Promise{
 		options = this._processFetchOptions(options);
-		
 		let abortable = FetchService.makeAbortable(fetch(url, options));
 		this._registerFetchPromise(abortable);
 		return abortable.promise.then((response) => this._checkStatus(response));
@@ -51,12 +51,7 @@ export default class FetchService {
 	}
 
 	post(url: string, body: string, options: FetchOptions){
-		let postOptions = {
-			method: "POST",
-			body
-		};
-
-		options = Object.assign({}, postOptions, options);
+		options = FetchService.addPostOptions(body, options);
 		return this.fetch(url, options);
 	}
 
@@ -69,12 +64,15 @@ export default class FetchService {
 			credentials: 'same-origin'
 		};
 
-		let defaultHeaders = {
-			'X-Requested-With': 'XMLHttpRequest'
-		};
-
 		options = Object.assign({}, defaultOptions, options);
-		options.headers = Object.assign({}, defaultHeaders, this.app.getXSRFHeaders(), options.headers);
+		options.headers = new Headers(options.headers || {});
+		options.headers.set('X-Requested-With', 'XMLHttpRequest');
+
+		let xsrfHeaders = new Headers(this.app.getXSRFHeaders());
+		let entries = xsrfHeaders.entries();
+		for (let header of entries) {
+			options.headers.set(header[0], header[1]);
+		}
 		return options;
 	}
 
@@ -195,5 +193,26 @@ export default class FetchService {
 				hasAborted_ = true;
 			}
 		};
+	}
+
+	static addPostOptions(body, options={}){
+		options.method = 'POST';
+		options.headers = new Headers(options.headers || {});
+
+		// String default to urlencode
+		if(typeof body === "string"){
+			if(!options.headers.has('Content-type')){
+				options.headers.set('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+			}
+		}
+		else if(typeof body === 'object'){
+
+			if(!(body instanceof URLSearchParams || body instanceof FormData)){
+				body = new URLSearchParams(encodeParam(body));
+			}
+		}
+
+		options.body = body;
+		return options;
 	}
 }

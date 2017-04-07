@@ -1,12 +1,18 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {Response} from 'node-fetch'
+import {Response, Headers} from 'node-fetch'
 import fetchMock from 'fetch-mock';
+import 'url-search-params-polyfill';
+import FormData from 'formdata-polyfill';
 import sinon from 'sinon';
 import FetchService, {FetchAbortError} from '../FetchService'
 import { DOMParser } from 'xmldom'
 
 global.DOMParser = DOMParser;
+global.Headers = Headers;
+global.Response = Response;
+global.FormData = FormData;
+fetchMock.setImplementations({Headers, Response});
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
@@ -21,10 +27,16 @@ describe('FetchService', () => {
 	const XSRF_HEADERS = {'X-Kronos-XSRF' : XSRF_HEADER_VALUE};
 	const A_POST_STRING = '&key=value';
 	const A_VIEW_LOCATION = '#goto_my_view';
-
-	
 	const A_SESSKEY = 'ABCDEF';
-
+	const A_STRING_BODY = 'STRING_BODY';
+	const AN_OBJECT_BODY = { field1: 'value1', field2: 'value2'};
+	const URL_ENCODED_OBJECT_BODY = 'field1=value1&field2=value2';
+	const AN_OBJECT_NESTED_BODY = { field1: { subfeld1: 'value1'}, field2: 'value2'};
+	const URL_ENCODED_OBJECT_NESTED_BODY = 'field1%5Bsubfeld1%5D=value1&field2=value2';
+	const AN_URLSearchParams_BODY = new URLSearchParams();
+	const A_FormData_BODY = new FormData();
+	const URL_ENCODED_CONTENT_TYPE = 'application/x-www-form-urlencoded;charset=UTF-8';
+	const A_CUSTOM_CONTENT_TYPE = 'CustomContentType';
 
 	let AN_ERROR_RESPONSE;
 	let AN_ABORT_RESPONSE;
@@ -90,10 +102,15 @@ describe('FetchService', () => {
 			});
 
 			it('should add the application xsrf headers', () => {
-				return response.then(() => Promise.all([
-					expect(fetchMock.lastOptions()).to.have.property('headers'),
-					expect(fetchMock.lastOptions().headers).to.have.property(XSRF_HEADER, XSRF_HEADER_VALUE)
-				]));
+				return response.then(() => {
+					let options = fetchMock.lastOptions();
+					let headers = options.headers;
+
+					return Promise.all([
+						expect(options).to.have.property('headers'),
+						expect(headers.get(XSRF_HEADER)).to.equals(XSRF_HEADER_VALUE)
+					])
+				});
 			});
 
 		});
@@ -111,9 +128,7 @@ describe('FetchService', () => {
 			});
 
 			it('error should contains response', () => {
-				return response.catch((error) =>
-					expect(error).to.have.property('response', AN_ERROR_RESPONSE)
-				);
+				return response.catch((error) => expect(error).to.have.property('response', AN_ERROR_RESPONSE));
 			});
 		});
 
@@ -279,6 +294,83 @@ describe('FetchService', () => {
 			return expect(response).to.eventually.deep.equals(JSON_RESPONSE_DATA);
 		});
 	});
-	
+
+	describe('addPostOptions', () => {
+		let returnedOptions;
+
+		describe('with string body', () => {
+			beforeEach(() => {
+				returnedOptions = FetchService.addPostOptions(A_STRING_BODY);
+			});
+
+			it('Return options with body unaltered', () => {
+				expect(returnedOptions.body).to.equals(A_STRING_BODY);
+			});
+
+			it('headers contains x-form-urlencoded content type', () => {
+				expect(returnedOptions.headers.get('Content-type')).to.equals(URL_ENCODED_CONTENT_TYPE);
+			});
+
+		});
+
+		describe('with string body and custom content type', () => {
+			beforeEach(() => {
+				let options = {
+					headers : {
+						'Content-type' : A_CUSTOM_CONTENT_TYPE
+					}
+				};
+				returnedOptions = FetchService.addPostOptions(A_STRING_BODY, options);
+			});
+
+			it('Will keep actual Content-Type header', () => {
+				expect(returnedOptions.headers.get('Content-type')).to.equals(A_CUSTOM_CONTENT_TYPE);
+			});
+		});
+
+		describe('with a custom object body', () => {
+			beforeEach(() => {
+				returnedOptions = FetchService.addPostOptions(AN_OBJECT_BODY);
+			});
+
+			it('Body should be an instance of URLSearchParams. with object values', () => {
+				expect(returnedOptions.body).is.instanceOf(URLSearchParams);
+				expect(returnedOptions.body.get('field1')).is.equals('value1');
+				expect(returnedOptions.body.get('field2')).is.equals('value2');
+				expect(returnedOptions.body.toString()).is.equals(URL_ENCODED_OBJECT_BODY);
+			});
+		});
+
+		describe('with a custom nested object body', () => {
+			beforeEach(() => {
+				returnedOptions = FetchService.addPostOptions(AN_OBJECT_NESTED_BODY);
+			});
+
+			it('Body should be an instance of URLSearchParams. with object values', () => {
+				expect(returnedOptions.body).is.instanceOf(URLSearchParams);
+				expect(returnedOptions.body.toString()).is.equals(URL_ENCODED_OBJECT_NESTED_BODY);
+			});
+		});
+
+		describe('with a FormData body', () => {
+			beforeEach(() => {
+				returnedOptions = FetchService.addPostOptions(A_FormData_BODY);
+			});
+
+			it('Body should be the FormData unaltered', () => {
+				expect(returnedOptions.body).is.equals(A_FormData_BODY);
+			});
+		});
+
+		describe('with a URLSearchParams body', () => {
+			beforeEach(() => {
+				returnedOptions = FetchService.addPostOptions(AN_URLSearchParams_BODY);
+			});
+
+			it('Body should be the URLSearchParams unaltered', () => {
+				expect(returnedOptions.body).is.equals(AN_URLSearchParams_BODY);
+			});
+		});
+	});
 
 });

@@ -2,10 +2,10 @@ var path = require('path');
 
 module.exports = {
 	entry: {
-		'kronos-app-frontend': "./js/index.js"
+		'kronos-app-frontend': "./js/src/index.js"
 	},
 	output: {
-		path: path.resolve(__dirname, 'dist'),
+		path: path.resolve(__dirname, 'js', 'dist'),
 		filename: "[name].js",
 		library: 'kronosAppFrontend'
 	},

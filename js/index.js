@@ -10,7 +10,7 @@ import BrowserDetect from './BrowserDetect';
 import AsyncTask from './AsyncTask';
 import FetchService, {FetchAbortError, FetchResponseDataError} from './FetchService';
 
-export {
+module.exports = {
 	Application,
 	View,
 	EditView,
@@ -23,6 +23,11 @@ export {
 	AsyncTask,
 	FetchService,
 	FetchAbortError,
-	FetchResponseDataError
+	FetchResponseDataError,
+	externals: {
+		jquery: 'jQuery',
+		lodash: 'lodash',
+		'raven-js': 'raven-js',
+		'whatwg-fetch': 'whatwg-fetch'
+	}
 };
-

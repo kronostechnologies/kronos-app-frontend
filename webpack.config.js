@@ -5,8 +5,9 @@ module.exports = {
 		'kronos-app-frontend': "./js/index.js"
 	},
 	output: {
-		path: './js/bundle',
-		filename: "[name].js"
+		path: path.resolve(__dirname, 'dist'),
+		filename: "[name].js",
+		library: 'kronosAppFrontend'
 	},
 	module: {
 		loaders: [{

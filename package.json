@@ -2,7 +2,8 @@
   "name": "kronos-app-frontend",
   "version": "2.0.1",
   "description": "Javascript application framework by Kronos Technologies",
-  "main": "./js",
+  "main": "js/dist/kronos-app-frontend.js",
+  "module": "js/src/index.js",
   "scripts": {
     "test": "NODE_ENV=test mocha --compilers jsx:babel-register --slow 100 --recursive ./js/**/*.test.js"
   },

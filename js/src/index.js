@@ -26,7 +26,6 @@ module.exports = {
 	FetchResponseDataError,
 	externals: {
 		jquery: 'jQuery',
-		lodash: 'lodash',
 		'raven-js': 'raven-js',
 		'whatwg-fetch': 'whatwg-fetch'
 	}

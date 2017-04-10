@@ -16,7 +16,7 @@ module.exports = {
 			exclude: /node_modules/,
 			query: {
 				presets: ['es2015', 'react'],
-				plugins: ['jsx-control-statements', 'transform-flow-strip-types', 'lodash', 'syntax-dynamic-import']
+				plugins: ['jsx-control-statements', 'transform-flow-strip-types', 'syntax-dynamic-import']
 			}
 		}]
 	}

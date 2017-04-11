@@ -2256,7 +2256,7 @@ var kronosAppFrontend =
 		}, {
 			key: 'goBack',
 			value: function goBack(hash) {
-				if (hash === undefined) {
+				if (typeof hash === 'undefined') {
 					hash = '';
 				}
 
@@ -3424,7 +3424,7 @@ var kronosAppFrontend =
 				this.fetchService.abortOngoingFetchPromises();
 
 				$.each(this._ongoing_xhrs, function (index, xhr) {
-					if (xhr !== undefined) {
+					if (typeof xhr !== 'undefined') {
 						xhr.abort();
 					}
 				});

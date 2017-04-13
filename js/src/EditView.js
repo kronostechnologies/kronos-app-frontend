@@ -117,10 +117,14 @@ export default class EditView extends View {
 	}
 
 	close() {
+		if(this._closed){
+			// Already closed
+			return { ok: true };
+		}
+
 		if(this._modified && this._can_save) {
 			return this.showSaveDialog()
 				.then((saveDialogResponse)=>{
-
 					if(saveDialogResponse.cancel){
 						return	{cancel: true};
 					}

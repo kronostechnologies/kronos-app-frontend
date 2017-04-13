@@ -13,6 +13,7 @@ export default class View extends EventEmitter{
 		this._uri_params = {};
 		this._redrawn = false;
 		this._loadSteps = [(params) => this._load(params)];
+		this._closed = false;
 
 		this.on('hook', ()=>{
 			$('input').each(function (index, element) {
@@ -69,6 +70,7 @@ export default class View extends EventEmitter{
 		this._view = uri.view;
 		this._id = uri.id;
 		this._uri_params = uri.params;
+		this._closed = false;
 	}
 
 	load(params) {
@@ -188,6 +190,11 @@ export default class View extends EventEmitter{
 	}
 
 	close(callback) {
+		if(this._closed){
+			// Already closed
+			return { ok: true };
+		}
+
 		return Promise.resolve(this._canClose())
 			.then((canClose)=>{
 				if (!canClose) {
@@ -195,6 +202,7 @@ export default class View extends EventEmitter{
 						.then(() => ({cancel: true}));
 				}
 
+				this._closed = true;
 				this.emit('close');
 				return { ok: true };
 			})

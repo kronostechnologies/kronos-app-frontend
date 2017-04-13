@@ -134,20 +134,15 @@ export default class Application extends EventEmitter{
 			return self._onError(description, page, line);
 		};
 
-		window.addEventListener("unhandledrejection", (event) => {
-			let error = event.reason;
-
-			if(error instanceof FetchAbortError){
-				event.preventDefault();
-				return;
-			}
-
-			console.warn("WARNING: Unhandled promise rejection. Shame on you! Reason: " + event.reason);
-
-			if(this.ravenEnabled){
-				Raven.captureException(event.reason);
-			}
-		});
+		// Detect native support for unhandledrejection
+		let onunhandledrejection = this.onunhandledrejection.bind(this);
+		if(typeof PromiseRejectionEvent !== 'undefined') {
+			window.addEventListener("unhandledrejection", onunhandledrejection);
+		}
+		else {
+			// This seems to work in firefox
+			window.onunhandledrejection = onunhandledrejection;
+		}
 
 		// Page change, tab closing and window closing catching function
 		window.onbeforeunload = function () {
@@ -172,6 +167,25 @@ export default class Application extends EventEmitter{
 				}
 			}
 		});
+	}
+
+	onunhandledrejection(event){
+
+		let error = event.reason;
+		if(error instanceof FetchAbortError){
+			// preventDefault() does not exists in firefox for some reason.
+			if(typeof event.preventDefault === 'function'){
+				event.preventDefault();
+			}
+
+			return;
+		}
+
+		let reason = event.reason;
+		console.warn('Unhandled promise rejection:', (reason && (reason.stack || reason)));
+		if(this.ravenEnabled){
+			Raven.captureException(reason);
+		}
 	}
 
 	/**

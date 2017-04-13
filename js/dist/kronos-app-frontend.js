@@ -821,8 +821,6 @@ var kronosAppFrontend =
 		_createClass(Application, [{
 			key: 'init',
 			value: function init() {
-				var _this2 = this;
-
 				var self = this;
 
 				$(document).ajaxStart(function () {
@@ -857,20 +855,14 @@ var kronosAppFrontend =
 					return self._onError(description, page, line);
 				};
 
-				window.addEventListener("unhandledrejection", function (event) {
-					var error = event.reason;
-
-					if (error instanceof _FetchService.FetchAbortError) {
-						event.preventDefault();
-						return;
-					}
-
-					console.warn("WARNING: Unhandled promise rejection. Shame on you! Reason: " + event.reason);
-
-					if (_this2.ravenEnabled) {
-						_ravenJs2.default.captureException(event.reason);
-					}
-				});
+				// Detect native support for unhandledrejection
+				var onunhandledrejection = this.onunhandledrejection.bind(this);
+				if (typeof PromiseRejectionEvent !== 'undefined') {
+					window.addEventListener("unhandledrejection", onunhandledrejection);
+				} else {
+					// This seems to work in firefox
+					window.onunhandledrejection = onunhandledrejection;
+				}
 
 				// Page change, tab closing and window closing catching function
 				window.onbeforeunload = function () {
@@ -895,6 +887,26 @@ var kronosAppFrontend =
 						}
 					}
 				});
+			}
+		}, {
+			key: 'onunhandledrejection',
+			value: function onunhandledrejection(event) {
+
+				var error = event.reason;
+				if (error instanceof _FetchService.FetchAbortError) {
+					// preventDefault() does not exists in firefox for some reason.
+					if (typeof event.preventDefault === 'function') {
+						event.preventDefault();
+					}
+
+					return;
+				}
+
+				var reason = event.reason;
+				console.warn('Unhandled promise rejection:', reason && (reason.stack || reason));
+				if (this.ravenEnabled) {
+					_ravenJs2.default.captureException(reason);
+				}
 			}
 
 			/**
@@ -1377,7 +1389,7 @@ var kronosAppFrontend =
 		}, {
 			key: '_checkHash',
 			value: function _checkHash() {
-				var _this3 = this;
+				var _this2 = this;
 
 				var view = void 0;
 				if (this.view_fetching || this.hash === location.hash) {
@@ -1425,38 +1437,38 @@ var kronosAppFrontend =
 				var fetchViewPromise = Promise.resolve(initialState);
 				if (this.currentView) {
 					fetchViewPromise = fetchViewPromise.then(function (state) {
-						return _this3._getViewObject(_this3.currentView).then(function (viewObject) {
+						return _this2._getViewObject(_this2.currentView).then(function (viewObject) {
 
 							// Are we staying in the same view ?
 							// Did the the view handled the hash change ?
-							if (view === _this3.currentView && viewObject.onHashChange(_this3.hash)) {
+							if (view === _this2.currentView && viewObject.onHashChange(_this2.hash)) {
 								state.fetch = false;
 								return state;
 							}
 
 							// If we where in a view ask to view to close;
-							if (_this3.currentView) {
+							if (_this2.currentView) {
 
 								return viewObject.close().then(function (closeResponse) {
 									if (closeResponse.cancel) {
 										// Cannot close current view abort view change
-										if (_this3.debug) {
+										if (_this2.debug) {
 											console.debug('View coulnd\'t close');
 										}
 
 										// Temporarily stop the hash observation loop so we can ...
-										_this3._stopObservation();
+										_this2._stopObservation();
 										// ... keep where the user wanted to go and stay where we were ...
-										_this3.hash = _this3.stepBack();
+										_this2.hash = _this2.stepBack();
 										// ... and then start to observe again
-										_this3._observe();
+										_this2._observe();
 
 										state.cancel = true;
 										return state;
 									}
 
 									// Close current view
-									_this3.emit('viewClose', viewObject);
+									_this2.emit('viewClose', viewObject);
 									return state;
 								});
 							}
@@ -1474,22 +1486,22 @@ var kronosAppFrontend =
 					}
 
 					// We don't keep page reloads in history
-					if (_this3._force_clear) {
-						_this3.addHistory(_this3.hash);
-						_this3._force_clear = false;
-					} else if (!_this3._detectStepBack(_this3.hash)) {
-						_this3.addHistory(_this3.hash);
+					if (_this2._force_clear) {
+						_this2.addHistory(_this2.hash);
+						_this2._force_clear = false;
+					} else if (!_this2._detectStepBack(_this2.hash)) {
+						_this2.addHistory(_this2.hash);
 					}
 
 					if (state.fetch) {
 						// Just to be sure we leave nothing behind
-						_this3.hideModalDialogNow();
+						_this2.hideModalDialogNow();
 
 						// Highlight the right menu
-						_this3._selectViewMenu(view);
+						_this2._selectViewMenu(view);
 
 						// It's time to change the view
-						_this3._fetchView(view);
+						_this2._fetchView(view);
 					}
 				});
 			}
@@ -1603,7 +1615,7 @@ var kronosAppFrontend =
 		}, {
 			key: '_fetchView',
 			value: function _fetchView(view, hiddenParams) {
-				var _this4 = this;
+				var _this3 = this;
 
 				this.currentView = view;
 
@@ -1614,12 +1626,12 @@ var kronosAppFrontend =
 					self._hideLoading();
 					self.abortOngoingXHR();
 
-					var cached = _this4._isViewCached(view);
-					if (cached && _this4.debug) {
-						console.debug('View "' + view + '" is in cache (' + _this4.lang + ')');
+					var cached = _this3._isViewCached(view);
+					if (cached && _this3.debug) {
+						console.debug('View "' + view + '" is in cache (' + _this3.lang + ')');
 					}
 
-					_this4.view_fetching = true;
+					_this3.view_fetching = true;
 					self._onFetchView(viewObject);
 
 					// Ask the requested view to transmute hash to query parameters
@@ -1640,12 +1652,12 @@ var kronosAppFrontend =
 					params.view = self.currentView;
 					params.cmd = 'view';
 					params.cached = cached;
-					params.version = _this4.getApplicationVersion();
+					params.version = _this3.getApplicationVersion();
 					params.uv = self.userVersion;
 
-					if (_this4.replaced_session_key) {
-						params.rk = _this4.replaced_session_key;
-						_this4.replaced_session_key = false;
+					if (_this3.replaced_session_key) {
+						params.rk = _this3.replaced_session_key;
+						_this3.replaced_session_key = false;
 					}
 
 					var param_string = $.param(params);
@@ -1699,7 +1711,7 @@ var kronosAppFrontend =
 
 							return error;
 						}(function (jqXHR, status, error) {
-							var _this5 = this;
+							var _this4 = this;
 
 							self.view_fetching = false;
 							self._hideLoading();
@@ -1708,7 +1720,7 @@ var kronosAppFrontend =
 								if (!isValidXHR) {
 									return;
 								}
-								if (_this5.debug) {
+								if (_this4.debug) {
 									console.debug('AJAX query error');
 									console.debug(status);
 									console.debug(error);
@@ -1720,9 +1732,9 @@ var kronosAppFrontend =
 					});
 
 					// If we don't receive an awnser after 1.5 second, a loading overlay will appear
-					_this4._loadingTimeout = setTimeout(function () {
+					_this3._loadingTimeout = setTimeout(function () {
 						self._showLoading();
-					}, _this4._loadingDelay);
+					}, _this3._loadingDelay);
 				});
 			}
 
@@ -1733,7 +1745,7 @@ var kronosAppFrontend =
 		}, {
 			key: '_loadView',
 			value: function _loadView(data, hiddenParams) {
-				var _this6 = this;
+				var _this5 = this;
 
 				var self = this;
 
@@ -1774,8 +1786,8 @@ var kronosAppFrontend =
 						return Promise.resolve(self._checkOnLoadScroll());
 					});
 				}).catch(function (error) {
-					_this6._stopObservation();
-					_this6._showFatalError(error);
+					_this5._stopObservation();
+					_this5._showFatalError(error);
 					return Promise.reject(error);
 				});
 			}
@@ -1789,13 +1801,13 @@ var kronosAppFrontend =
 		}, {
 			key: '_loadContentData',
 			value: function _loadContentData(viewObject, data) {
-				var _this7 = this;
+				var _this6 = this;
 
 				//* BASED on kronos-lib/Kronos/Common/View.php -> function getContent *//
 				if (data.html) {
 					return Promise.resolve(this._loadContent(viewObject, data.html)).then(function () {
 						// We store the html and json we received
-						_this7._setViewCache(_this7.currentView, data.html, false);
+						_this6._setViewCache(_this6.currentView, data.html, false);
 					});
 				} else if (this._isViewCached(this.currentView)) {
 					// Get no html/params but the sent version is the same as the one we have, we can use it.
@@ -2424,13 +2436,13 @@ var kronosAppFrontend =
 		}, {
 			key: 'hideModalDialog',
 			value: function hideModalDialog(speed, callback, use_detach) {
-				var _this8 = this;
+				var _this7 = this;
 
 				var $modalDialog = $('#modal_dialog');
 				return new Promise(function (resolve) {
 					$modalDialog.fadeOut(speed, resolve);
 				}).then(function () {
-					_this8.hideOverlay();
+					_this7.hideOverlay();
 					if (use_detach) {
 						$modalDialog.detach();
 					} else {
@@ -2492,12 +2504,12 @@ var kronosAppFrontend =
 		}, {
 			key: 'detectedExpiredSession',
 			value: function detectedExpiredSession(goTo) {
-				var _this9 = this;
+				var _this8 = this;
 
 				if (!this.detectedExpiredSessionTimeout) {
 					this.detectedExpiredSessionGoTo = goTo;
 					this.detectedExpiredSessionTimeout = setTimeout(function () {
-						_this9.showSessionExpiredError(_this9.detectedExpiredSessionGoTo);
+						_this8.showSessionExpiredError(_this8.detectedExpiredSessionGoTo);
 					}, 100);
 				}
 			}
@@ -2519,12 +2531,12 @@ var kronosAppFrontend =
 		}, {
 			key: 'detectedNetworkError',
 			value: function detectedNetworkError(goTo) {
-				var _this10 = this;
+				var _this9 = this;
 
 				if (!this.detectedNetworkErrorTimeout) {
 					this.detectedNetworkErrorGoTo = goTo;
 					this.detectedNetworkErrorTimeout = setTimeout(function () {
-						_this10.showXHRNetworkErrorError(_this10.detectedNetworkErrorGoTo);
+						_this9.showXHRNetworkErrorError(_this9.detectedNetworkErrorGoTo);
 					}, 100);
 				}
 			}
@@ -3373,7 +3385,7 @@ var kronosAppFrontend =
 
 						return error;
 					}(function (jqXHR, status, error) {
-						var _this11 = this;
+						var _this10 = this;
 
 						if (!skipOverlayHandling) {
 							self.hideOverlay();
@@ -3388,7 +3400,7 @@ var kronosAppFrontend =
 							if (!isValidXHR) {
 								return;
 							}
-							if (_this11.debug) {
+							if (_this10.debug) {
 								console.debug('AJAX query error');
 								console.debug(status);
 								console.debug(error);
@@ -3444,7 +3456,7 @@ var kronosAppFrontend =
 		}, {
 			key: 'fetch',
 			value: function fetch(url, options) {
-				var _this12 = this;
+				var _this11 = this;
 
 				if (!options) {
 					options = {};
@@ -3464,16 +3476,16 @@ var kronosAppFrontend =
 				if (showLoading) {
 					// If we don't receive an awnser after 1.5 second, a loading overlay will appear
 					this._loadingTimeout = setTimeout(function () {
-						_this12._showLoading();
+						_this11._showLoading();
 					}, this._loadingDelay);
 				}
 
 				return this.fetchService.fetch(url, options).finally(function () {
 					if (showLoading) {
-						_this12._hideLoading();
+						_this11._hideLoading();
 					}
 					if (showOverlay) {
-						_this12.hideOverlay();
+						_this11.hideOverlay();
 					}
 					if ($button) {
 						$button.prop('disabled', false);
@@ -3488,7 +3500,7 @@ var kronosAppFrontend =
 		}, {
 			key: 'get',
 			value: function get(view, cmd, paramsString, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling) {
-				var _this13 = this;
+				var _this12 = this;
 
 				var options = {
 					buttonSelector: buttonSelector,
@@ -3501,14 +3513,14 @@ var kronosAppFrontend =
 					}
 					return data;
 				}).catch(function (error) {
-					_this13.handleFetchError(error, errorCallback);
+					_this12.handleFetchError(error, errorCallback);
 					throw error;
 				});
 			}
 		}, {
 			key: 'post',
 			value: function post(view, cmd, paramsString, postString, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling) {
-				var _this14 = this;
+				var _this13 = this;
 
 				var options = {
 					buttonSelector: buttonSelector,
@@ -3522,7 +3534,7 @@ var kronosAppFrontend =
 					}
 					return data;
 				}).catch(function (error) {
-					_this14.handleFetchError(error, errorCallback);
+					_this13.handleFetchError(error, errorCallback);
 					throw error;
 				});
 			}

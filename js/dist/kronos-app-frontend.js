@@ -8006,6 +8006,7 @@ var kronosAppFrontend =
 			_this._loadSteps = [function (params) {
 				return _this._load(params);
 			}];
+			_this._closed = false;
 
 			_this.on('hook', function () {
 				$('input').each(function (index, element) {
@@ -8069,6 +8070,7 @@ var kronosAppFrontend =
 				this._view = uri.view;
 				this._id = uri.id;
 				this._uri_params = uri.params;
+				this._closed = false;
 			}
 		}, {
 			key: 'load',
@@ -8205,6 +8207,11 @@ var kronosAppFrontend =
 			value: function close(callback) {
 				var _this3 = this;
 
+				if (this._closed) {
+					// Already closed
+					return { ok: true };
+				}
+
 				return Promise.resolve(this._canClose()).then(function (canClose) {
 					if (!canClose) {
 						return Promise.resolve(_this3._onCancelClose()).then(function () {
@@ -8212,6 +8219,7 @@ var kronosAppFrontend =
 						});
 					}
 
+					_this3._closed = true;
 					_this3.emit('close');
 					return { ok: true };
 				}).then(function (closeState) {
@@ -8338,6 +8346,8 @@ var kronosAppFrontend =
 	var _SaveDialog2 = _interopRequireDefault(_SaveDialog);
 
 	var _FetchService = __webpack_require__(13);
+
+	var _FetchService2 = _interopRequireDefault(_FetchService);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8471,9 +8481,13 @@ var kronosAppFrontend =
 			value: function close() {
 				var _this3 = this;
 
+				if (this._closed) {
+					// Already closed
+					return { ok: true };
+				}
+
 				if (this._modified && this._can_save) {
 					return this.showSaveDialog().then(function (saveDialogResponse) {
-
 						if (saveDialogResponse.cancel) {
 							return { cancel: true };
 						}
@@ -8524,10 +8538,9 @@ var kronosAppFrontend =
 					// Perform save XHR
 					var params = '&id=' + encodeURIComponent(_this4._id) + _this4._onSave();
 					var url = _this4.app.getViewUrl(_this4._view, 'save', params);
-					return _this4.app.fetchJson(url, {
-						method: 'POST',
-						body: new URLSearchParams(_this4._saveBuildPost())
-					}).then(function (data) {
+
+					var fetchOptions = _this4._saveBuildPost();
+					return _this4.app.fetchJson(url, fetchOptions).then(function (data) {
 						if (!data) {
 							data = {};
 						}
@@ -8593,8 +8606,14 @@ var kronosAppFrontend =
 
 		}, {
 			key: '_saveBuildPost',
-			value: function _saveBuildPost() {
-				return '&model=' + encodeURIComponent($.toJSON(this.createModel()));
+			value: function _saveBuildPost(fetchOptions) {
+				if (!fetchOptions) {
+					fetchOptions = {};
+				}
+
+				var postString = '&model=' + encodeURIComponent(JSON.stringify(this.createModel()));
+				fetchOptions = _FetchService2.default.addPostOptions(postString);
+				return fetchOptions;
 			}
 		}, {
 			key: 'validate',

@@ -43,8 +43,8 @@ index.js exporte toutes les classes
 - cancel(), cancelTo() resume(), stop()  - Retiré.  Utiliser le système de promesse du save()
 - save() ne prends plus d'argument. Retourne une promesse avec l'état du save.  La navigation doit être faite par l'app dans le then()
 - retrait de `_afterSave()`   Utiliser l'évènement `save`
-- retrai8t de `_onCose()`  =>  Utiliser l'évènement `close`
-
+- retrait de `_onCose()`  =>  Utiliser l'évènement `close`
+- `_saveBuildPost()`: Retourne maintenant un objet d'option à passer à fetch au lieu de retourner une string de post.
 
 **Removed lib**
 

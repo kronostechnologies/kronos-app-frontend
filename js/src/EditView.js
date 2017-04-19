@@ -2,7 +2,7 @@
 
 import View from './View';
 import SaveDialog from "./SaveDialog";
-import {FetchAbortError, FetchResponseDataError} from './FetchService';
+import FetchService, {FetchAbortError, FetchResponseDataError} from './FetchService';
 
 declare var $: jQuery;
 
@@ -181,10 +181,9 @@ export default class EditView extends View {
 				// Perform save XHR
 				let params = '&id=' + encodeURIComponent(this._id) + this._onSave();
 				let url = this.app.getViewUrl(this._view, 'save', params);
-				return this.app.fetchJson(url, {
-					method: 'POST',
-					body: new URLSearchParams(this._saveBuildPost())
-				})
+
+				let fetchOptions = this._saveBuildPost();
+				return this.app.fetchJson(url, fetchOptions)
 					.then((data)=>{
 						if(!data) {
 							data = {};
@@ -251,8 +250,14 @@ export default class EditView extends View {
 	// 	}
 	// }
 
-	_saveBuildPost() {
-		return '&model=' + encodeURIComponent($.toJSON(this.createModel()));
+	_saveBuildPost(fetchOptions: {}) {
+		if(!fetchOptions){
+			fetchOptions = {};
+		}
+
+		let postString = '&model=' + encodeURIComponent(JSON.stringify(this.createModel()));
+		fetchOptions = FetchService.addPostOptions(postString);
+		return fetchOptions;
 	}
 
 	validate() {

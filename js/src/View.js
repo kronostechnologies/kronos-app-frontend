@@ -192,7 +192,7 @@ export default class View extends EventEmitter{
 	close(callback) {
 		if(this._closed){
 			// Already closed
-			return { ok: true };
+			return Promise.resolve({ ok: true });
 		}
 
 		return Promise.resolve(this._canClose())
@@ -204,7 +204,7 @@ export default class View extends EventEmitter{
 
 				this._closed = true;
 				this.emit('close');
-				return { ok: true };
+				return Promise.resolve({ ok: true });
 			})
 			.then((closeState)=>{
 				if (typeof callback === 'function') {

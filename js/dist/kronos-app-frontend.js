@@ -8209,7 +8209,7 @@ var kronosAppFrontend =
 
 				if (this._closed) {
 					// Already closed
-					return { ok: true };
+					return Promise.resolve({ ok: true });
 				}
 
 				return Promise.resolve(this._canClose()).then(function (canClose) {
@@ -8221,7 +8221,7 @@ var kronosAppFrontend =
 
 					_this3._closed = true;
 					_this3.emit('close');
-					return { ok: true };
+					return Promise.resolve({ ok: true });
 				}).then(function (closeState) {
 					if (typeof callback === 'function') {
 						callback(closeState);
@@ -8483,13 +8483,13 @@ var kronosAppFrontend =
 
 				if (this._closed) {
 					// Already closed
-					return { ok: true };
+					return Promise.resolve({ ok: true });
 				}
 
 				if (this._modified && this._can_save) {
 					return this.showSaveDialog().then(function (saveDialogResponse) {
 						if (saveDialogResponse.cancel) {
-							return { cancel: true };
+							return Promise.resolve({ cancel: true });
 						}
 
 						return _get(EditView.prototype.__proto__ || Object.getPrototypeOf(EditView.prototype), 'close', _this3).call(_this3);
@@ -8586,24 +8586,6 @@ var kronosAppFrontend =
 			value: function showSaveErrorMessage() {
 				this.app.showError(this.app._('SAVE_ERROR_OCCURED'));
 			}
-
-			// _saveRedirect(hash, stay) {
-			//
-			// 	console.log('_saveRedirect(' + hash + ')' + (stay ? 'stay' : ''))
-			// 	if(stay) {
-			// 		return;
-			// 	}
-			//
-			// 	this._onClose();
-			//
-			// 	if(typeof hash === 'string') {
-			// 		this.app.goTo(hash);
-			// 	}
-			// 	else {
-			// 		this.app.goBack();
-			// 	}
-			// }
-
 		}, {
 			key: '_saveBuildPost',
 			value: function _saveBuildPost(fetchOptions) {
@@ -8687,36 +8669,6 @@ var kronosAppFrontend =
 			key: '_onCreateModel',
 			value: function _onCreateModel(model) {
 				return model;
-			}
-		}, {
-			key: '_getRedirectionView',
-			value: function _getRedirectionView(module, id) {
-				return (module || '') + '/View/' + (id || '');
-			}
-		}, {
-			key: 'alternateCreateModel',
-			value: function alternateCreateModel(model) {
-				var alternateModel = {};
-
-				var replaceBracket = function replaceBracket(t) {
-					return t.replace(']', '');
-				};
-
-				var reduceFunc = function reduceFunc(previous, current) {
-					var n = {};
-					n[current] = previous;
-					return n;
-				};
-
-				for (var key in model) {
-					if (model.hasOwnProperty(key)) {
-						var path = key.split('[').map(replaceBracket);
-						var element = path.reduceRight(reduceFunc, model[key]);
-						$.extend(true, alternateModel, element);
-					}
-				}
-
-				return alternateModel;
 			}
 		}, {
 			key: '_removeNullValue',

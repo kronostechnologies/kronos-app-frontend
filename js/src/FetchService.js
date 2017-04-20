@@ -69,10 +69,9 @@ export default class FetchService {
 		options.headers.set('X-Requested-With', 'XMLHttpRequest');
 
 		let xsrfHeaders = new Headers(this.app.getXSRFHeaders());
-		let entries = xsrfHeaders.entries();
-		for (let header of entries) {
-			options.headers.set(header[0], header[1]);
-		}
+		xsrfHeaders.forEach((v, h)=>{
+			options.headers.set(h, v);
+		});
 		return options;
 	}
 

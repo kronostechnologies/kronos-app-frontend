@@ -119,14 +119,14 @@ export default class EditView extends View {
 	close() {
 		if(this._closed){
 			// Already closed
-			return { ok: true };
+			return Promise.resolve({ ok: true });
 		}
 
 		if(this._modified && this._can_save) {
 			return this.showSaveDialog()
 				.then((saveDialogResponse)=>{
 					if(saveDialogResponse.cancel){
-						return	{cancel: true};
+						return	Promise.resolve({cancel: true});
 					}
 
 					return super.close();
@@ -232,24 +232,6 @@ export default class EditView extends View {
 		this.app.showError(this.app._('SAVE_ERROR_OCCURED'));
 	}
 
-
-	// _saveRedirect(hash, stay) {
-	//
-	// 	console.log('_saveRedirect(' + hash + ')' + (stay ? 'stay' : ''))
-	// 	if(stay) {
-	// 		return;
-	// 	}
-	//
-	// 	this._onClose();
-	//
-	// 	if(typeof hash === 'string') {
-	// 		this.app.goTo(hash);
-	// 	}
-	// 	else {
-	// 		this.app.goBack();
-	// 	}
-	// }
-
 	_saveBuildPost(fetchOptions: {}) {
 		if(!fetchOptions){
 			fetchOptions = {};
@@ -331,34 +313,6 @@ export default class EditView extends View {
 
 	_onCreateModel(model) {
 		return model;
-	}
-
-	_getRedirectionView(module, id) {
-		return (module || '') + '/View/' + (id || '');
-	}
-
-	alternateCreateModel(model) {
-		var alternateModel = {};
-
-		var replaceBracket = function(t) {
-			return t.replace(']', '');
-		};
-
-		var reduceFunc = function(previous, current) {
-			var n = {};
-			n[current] = previous;
-			return n;
-		};
-
-		for(var key in model) {
-			if(model.hasOwnProperty(key)) {
-				var path = key.split('[').map(replaceBracket);
-				var element = path.reduceRight(reduceFunc, model[key]);
-				$.extend(true, alternateModel, element);
-			}
-		}
-
-		return alternateModel;
 	}
 
 	_removeNullValue(model) {

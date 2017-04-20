@@ -45,6 +45,7 @@ index.js exporte toutes les classes
 - retrait de `_afterSave()`   Utiliser l'évènement `save`
 - retrait de `_onCose()`  =>  Utiliser l'évènement `close`
 - `_saveBuildPost()`: Retourne maintenant un objet d'option à passer à fetch au lieu de retourner une string de post.
+- `alternateCreateModel()`: Déplacé directement dans crm.
 
 **Removed lib**
 

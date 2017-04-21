@@ -1,8 +1,7 @@
 // @flow
-import 'whatwg-fetch'
 import ExtendableError from 'es6-error';
-import type Application from './Application';
 import encodeParam from 'jquery-param';
+import type Application from './Application';
 
 export type RequestBody = string | FormData | URLSearchParams | Blob;
 

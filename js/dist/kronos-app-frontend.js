@@ -43,7 +43,7 @@ var kronosAppFrontend =
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -113,9 +113,9 @@ var kronosAppFrontend =
 		}
 	};
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -563,9 +563,9 @@ var kronosAppFrontend =
 		};
 	};
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -694,9 +694,9 @@ var kronosAppFrontend =
 		return newString;
 	}
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -3798,9 +3798,9 @@ var kronosAppFrontend =
 
 	exports.default = Application;
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
 	//
@@ -4106,9 +4106,9 @@ var kronosAppFrontend =
 	}
 
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
 	 * Enforces a single instance of the Raven client, and the
@@ -4146,9 +4146,9 @@ var kronosAppFrontend =
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
-/***/ },
+/***/ }),
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*global XDomainRequest:false, __DEV__:false*/
 	'use strict';
@@ -4242,7 +4242,7 @@ var kronosAppFrontend =
 	    // webpack (using a build step causes webpack #1617). Grunt verifies that
 	    // this value matches package.json during build.
 	    //   See: https://github.com/getsentry/raven-js/issues/465
-	    VERSION: '3.14.0',
+	    VERSION: '3.14.2',
 
 	    debug: false,
 
@@ -5203,11 +5203,22 @@ var kronosAppFrontend =
 	                    // Make a copy of the arguments to prevent deoptimization
 	                    // https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#32-leaking-arguments
 	                    var args = new Array(arguments.length);
-	                    for(var i = 0; i < args.length; ++i) {
+	                    for (var i = 0; i < args.length; ++i) {
 	                        args[i] = arguments[i];
 	                    }
 
+	                    var fetchInput = args[0];
 	                    var method = 'GET';
+	                    var url;
+
+	                    if (typeof fetchInput === 'string') {
+	                        url = fetchInput;
+	                    } else {
+	                        url = fetchInput.url;
+	                        if (fetchInput.method) {
+	                            method = fetchInput.method;
+	                        }
+	                    }
 
 	                    if (args[1] && args[1].method) {
 	                        method = args[1].method;
@@ -5215,7 +5226,7 @@ var kronosAppFrontend =
 
 	                    var fetchData = {
 	                        method: method,
-	                        url: args[0],
+	                        url: url,
 	                        status_code: null
 	                    };
 
@@ -5501,19 +5512,21 @@ var kronosAppFrontend =
 	    _trimBreadcrumbs: function (breadcrumbs) {
 	        // known breadcrumb properties with urls
 	        // TODO: also consider arbitrary prop values that start with (https?)?://
-	        var urlprops = {to: 1, from: 1, url: 1},
+	        var urlProps = ['to', 'from', 'url'],
+	            urlProp,
 	            crumb,
 	            data;
 
-	        for (var i = 0; i < breadcrumbs.values.length; i++) {
+	        for (var i = 0; i < breadcrumbs.values.length; ++i) {
 	            crumb = breadcrumbs.values[i];
-	            if (!crumb.hasOwnProperty('data'))
+	            if (!crumb.hasOwnProperty('data') || !isObject(crumb.data))
 	                continue;
 
 	            data = crumb.data;
-	            for (var prop in urlprops) {
-	                if (data.hasOwnProperty(prop)) {
-	                    data[prop] = truncate(data[prop], this._globalOptions.maxUrlLength);
+	            for (var j = 0; j < urlProps.length; ++j) {
+	                urlProp = urlProps[j];
+	                if (data.hasOwnProperty(urlProp)) {
+	                    data[urlProp] = truncate(data[urlProp], this._globalOptions.maxUrlLength);
 	                }
 	            }
 	        }
@@ -6171,9 +6184,9 @@ var kronosAppFrontend =
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
-/***/ },
+/***/ }),
 /* 7 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
@@ -6500,27 +6513,6 @@ var kronosAppFrontend =
 	 *
 	 */
 	TraceKit.computeStackTrace = (function computeStackTraceWrapper() {
-	    /**
-	     * Escapes special characters, except for whitespace, in a string to be
-	     * used inside a regular expression as a string literal.
-	     * @param {string} text The string.
-	     * @return {string} The escaped string literal.
-	     */
-	    function escapeRegExp(text) {
-	        return text.replace(/[\-\[\]{}()*+?.,\\\^$|#]/g, '\\$&');
-	    }
-
-	    /**
-	     * Escapes special characters in a string to be used inside a regular
-	     * expression as a string literal. Also ensures that HTML entities will
-	     * be matched the same as their literal friends.
-	     * @param {string} body The string.
-	     * @return {string} The escaped string.
-	     */
-	    function escapeCodeAsRegExpForMatchingInsideHTML(body) {
-	        return escapeRegExp(body).replace('<', '(?:<|&lt;)').replace('>', '(?:>|&gt;)').replace('&', '(?:&|&amp;)').replace('"', '(?:"|&quot;)').replace(/\s+/g, '\\s+');
-	    }
-
 	    // Contents of Exception in various browsers.
 	    //
 	    // SAFARI:
@@ -6813,9 +6805,9 @@ var kronosAppFrontend =
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
-/***/ },
+/***/ }),
 /* 8 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -6823,14 +6815,15 @@ var kronosAppFrontend =
 	    return typeof what === 'object' && what !== null;
 	}
 
-	// Sorta yanked from https://github.com/joyent/node/blob/aa3b4b4/lib/util.js#L560
+	// Yanked from https://git.io/vS8DV re-used under CC0
 	// with some tiny modifications
-	function isError(what) {
-	    var toString = {}.toString.call(what);
-	    return isObject(what) &&
-	        toString === '[object Error]' ||
-	        toString === '[object Exception]' || // Firefox NS_ERROR_FAILURE Exceptions
-	        what instanceof Error;
+	function isError(value) {
+	  switch ({}.toString.call(value)) {
+	    case '[object Error]': return true;
+	    case '[object Exception]': return true;
+	    case '[object DOMException]': return true;
+	    default: return value instanceof Error;
+	  }
 	}
 
 	module.exports = {
@@ -6838,9 +6831,10 @@ var kronosAppFrontend =
 	    isError: isError
 	};
 
-/***/ },
+
+/***/ }),
 /* 9 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -6891,9 +6885,9 @@ var kronosAppFrontend =
 	}
 
 
-/***/ },
+/***/ }),
 /* 10 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -6907,9 +6901,9 @@ var kronosAppFrontend =
 	module.exports = RavenConfigError;
 
 
-/***/ },
+/***/ }),
 /* 11 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -6950,9 +6944,9 @@ var kronosAppFrontend =
 	};
 
 
-/***/ },
+/***/ }),
 /* 12 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -7032,9 +7026,9 @@ var kronosAppFrontend =
 
 	exports.default = BrowserDetect;
 
-/***/ },
+/***/ }),
 /* 13 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -7327,9 +7321,9 @@ var kronosAppFrontend =
 
 	exports.default = FetchService;
 
-/***/ },
+/***/ }),
 /* 14 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -7412,9 +7406,9 @@ var kronosAppFrontend =
 	module.exports = exports['default'];
 
 
-/***/ },
+/***/ }),
 /* 15 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * @preserve jquery-param (c) 2015 KNOWLEDGECODE | MIT
@@ -7477,9 +7471,9 @@ var kronosAppFrontend =
 
 
 
-/***/ },
+/***/ }),
 /* 16 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -7828,9 +7822,9 @@ var kronosAppFrontend =
 
 	exports.default = View;
 
-/***/ },
+/***/ }),
 /* 17 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -8197,9 +8191,9 @@ var kronosAppFrontend =
 
 	exports.default = EditView;
 
-/***/ },
+/***/ }),
 /* 18 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -8279,9 +8273,9 @@ var kronosAppFrontend =
 
 	exports.default = SaveDialog;
 
-/***/ },
+/***/ }),
 /* 19 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
@@ -8483,9 +8477,9 @@ var kronosAppFrontend =
 
 	exports.default = DateHelper;
 
-/***/ },
+/***/ }),
 /* 20 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -8805,9 +8799,9 @@ var kronosAppFrontend =
 
 	exports.default = removeDiacritics;
 
-/***/ },
+/***/ }),
 /* 21 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -8861,9 +8855,9 @@ var kronosAppFrontend =
 
 	exports.default = Router;
 
-/***/ },
+/***/ }),
 /* 22 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -9131,5 +9125,5 @@ var kronosAppFrontend =
 
 	exports.default = AsyncTask;
 
-/***/ }
+/***/ })
 /******/ ]);

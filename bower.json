@@ -1,6 +1,6 @@
 {
   "name": "kronos-app-frontend",
-  "version": "1.3.8",
+  "version": "2.0.10",
   "homepage": "https://github.com/kronostechnologies/kronos-app-frontend",
   "description": "Application Frontend by Kronos Technologies",
   "main": [
@@ -15,10 +15,5 @@
     "Gruntfile.js"
   ],
   "dependencies": {
-    "jquery": "1.11.0",
-    "jquery-migrate": "1.2.1",
-    "jquery-ui": "1.11.4",
-    "moment": "~2.10.6",
-    "raven-js": "^3.8.0"
   }
 }

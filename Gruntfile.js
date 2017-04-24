@@ -4,75 +4,59 @@
 
 module.exports = function(grunt) {
 
+  var webpack = require('webpack');
+  var webpackConfig = require('./webpack.config.js');
+
   grunt.initConfig({
-
-    copy: {
-	    build: {
-	      files: [
-	      ]
-      }
-    },
-
-    uglify: {
-      build: {
-        options: {
-          sourceMap:true,
-          mangle: true
-        },
-        files: {
-          'js/application.min.js': 'js/application.js',
-          'js/list.min.js': 'js/list.js',
-          'js/jquery.ajaxUploader.min.js': 'js/jquery.ajaxUploader.js',
-          'js/jquery.one-to-many.min.js': 'js/jquery.one-to-many.js',
-          'js/jquery.pagination.min.js': 'js/jquery.pagination.js',
-          'js/jquery.iphoneui.min.js': 'js/jquery.iphoneui.js',
-          'js/jquery.BetterGrow.min.js': 'js/jquery.BetterGrow.js',
-          'js/jquery.placeholder.min.js': 'js/jquery.placeholder.js',
-          'js/html5shiv.min.js': 'js/html5shiv.js',
-          'js/prototype.min.js': 'js/prototype.js',
-          'js/placeholder.min.js': 'js/placeholder.js',
-          'js/async-api-task.min.js': 'js/async-api-task.js',
-          'js/proxy-client.min.js': 'js/proxy-client.js',
-          'js/proxy-server.min.js': 'js/proxy-server.js',
-          'js/removeDiacritics.min.js': 'js/removeDiacritics.js'
-        }
-      }
-    },
-
-    jshint: {
-      all: {
-        src: ['Gruntfile.js', 'js/application.js', 'js/list.js', 'js/async-api-task.js'],
-        options: {
-          jshintrc: '.jshintrc'
-        }
-      }
-    },
 
     bump: {
       options: {
         files: ['package.json', 'bower.json'],
-        commitFiles: ['js/*.min.js', 'js/*.min.js.map', 'package.json', 'bower.json'],
+        commitFiles: ['js/dist/*.js', 'package.json', 'bower.json'],
         push: true,
 	      pushTo: 'origin'
       }
+    },
+
+    webpack: {
+      options: webpackConfig,
+      build: {
+        output: {
+          filename: "[name].min.js"
+        },
+        plugins: [
+          new webpack.DefinePlugin({
+            "process.env": {
+              // This has effect on the react lib size
+              "NODE_ENV": JSON.stringify("production")
+            }
+          }),
+          new webpack.optimize.DedupePlugin(),
+          new webpack.optimize.UglifyJsPlugin()
+        ]
+      },
+      dev: {
+        debug: true,
+        watch: true
+      }
     }
+
   });
 
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
   
   grunt.registerTask('build', [
-    'jshint',
-    'copy',
-    'uglify'
+    'webpack:build'
   ]);
   
   grunt.registerTask('build-dev', [
-    'build'
+    'webpack:dev'
   ]);
 
   grunt.registerTask('default', [
-    'build'
+    'build',
+    'webpack:dev'
   ]);
 
 
@@ -83,6 +67,5 @@ module.exports = function(grunt) {
     grunt.task.run('default');
     grunt.task.run('bump:' + versionType);
   });
-
 
 };

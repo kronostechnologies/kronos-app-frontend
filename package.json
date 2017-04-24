@@ -12,7 +12,7 @@
     "url": "https://github.com/kronostechnologies/kronos-app-frontend.git"
   },
   "author": "",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",

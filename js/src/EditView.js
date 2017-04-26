@@ -3,6 +3,7 @@
 import View from './View';
 import SaveDialog from "./SaveDialog";
 import FetchService, {FetchAbortError, FetchResponseDataError} from './FetchService';
+import {ValidateStepCallback, ValidateResponse} from './types';
 
 declare var $: jQuery;
 
@@ -170,10 +171,10 @@ export default class EditView extends View {
 			return Promise.resolve({ok: true});
 		}
 		return Promise.resolve(this.validate())
-			.then((result) => {
-				if(!result) {
+			.then((validateResponse) => {
+				if(!EditView.isValidateResponseValid(validateResponse)) {
 					// Cancelled because of validations
-					return Promise.resolve({cancel: true});
+					return Promise.resolve({cancel: true, validateResponse});
 				}
 
 				this.emit('saveStart');
@@ -242,27 +243,39 @@ export default class EditView extends View {
 		return fetchOptions;
 	}
 
-	validate() {
+	validate(): Promise<ValidateResponse> {
 		// Return false as soon as a step return false. Do validation one step at a time.
 		return this._validateSteps.reduce(function(previousStepPromise, stepFunction) {
 			return previousStepPromise.then(function(previousStepResult) {
-				if(!previousStepResult) {
+				if(!EditView.isValidateResponseValid(previousStepResult)) {
 					// Form is invalid
-					return false;
+					return previousStepResult;
 				}
 
 				// Run next step of validation
 				return stepFunction();
 			});
-		}, Promise.resolve(true));
+		}, Promise.resolve({ok: true}));
+	}
+
+	static isValidateResponseValid(validateResponse){
+		if(typeof validateResponse === 'undefined'){
+			return false;
+		}
+
+		if(typeof validateResponse === 'boolean'){
+			return validateResponse;
+		}
+
+		return !!validateResponse.ok;
 	}
 
 	/**
 	 * Add a validation step
 	 * fn should be a function returning promise for a boolean or a boolean indicating validation success.
 	 */
-	addValidateStep(fn: () => Promise<bool>) {
-		this._validateSteps.push(fn);
+	addValidateStep(callback: ValidateStepCallback) {
+		this._validateSteps.push(callback);
 	}
 
 

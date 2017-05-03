@@ -3,7 +3,7 @@
 import View from './View';
 import SaveDialog from "./SaveDialog";
 import FetchService, {FetchAbortError, FetchResponseDataError} from './FetchService';
-import {ValidateStepCallback, ValidateResponse} from './types';
+import type {ValidateStepCallback, ValidateResponse} from './types';
 
 declare var $: jQuery;
 

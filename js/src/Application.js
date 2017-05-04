@@ -2607,7 +2607,7 @@ export default class Application extends EventEmitter{
 			showLoading,
 			showOverlay: (!showLoading && !skipOverlayHandling)
 		};
-		this.fetch(this.getViewUrl(view, cmd, paramsString), options)
+		return this.fetch(this.getViewUrl(view, cmd, paramsString), options)
 			.then(FetchService.parseJSON)
 			.then(FetchService.handleApplicationResponseData)
 			.then((data) => {
@@ -2626,7 +2626,7 @@ export default class Application extends EventEmitter{
 			showOverlay: (!showLoading && !skipOverlayHandling)
 		};
 		options = FetchService.addPostOptions(postString, options);
-		this.fetch(this.getViewUrl(view, cmd, paramsString), options)
+		return this.fetch(this.getViewUrl(view, cmd, paramsString), options)
 			.then(FetchService.parseJSON)
 			.then(FetchService.handleApplicationResponseData)
 			.then((data) => {

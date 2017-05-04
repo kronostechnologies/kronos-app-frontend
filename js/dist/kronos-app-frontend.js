@@ -892,7 +892,7 @@ var kronosAppFrontend =
 			value: function onunhandledrejection(event) {
 
 				var error = event.reason;
-				if (error instanceof _FetchService.FetchAbortError) {
+				if (this.isFetchAbortError(error) || this.isErrorAlreadyHandled(error)) {
 					// preventDefault() does not exists in firefox for some reason.
 					if (typeof event.preventDefault === 'function') {
 						event.preventDefault();
@@ -902,9 +902,14 @@ var kronosAppFrontend =
 				}
 
 				var reason = event.reason;
-				console.warn('Unhandled promise rejection:', reason && (reason.stack || reason));
+				this.logError('Unhandled promise rejection', event.reason);
+			}
+		}, {
+			key: 'logError',
+			value: function logError(error_title, error) {
+				console.warn(error_title + ':', error && (error.stack || error));
 				if (this.ravenEnabled) {
-					_ravenJs2.default.captureException(reason);
+					_ravenJs2.default.captureException(error);
 				}
 			}
 
@@ -2484,14 +2489,26 @@ var kronosAppFrontend =
 		}, {
 			key: 'showError',
 			value: function showError(message, onHideCallback) {
+				var _this8 = this;
+
 				var self = this;
-				self.showModalDialog(self.getShowErrorHTML(message), 'fast', function () {
-					$('#hook_create_error_close').safeClick(function () {
-						self.hideModalDialog('fast');
-						if (onHideCallback) {
-							onHideCallback();
-						}
+
+				var resolveDialog = void 0;
+				var dialogPromise = new Promise(function (resolve) {
+					resolveDialog = resolve;
+				});
+
+				self.showModalDialog(self.getShowErrorHTML(message), 'fast').then(function ($dialog) {
+					$dialog.find('#hook_create_error_close').safeClick(function () {
+						_this8.hideModalDialog('fast').then(resolveDialog);
 					});
+				});
+
+				return dialogPromise.then(function () {
+					// Backward compatibility
+					if (onHideCallback) {
+						onHideCallback();
+					}
 				});
 			}
 
@@ -2503,12 +2520,12 @@ var kronosAppFrontend =
 		}, {
 			key: 'detectedExpiredSession',
 			value: function detectedExpiredSession(goTo) {
-				var _this8 = this;
+				var _this9 = this;
 
 				if (!this.detectedExpiredSessionTimeout) {
 					this.detectedExpiredSessionGoTo = goTo;
 					this.detectedExpiredSessionTimeout = setTimeout(function () {
-						_this8.showSessionExpiredError(_this8.detectedExpiredSessionGoTo);
+						_this9.showSessionExpiredError(_this9.detectedExpiredSessionGoTo);
 					}, 100);
 				}
 			}
@@ -2530,12 +2547,12 @@ var kronosAppFrontend =
 		}, {
 			key: 'detectedNetworkError',
 			value: function detectedNetworkError(goTo) {
-				var _this9 = this;
+				var _this10 = this;
 
 				if (!this.detectedNetworkErrorTimeout) {
 					this.detectedNetworkErrorGoTo = goTo;
 					this.detectedNetworkErrorTimeout = setTimeout(function () {
-						_this9.showXHRNetworkErrorError(_this9.detectedNetworkErrorGoTo);
+						_this10.showXHRNetworkErrorError(_this10.detectedNetworkErrorGoTo);
 					}, 100);
 				}
 			}
@@ -3384,7 +3401,7 @@ var kronosAppFrontend =
 
 						return error;
 					}(function (jqXHR, status, error) {
-						var _this10 = this;
+						var _this11 = this;
 
 						if (!skipOverlayHandling) {
 							self.hideOverlay();
@@ -3399,7 +3416,7 @@ var kronosAppFrontend =
 							if (!isValidXHR) {
 								return;
 							}
-							if (_this10.debug) {
+							if (_this11.debug) {
 								console.debug('AJAX query error');
 								console.debug(status);
 								console.debug(error);
@@ -3455,7 +3472,7 @@ var kronosAppFrontend =
 		}, {
 			key: 'fetch',
 			value: function fetch(url, options) {
-				var _this11 = this;
+				var _this12 = this;
 
 				if (!options) {
 					options = {};
@@ -3475,16 +3492,16 @@ var kronosAppFrontend =
 				if (showLoading) {
 					// If we don't receive an awnser after 1.5 second, a loading overlay will appear
 					this._loadingTimeout = setTimeout(function () {
-						_this11._showLoading();
+						_this12._showLoading();
 					}, this._loadingDelay);
 				}
 
 				return this.fetchService.fetch(url, options).finally(function () {
 					if (showLoading) {
-						_this11._hideLoading();
+						_this12._hideLoading();
 					}
 					if (showOverlay) {
-						_this11.hideOverlay();
+						_this12.hideOverlay();
 					}
 					if ($button) {
 						$button.prop('disabled', false);
@@ -3499,7 +3516,7 @@ var kronosAppFrontend =
 		}, {
 			key: 'get',
 			value: function get(view, cmd, paramsString, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling) {
-				var _this12 = this;
+				var _this13 = this;
 
 				var options = {
 					buttonSelector: buttonSelector,
@@ -3512,14 +3529,13 @@ var kronosAppFrontend =
 					}
 					return data;
 				}).catch(function (error) {
-					_this12.handleFetchError(error, errorCallback);
-					throw error;
+					return _this13.handleFetchError(error, errorCallback);
 				});
 			}
 		}, {
 			key: 'post',
 			value: function post(view, cmd, paramsString, postString, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling) {
-				var _this13 = this;
+				var _this14 = this;
 
 				var options = {
 					buttonSelector: buttonSelector,
@@ -3533,8 +3549,7 @@ var kronosAppFrontend =
 					}
 					return data;
 				}).catch(function (error) {
-					_this13.handleFetchError(error, errorCallback);
-					throw error;
+					return _this14.handleFetchError(error, errorCallback);
 				});
 			}
 		}, {
@@ -3542,25 +3557,45 @@ var kronosAppFrontend =
 			value: function handleFetchError(error, errorCallback) {
 				var errorMessage = void 0;
 				var data = void 0;
-				if ((typeof error === 'undefined' ? 'undefined' : _typeof(error)) === 'object') {
-					if (error instanceof _FetchService.FetchAbortError) {
-						return;
-					}
 
-					if (error instanceof _FetchService.FetchResponseDataError) {
-						console.log(error);
-						if (error.data) {
-							data = error.data;
-							errorMessage = data.message;
-						}
+				if (this.isFetchAbortError(error) || this.isErrorAlreadyHandled(error)) {
+					// Bubble abort to make sure any parent processing get aborted
+					throw error;
+				}
+
+				if (this.isFetchResponseDataError(error)) {
+					if (error.data) {
+						data = error.data;
+						errorMessage = data.message;
 					}
 				}
+
+				this.logError('Unhandled fetch error', error);
 
 				if (typeof errorCallback === 'function') {
 					errorCallback(data);
 				} else {
 					this.showError(errorMessage);
 				}
+
+				// Special flag to avoid loging error twice
+				error.handledByApplication = true;
+				throw error;
+			}
+		}, {
+			key: 'isFetchAbortError',
+			value: function isFetchAbortError(error) {
+				return (typeof error === 'undefined' ? 'undefined' : _typeof(error)) === 'object' && error instanceof _FetchService.FetchAbortError;
+			}
+		}, {
+			key: 'isFetchResponseDataError',
+			value: function isFetchResponseDataError(error) {
+				return (typeof error === 'undefined' ? 'undefined' : _typeof(error)) === 'object' && error instanceof _FetchService.FetchResponseDataError;
+			}
+		}, {
+			key: 'isErrorAlreadyHandled',
+			value: function isErrorAlreadyHandled(error) {
+				return (typeof error === 'undefined' ? 'undefined' : _typeof(error)) === 'object' && error.handledByApplication === true;
 			}
 		}, {
 			key: 'datepicker',
@@ -8028,10 +8063,10 @@ var kronosAppFrontend =
 				if (!this._can_save || !this._modified && !this._soft_modified) {
 					return Promise.resolve({ ok: true });
 				}
-				return Promise.resolve(this.validate()).then(function (result) {
-					if (!result) {
+				return Promise.resolve(this.validate()).then(function (validateResponse) {
+					if (!EditView.isValidateResponseValid(validateResponse)) {
 						// Cancelled because of validations
-						return Promise.resolve({ cancel: true });
+						return Promise.resolve({ cancel: true, validateResponse: validateResponse });
 					}
 
 					_this4.emit('saveStart');
@@ -8104,26 +8139,26 @@ var kronosAppFrontend =
 				// Return false as soon as a step return false. Do validation one step at a time.
 				return this._validateSteps.reduce(function (previousStepPromise, stepFunction) {
 					return previousStepPromise.then(function (previousStepResult) {
-						if (!previousStepResult) {
+						if (!EditView.isValidateResponseValid(previousStepResult)) {
 							// Form is invalid
-							return false;
+							return previousStepResult;
 						}
 
 						// Run next step of validation
 						return stepFunction();
 					});
-				}, Promise.resolve(true));
+				}, Promise.resolve({ ok: true }));
 			}
+		}, {
+			key: 'addValidateStep',
+
 
 			/**
 	   * Add a validation step
 	   * fn should be a function returning promise for a boolean or a boolean indicating validation success.
 	   */
-
-		}, {
-			key: 'addValidateStep',
-			value: function addValidateStep(fn) {
-				this._validateSteps.push(fn);
+			value: function addValidateStep(callback) {
+				this._validateSteps.push(callback);
 			}
 		}, {
 			key: '_onSave',
@@ -8183,6 +8218,19 @@ var kronosAppFrontend =
 				}
 
 				return model;
+			}
+		}], [{
+			key: 'isValidateResponseValid',
+			value: function isValidateResponseValid(validateResponse) {
+				if (typeof validateResponse === 'undefined') {
+					return false;
+				}
+
+				if (typeof validateResponse === 'boolean') {
+					return validateResponse;
+				}
+
+				return !!validateResponse.ok;
 			}
 		}]);
 

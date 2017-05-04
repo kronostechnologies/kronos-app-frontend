@@ -172,7 +172,7 @@ export default class Application extends EventEmitter{
 	onunhandledrejection(event){
 
 		let error = event.reason;
-		if(error instanceof FetchAbortError){
+		if(this.isFetchAbortError(error) || this.isErrorAlreadyHandled(error)){
 			// preventDefault() does not exists in firefox for some reason.
 			if(typeof event.preventDefault === 'function'){
 				event.preventDefault();
@@ -182,9 +182,13 @@ export default class Application extends EventEmitter{
 		}
 
 		let reason = event.reason;
-		console.warn('Unhandled promise rejection:', (reason && (reason.stack || reason)));
+		this.logError('Unhandled promise rejection', event.reason);
+	}
+
+	logError(error_title, error){
+		console.warn(error_title + ':', (error && (error.stack || error)));
 		if(this.ravenEnabled){
-			Raven.captureException(reason);
+			Raven.captureException(error);
 		}
 	}
 
@@ -1632,14 +1636,27 @@ export default class Application extends EventEmitter{
 	}
 
 
-	showError(message, onHideCallback) {
+	showError(message, onHideCallback): Promise {
 		const self = this;
-		self.showModalDialog(self.getShowErrorHTML(message), 'fast', function() {
-			$('#hook_create_error_close').safeClick(function() {
-				self.hideModalDialog('fast');
-				if (onHideCallback) { onHideCallback(); }
-			});
+
+		let resolveDialog;
+		let dialogPromise = new Promise((resolve) => {
+			resolveDialog = resolve;
 		});
+
+		self.showModalDialog(self.getShowErrorHTML(message), 'fast')
+			.then($dialog => {
+				$dialog.find('#hook_create_error_close').safeClick(() => {
+					this.hideModalDialog('fast').then(resolveDialog());
+				});
+			});
+
+		return dialogPromise.then(()=>{
+			// Backward compatibility
+			if (onHideCallback) {
+				onHideCallback();
+			}
+		})
 	}
 
 	/**
@@ -2584,13 +2601,13 @@ export default class Application extends EventEmitter{
 			.then(FetchService.handleApplicationResponseData);
 	}
 
-	get(view, cmd, paramsString, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling): Promise {
+	get(view, cmd, paramsString, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling) {
 		let options = {
 			buttonSelector,
 			showLoading,
 			showOverlay: (!showLoading && !skipOverlayHandling)
 		};
-		return this.fetch(this.getViewUrl(view, cmd, paramsString), options)
+		this.fetch(this.getViewUrl(view, cmd, paramsString), options)
 			.then(FetchService.parseJSON)
 			.then(FetchService.handleApplicationResponseData)
 			.then((data) => {
@@ -2599,20 +2616,17 @@ export default class Application extends EventEmitter{
 				}
 				return data;
 			})
-			.catch((error) => {
-				this.handleFetchError(error, errorCallback);
-				throw error;
-			});
+			.catch((error) => this.handleFetchError(error, errorCallback));
 	}
 
-	post(view, cmd, paramsString, postString, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling): Promise {
+	post(view, cmd, paramsString, postString, successCallback, showLoading, errorCallback, buttonSelector, skipOverlayHandling) {
 		let options = {
 			buttonSelector,
 			showLoading,
 			showOverlay: (!showLoading && !skipOverlayHandling)
 		};
 		options = FetchService.addPostOptions(postString, options);
-		return this.fetch(this.getViewUrl(view, cmd, paramsString), options)
+		this.fetch(this.getViewUrl(view, cmd, paramsString), options)
 			.then(FetchService.parseJSON)
 			.then(FetchService.handleApplicationResponseData)
 			.then((data) => {
@@ -2621,28 +2635,26 @@ export default class Application extends EventEmitter{
 				}
 				return data;
 			})
-			.catch((error) => {
-				this.handleFetchError(error, errorCallback);
-				throw error;
-			});
+			.catch((error) => this.handleFetchError(error, errorCallback));
 	}
 
 	handleFetchError(error, errorCallback) {
 		let errorMessage;
 		let data;
-		if(typeof error === 'object'){
-			if(error instanceof FetchAbortError){
-				return;
-			}
 
-			if(error instanceof FetchResponseDataError){
-				console.log(error);
-				if(error.data){
-					data = error.data;
-					errorMessage = data.message;
-				}
+		if(this.isFetchAbortError(error) || this.isErrorAlreadyHandled(error)){
+			// Bubble abort to make sure any parent processing get aborted
+			throw error;
+		}
+
+		if(this.isFetchResponseDataError(error)){
+			if(error.data){
+				data = error.data;
+				errorMessage = data.message;
 			}
 		}
+
+		this.logError('Unhandled fetch error', error);
 
 		if(typeof errorCallback === 'function') {
 			errorCallback(data);
@@ -2650,6 +2662,22 @@ export default class Application extends EventEmitter{
 		else {
 			this.showError(errorMessage);
 		}
+
+		// Special flag to avoid loging error twice
+		error.handledByApplication = true;
+		throw error;
+	}
+
+	isFetchAbortError(error) {
+		return typeof error === 'object' && error instanceof FetchAbortError;
+	}
+
+	isFetchResponseDataError(error) {
+		return typeof error === 'object' && error instanceof FetchResponseDataError;
+	}
+
+	isErrorAlreadyHandled(error) {
+		return typeof error === 'object' && error.handledByApplication === true;
 	}
 
 	datepicker(selector, options) {

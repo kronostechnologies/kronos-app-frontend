@@ -1647,7 +1647,7 @@ export default class Application extends EventEmitter{
 		self.showModalDialog(self.getShowErrorHTML(message), 'fast')
 			.then($dialog => {
 				$dialog.find('#hook_create_error_close').safeClick(() => {
-					this.hideModalDialog('fast').then(resolveDialog());
+					this.hideModalDialog('fast').then(resolveDialog);
 				});
 			});
 

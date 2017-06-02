@@ -25,7 +25,6 @@ export default class Application extends EventEmitter{
 		this.router = router;
 
 		// Debugging and error handling
-		this.view_fetching = false; // Indiacte that the app is currently waiting on an ajax query that is fetching a view.
 		this.debug = false;
 		this.sendErrors = false;
 		this.sendErrorsOnUnload = false;
@@ -43,6 +42,8 @@ export default class Application extends EventEmitter{
 		this.SESSION_KEY = false;
 
 		// Hash management
+		this.isOpeningView = false;
+		this.isOpeningViewCancelled = false;
 		this._is_observing_hash = false;
 		this._hash_changed_while_not_observing = true;
 		this.hash = false;
@@ -627,44 +628,47 @@ export default class Application extends EventEmitter{
 	 * Get location hash and check if it changed
 	 */
 	_checkHash() {
-		let view;
-		if(this.view_fetching || this.hash === location.hash) {
+		if (this.hash === location.hash) {
 			return;
+		}
+		else if(this.isOpeningView) {
+			this.isOpeningViewCancelled = true;
+			return false;
 		}
 
 		//Store the new hash before the loop starts again
-		if(this.debug) {
+		if (this.debug) {
 			console.debug('Hash changed');
 		}
 
 		this.hash = location.hash;
 
 		// Get the requested view
-		if(!this.hash || this.hash === '#') {
+		if (!this.hash || this.hash === '#') {
 			this.goTo(this.default_view);
 			return false;
 		}
-		else {
-			var splits = this.hash.substring(1).split('&');
 
-			view = splits.shift();
+		var splits = this.hash.substring(1).split('&');
+		let view = splits.shift();
 
-			var pos = view.indexOf('/');
-			if(pos > 0) {
-				var next = view.indexOf('/', pos+1);
-				if(next > 0) {
-					pos = next;
+		var pos = view.indexOf('/');
+		if(pos > 0) {
+			var next = view.indexOf('/', pos+1);
+			if(next > 0) {
+				pos = next;
 
-					view = view.substring(0, pos);
-				}
-			}
-
-			splits = null;
-
-			if(view === '' || view === null) {
-				view = this.default_view;
+				view = view.substring(0, pos);
 			}
 		}
+
+		splits = null;
+
+		if(view === '' || view === null) {
+			view = this.default_view;
+		}
+
+
 
 		const initialState = {
 			fetch: true,
@@ -733,6 +737,9 @@ export default class Application extends EventEmitter{
 			}
 
 			if(state.fetch){
+				this.isOpeningView = true;
+				this.isOpeningViewCancelled = false;
+
 				// Just to be sure we leave nothing behind
 				this.hideModalDialogNow();
 
@@ -854,11 +861,10 @@ export default class Application extends EventEmitter{
 				console.debug('View "'+view+'" is in cache (' + this.lang + ')');
 			}
 
-			this.view_fetching = true;
 			self._onFetchView(viewObject);
 
 			// Ask the requested view to transmute hash to query parameters
-			var params = viewObject.parseHash(location.hash);
+			var params = viewObject.parseHash(this.hash);
 
 			for(var k in params.params) {
 				params[k] = params.params[k];
@@ -894,11 +900,17 @@ export default class Application extends EventEmitter{
 				dataType:'json',
 				headers: self.getXSRFHeaders(),
 				success: function(response) {
-					self.view_fetching = false;
 					self._hideLoading();
+
+					if(self.isOpeningViewCancelled) {
+						self.isOpeningView = false;
+						setTimeout(() => self._checkHash(), 10);
+						return false;
+					}
 
 					/* Manage redirect responses from view calls. */
 					if (response.redirect) {
+						this.isOpeningView = false;
 						self.goTo(response.view);
 						return false;
 					}
@@ -923,7 +935,7 @@ export default class Application extends EventEmitter{
 					self._loadView(response.data, hiddenParams);
 				},
 				error: function(jqXHR, status, error) {
-					self.view_fetching = false;
+					this.isOpeningView = false;
 					self._hideLoading();
 
 					self.validateXHR(jqXHR).then((isValidXHR)=>{
@@ -986,8 +998,10 @@ export default class Application extends EventEmitter{
 				.then(() => Promise.resolve(self._loadModel(viewObject, data.model)))
 				.then(() => Promise.resolve(self._checkAnchor(viewObject)))
 				.then(() => Promise.resolve(self._checkOnLoadScroll()))
+				.then(() => Promise.resolve(self.isOpeningView = false))
 			)
 			.catch((error) => {
+				this.isOpeningView = false;
 				this._stopObservation();
 				this._showFatalError(error);
 				return Promise.reject(error);
@@ -997,7 +1011,7 @@ export default class Application extends EventEmitter{
 	_initViewObject(viewObject: View, data: {}): Promise {
 		window.view = viewObject;
 		viewObject._validateable = (data.validateable || false);
-		return Promise.resolve(viewObject.init(location.hash));
+		return Promise.resolve(viewObject.init(this.hash));
 	}
 
 	_loadContentData(viewObject: View, data: {}) {
@@ -1044,7 +1058,7 @@ export default class Application extends EventEmitter{
 			viewObject._preHook();
 		}
 
-		return Promise.resolve(viewObject.hook()).then(() => {
+		return Promise.resolve(viewObject.hook(this.hash)).then(() => {
 			return self._onViewHook(viewObject);
 		});
 	}

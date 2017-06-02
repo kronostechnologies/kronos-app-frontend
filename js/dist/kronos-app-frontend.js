@@ -745,7 +745,6 @@ var kronosAppFrontend =
 			_this.router = router;
 
 			// Debugging and error handling
-			_this.view_fetching = false; // Indiacte that the app is currently waiting on an ajax query that is fetching a view.
 			_this.debug = false;
 			_this.sendErrors = false;
 			_this.sendErrorsOnUnload = false;
@@ -763,6 +762,8 @@ var kronosAppFrontend =
 			_this.SESSION_KEY = false;
 
 			// Hash management
+			_this.isOpeningView = false;
+			_this.isOpeningViewCancelled = false;
 			_this._is_observing_hash = false;
 			_this._hash_changed_while_not_observing = true;
 			_this.hash = false;
@@ -1395,9 +1396,11 @@ var kronosAppFrontend =
 			value: function _checkHash() {
 				var _this2 = this;
 
-				var view = void 0;
-				if (this.view_fetching || this.hash === location.hash) {
+				if (this.hash === location.hash) {
 					return;
+				} else if (this.isOpeningView) {
+					this.isOpeningViewCancelled = true;
+					return false;
 				}
 
 				//Store the new hash before the loop starts again
@@ -1411,26 +1414,25 @@ var kronosAppFrontend =
 				if (!this.hash || this.hash === '#') {
 					this.goTo(this.default_view);
 					return false;
-				} else {
-					var splits = this.hash.substring(1).split('&');
+				}
 
-					view = splits.shift();
+				var splits = this.hash.substring(1).split('&');
+				var view = splits.shift();
 
-					var pos = view.indexOf('/');
-					if (pos > 0) {
-						var next = view.indexOf('/', pos + 1);
-						if (next > 0) {
-							pos = next;
+				var pos = view.indexOf('/');
+				if (pos > 0) {
+					var next = view.indexOf('/', pos + 1);
+					if (next > 0) {
+						pos = next;
 
-							view = view.substring(0, pos);
-						}
+						view = view.substring(0, pos);
 					}
+				}
 
-					splits = null;
+				splits = null;
 
-					if (view === '' || view === null) {
-						view = this.default_view;
-					}
+				if (view === '' || view === null) {
+					view = this.default_view;
 				}
 
 				var initialState = {
@@ -1498,6 +1500,9 @@ var kronosAppFrontend =
 					}
 
 					if (state.fetch) {
+						_this2.isOpeningView = true;
+						_this2.isOpeningViewCancelled = false;
+
 						// Just to be sure we leave nothing behind
 						_this2.hideModalDialogNow();
 
@@ -1635,11 +1640,10 @@ var kronosAppFrontend =
 						console.debug('View "' + view + '" is in cache (' + _this3.lang + ')');
 					}
 
-					_this3.view_fetching = true;
 					self._onFetchView(viewObject);
 
 					// Ask the requested view to transmute hash to query parameters
-					var params = viewObject.parseHash(location.hash);
+					var params = viewObject.parseHash(_this3.hash);
 
 					for (var k in params.params) {
 						params[k] = params.params[k];
@@ -1675,11 +1679,19 @@ var kronosAppFrontend =
 						dataType: 'json',
 						headers: self.getXSRFHeaders(),
 						success: function success(response) {
-							self.view_fetching = false;
 							self._hideLoading();
+
+							if (self.isOpeningViewCancelled) {
+								self.isOpeningView = false;
+								setTimeout(function () {
+									return self._checkHash();
+								}, 10);
+								return false;
+							}
 
 							/* Manage redirect responses from view calls. */
 							if (response.redirect) {
+								this.isOpeningView = false;
 								self.goTo(response.view);
 								return false;
 							}
@@ -1717,7 +1729,7 @@ var kronosAppFrontend =
 						}(function (jqXHR, status, error) {
 							var _this4 = this;
 
-							self.view_fetching = false;
+							this.isOpeningView = false;
 							self._hideLoading();
 
 							self.validateXHR(jqXHR).then(function (isValidXHR) {
@@ -1788,8 +1800,11 @@ var kronosAppFrontend =
 						return Promise.resolve(self._checkAnchor(viewObject));
 					}).then(function () {
 						return Promise.resolve(self._checkOnLoadScroll());
+					}).then(function () {
+						return Promise.resolve(self.isOpeningView = false);
 					});
 				}).catch(function (error) {
+					_this5.isOpeningView = false;
 					_this5._stopObservation();
 					_this5._showFatalError(error);
 					return Promise.reject(error);
@@ -1800,7 +1815,7 @@ var kronosAppFrontend =
 			value: function _initViewObject(viewObject, data) {
 				window.view = viewObject;
 				viewObject._validateable = data.validateable || false;
-				return Promise.resolve(viewObject.init(location.hash));
+				return Promise.resolve(viewObject.init(this.hash));
 			}
 		}, {
 			key: '_loadContentData',
@@ -1852,7 +1867,7 @@ var kronosAppFrontend =
 					viewObject._preHook();
 				}
 
-				return Promise.resolve(viewObject.hook()).then(function () {
+				return Promise.resolve(viewObject.hook(this.hash)).then(function () {
 					return self._onViewHook(viewObject);
 				});
 			}
@@ -4242,6 +4257,7 @@ var kronosAppFrontend =
 	        maxUrlLength: 250,
 	        stackTraceLimit: 50,
 	        autoBreadcrumbs: true,
+	        instrument: true,
 	        sampleRate: 1
 	    };
 	    this._ignoreOnError = 0;
@@ -4277,7 +4293,7 @@ var kronosAppFrontend =
 	    // webpack (using a build step causes webpack #1617). Grunt verifies that
 	    // this value matches package.json during build.
 	    //   See: https://github.com/getsentry/raven-js/issues/465
-	    VERSION: '3.14.2',
+	    VERSION: '3.15.0',
 
 	    debug: false,
 
@@ -4342,6 +4358,18 @@ var kronosAppFrontend =
 	        }
 	        globalOptions.autoBreadcrumbs = autoBreadcrumbs;
 
+	        var instrumentDefaults = {
+	            tryCatch: true
+	        };
+
+	        var instrument = globalOptions.instrument;
+	        if ({}.toString.call(instrument) === '[object Object]') {
+	            instrument = objectMerge(instrumentDefaults, instrument);
+	        } else if (instrument !== false) {
+	            instrument = instrumentDefaults;
+	        }
+	        globalOptions.instrument = instrument;
+
 	        TraceKit.collectWindowErrors = !!globalOptions.collectWindowErrors;
 
 	        // return for chaining
@@ -4362,7 +4390,10 @@ var kronosAppFrontend =
 	            TraceKit.report.subscribe(function () {
 	                self._handleOnErrorStackInfo.apply(self, arguments);
 	            });
-	            self._instrumentTryCatch();
+	            if (self._globalOptions.instrument && self._globalOptions.instrument.tryCatch) {
+	              self._instrumentTryCatch();
+	            }
+
 	            if (self._globalOptions.autoBreadcrumbs)
 	                self._instrumentBreadcrumbs();
 
@@ -5040,7 +5071,8 @@ var kronosAppFrontend =
 	    },
 
 	    /**
-	     * Install any queued plugins
+	     * Wrap timer functions and event targets to catch errors and provide
+	     * better metadata.
 	     */
 	    _instrumentTryCatch: function() {
 	        var self = this;

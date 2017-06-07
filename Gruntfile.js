@@ -19,28 +19,12 @@ module.exports = function(grunt) {
     },
 
     webpack: {
-      options: webpackConfig,
-      build: {
-        output: {
-          filename: "[name].min.js"
-        },
-        plugins: [
-          new webpack.DefinePlugin({
-            "process.env": {
-              // This has effect on the react lib size
-              "NODE_ENV": JSON.stringify("production")
-            }
-          }),
-          new webpack.optimize.DedupePlugin(),
-          new webpack.optimize.UglifyJsPlugin()
-        ]
+      options: {
+        stats: !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
       },
-      dev: {
-        debug: true,
-        watch: true
-      }
+	  build: webpackConfig,
+	  dev: Object.assign({ watch: true }, webpackConfig)
     }
-
   });
 
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
@@ -55,10 +39,8 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'build',
-    'webpack:dev'
+    'build-dev'
   ]);
-
 
   grunt.registerTask('release', 'Release', function(versionType){
     if(!versionType){

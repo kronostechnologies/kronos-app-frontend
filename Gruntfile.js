@@ -24,6 +24,17 @@ module.exports = function(grunt) {
       },
 	  build: webpackConfig,
 	  dev: Object.assign({ watch: true }, webpackConfig)
+    },
+
+    mochaTest: {
+      test: {
+        options: {
+          reporter: 'spec',
+          require: 'babel-register',
+          slow: 100
+        },
+        src: ['./js/**/*.test.js']
+      }
     }
   });
 
@@ -46,7 +57,8 @@ module.exports = function(grunt) {
     if(!versionType){
       versionType='patch';
     }
-    grunt.task.run('default');
+    grunt.task.run('build');
+    grunt.task.run('mochaTest');
     grunt.task.run('bump:' + versionType);
   });
 

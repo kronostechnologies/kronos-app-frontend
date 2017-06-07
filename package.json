@@ -37,6 +37,7 @@
     "grunt": "^1.0.1",
     "grunt-bump": "^0.8.0",
     "grunt-conventional-changelog": "^6.1.0",
+    "grunt-mocha-test": "^0.13.2",
     "grunt-webpack": "^2.0.1",
     "jsx-control-statements": "^3.2.5",
     "mocha": "^3.4.2",

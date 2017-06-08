@@ -85,7 +85,8 @@ export default function sprintf() {
 
 	match = null;
 
-	for(let i = 0; i < matches.length; i++) {
+	let i;
+	for(i = 0; i < matches.length; i++) {
 		let substitution;
 		if(matches[i].code == '%') {
 			substitution = '%';

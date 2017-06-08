@@ -6098,39 +6098,40 @@ function sprintf() {
 
 	match = null;
 
-	for (var _i = 0; _i < matches.length; _i++) {
+	var i = void 0;
+	for (i = 0; i < matches.length; i++) {
 		var substitution = void 0;
-		if (matches[_i].code == '%') {
+		if (matches[i].code == '%') {
 			substitution = '%';
-		} else if (matches[_i].code == 'b') {
-			matches[_i].argument = String(Math.abs(parseInt(matches[_i].argument, 10)).toString(2));
-			substitution = convert(matches[_i], true);
-		} else if (matches[_i].code == 'c') {
-			matches[_i].argument = String(String.fromCharCode(parseInt(Math.abs(parseInt(matches[_i].argument, 10)))));
-			substitution = convert(matches[_i], true);
-		} else if (matches[_i].code == 'd') {
-			matches[_i].argument = String(Math.abs(parseInt(matches[_i].argument, 10)));
-			substitution = convert(matches[_i]);
-		} else if (matches[_i].code == 'f') {
-			matches[_i].argument = String(Math.abs(parseFloat(matches[_i].argument, 10)).toFixed(matches[_i].precision ? matches[_i].precision : 6));
-			substitution = convert(matches[_i]);
-		} else if (matches[_i].code == 'o') {
-			matches[_i].argument = String(Math.abs(parseInt(matches[_i].argument, 10)).toString(8));
-			substitution = convert(matches[_i]);
-		} else if (matches[_i].code == 's') {
-			matches[_i].argument = matches[_i].argument.substring(0, matches[_i].precision ? matches[_i].precision : matches[_i].argument.length);
-			substitution = convert(matches[_i], true);
-		} else if (matches[_i].code == 'x') {
-			matches[_i].argument = String(Math.abs(parseInt(matches[_i].argument, 10)).toString(16));
-			substitution = convert(matches[_i]);
-		} else if (matches[_i].code == 'X') {
-			matches[_i].argument = String(Math.abs(parseInt(matches[_i].argument, 10)).toString(16));
-			substitution = convert(matches[_i]).toUpperCase();
+		} else if (matches[i].code == 'b') {
+			matches[i].argument = String(Math.abs(parseInt(matches[i].argument, 10)).toString(2));
+			substitution = convert(matches[i], true);
+		} else if (matches[i].code == 'c') {
+			matches[i].argument = String(String.fromCharCode(parseInt(Math.abs(parseInt(matches[i].argument, 10)))));
+			substitution = convert(matches[i], true);
+		} else if (matches[i].code == 'd') {
+			matches[i].argument = String(Math.abs(parseInt(matches[i].argument, 10)));
+			substitution = convert(matches[i]);
+		} else if (matches[i].code == 'f') {
+			matches[i].argument = String(Math.abs(parseFloat(matches[i].argument, 10)).toFixed(matches[i].precision ? matches[i].precision : 6));
+			substitution = convert(matches[i]);
+		} else if (matches[i].code == 'o') {
+			matches[i].argument = String(Math.abs(parseInt(matches[i].argument, 10)).toString(8));
+			substitution = convert(matches[i]);
+		} else if (matches[i].code == 's') {
+			matches[i].argument = matches[i].argument.substring(0, matches[i].precision ? matches[i].precision : matches[i].argument.length);
+			substitution = convert(matches[i], true);
+		} else if (matches[i].code == 'x') {
+			matches[i].argument = String(Math.abs(parseInt(matches[i].argument, 10)).toString(16));
+			substitution = convert(matches[i]);
+		} else if (matches[i].code == 'X') {
+			matches[i].argument = String(Math.abs(parseInt(matches[i].argument, 10)).toString(16));
+			substitution = convert(matches[i]).toUpperCase();
 		} else {
-			substitution = matches[_i].match;
+			substitution = matches[i].match;
 		}
 
-		newString += strings[_i];
+		newString += strings[i];
 		newString += substitution;
 	}
 

@@ -910,7 +910,7 @@ export default class Application extends EventEmitter{
 
 					/* Manage redirect responses from view calls. */
 					if (response.redirect) {
-						this.isOpeningView = false;
+						self.isOpeningView = false;
 						self.goTo(response.view);
 						return false;
 					}
@@ -935,7 +935,7 @@ export default class Application extends EventEmitter{
 					self._loadView(response.data, hiddenParams);
 				},
 				error: function(jqXHR, status, error) {
-					this.isOpeningView = false;
+					self.isOpeningView = false;
 					self._hideLoading();
 
 					self.validateXHR(jqXHR).then((isValidXHR)=>{

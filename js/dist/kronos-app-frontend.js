@@ -1388,7 +1388,7 @@ var Application = function (_EventEmitter) {
 
 						/* Manage redirect responses from view calls. */
 						if (response.redirect) {
-							this.isOpeningView = false;
+							self.isOpeningView = false;
 							self.goTo(response.view);
 							return false;
 						}
@@ -1426,7 +1426,7 @@ var Application = function (_EventEmitter) {
 					}(function (jqXHR, status, error) {
 						var _this4 = this;
 
-						this.isOpeningView = false;
+						self.isOpeningView = false;
 						self._hideLoading();
 
 						self.validateXHR(jqXHR).then(function (isValidXHR) {

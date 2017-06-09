@@ -136,6 +136,8 @@ var FetchResponseDataError = exports.FetchResponseDataError = function (_Extenda
 	return FetchResponseDataError;
 }(_es6Error2.default);
 
+var X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded;charset=UTF-8';
+
 var FetchService = function () {
 	function FetchService(app) {
 		_classCallCheck(this, FetchService);
@@ -202,6 +204,12 @@ var FetchService = function () {
 			xsrfHeaders.forEach(function (v, h) {
 				options.headers.set(h, v);
 			});
+
+			if (URLSearchParams.polyfill && _typeof(options.body) === 'object' && options.body instanceof URLSearchParams && !options.headers.has('Content-type')) {
+				options.body = options.body.toString();
+				options.headers.set('Content-type', X_WWW_FORM_URLENCODED);
+			}
+
 			return options;
 		}
 	}, {
@@ -344,13 +352,10 @@ var FetchService = function () {
 			// String default to urlencode
 			if (typeof body === "string") {
 				if (!options.headers.has('Content-type')) {
-					options.headers.set('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+					options.headers.set('Content-type', X_WWW_FORM_URLENCODED);
 				}
 			} else if ((typeof body === 'undefined' ? 'undefined' : _typeof(body)) === 'object') {
-
-				if (body instanceof URLSearchParams) {
-					options.headers.set('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-				} else if (!(body instanceof FormData)) {
+				if (!(body instanceof URLSearchParams || body instanceof FormData)) {
 					body = new URLSearchParams((0, _jqueryParam2.default)(body));
 				}
 			}

@@ -205,7 +205,10 @@ export default class FetchService {
 		}
 		else if(typeof body === 'object'){
 
-			if(!(body instanceof URLSearchParams || body instanceof FormData)){
+			if(body instanceof URLSearchParams){
+				options.headers.set('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+			}
+			else if(!(body instanceof FormData)){
 				body = new URLSearchParams(encodeParam(body));
 			}
 		}

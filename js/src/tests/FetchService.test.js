@@ -298,19 +298,28 @@ describe('FetchService', () => {
 	describe('addPostOptions', () => {
 		let returnedOptions;
 
+		const thenHeadersShouldContainsXFormUrlEncodedContentType = function(){
+			it('headers contains x-form-urlencoded content type', () => {
+				expect(returnedOptions.headers.get('Content-type')).to.equals(URL_ENCODED_CONTENT_TYPE);
+			});
+		};
+
+		const thenBodyShouldBeInstanceOfURLSearchParams = function(){
+			it('body should be an instance of URLSearchParams', () => {
+				expect(returnedOptions.body).is.instanceOf(URLSearchParams);
+			});
+		};
+
 		describe('with string body', () => {
 			beforeEach(() => {
 				returnedOptions = FetchService.addPostOptions(A_STRING_BODY);
 			});
 
-			it('Return options with body unaltered', () => {
+			thenHeadersShouldContainsXFormUrlEncodedContentType();
+
+			it('body should be the given string', () => {
 				expect(returnedOptions.body).to.equals(A_STRING_BODY);
 			});
-
-			it('headers contains x-form-urlencoded content type', () => {
-				expect(returnedOptions.headers.get('Content-type')).to.equals(URL_ENCODED_CONTENT_TYPE);
-			});
-
 		});
 
 		describe('with string body and custom content type', () => {
@@ -333,10 +342,14 @@ describe('FetchService', () => {
 				returnedOptions = FetchService.addPostOptions(AN_OBJECT_BODY);
 			});
 
-			it('Body should be an instance of URLSearchParams. with object values', () => {
-				expect(returnedOptions.body).is.instanceOf(URLSearchParams);
+			thenBodyShouldBeInstanceOfURLSearchParams();
+
+			it('URLSearchParams should contain fields and values', () => {
 				expect(returnedOptions.body.get('field1')).is.equals('value1');
 				expect(returnedOptions.body.get('field2')).is.equals('value2');
+			});
+
+			it('URLSearchParams.toString() should contains fields and values urlencoded', () => {
 				expect(returnedOptions.body.toString()).is.equals(URL_ENCODED_OBJECT_BODY);
 			});
 		});
@@ -346,8 +359,9 @@ describe('FetchService', () => {
 				returnedOptions = FetchService.addPostOptions(AN_OBJECT_NESTED_BODY);
 			});
 
-			it('Body should be an instance of URLSearchParams. with object values', () => {
-				expect(returnedOptions.body).is.instanceOf(URLSearchParams);
+			thenBodyShouldBeInstanceOfURLSearchParams();
+
+			it('URLSearchParams.toString() should contains nested fields', () => {
 				expect(returnedOptions.body.toString()).is.equals(URL_ENCODED_OBJECT_NESTED_BODY);
 			});
 		});
@@ -357,7 +371,7 @@ describe('FetchService', () => {
 				returnedOptions = FetchService.addPostOptions(A_FormData_BODY);
 			});
 
-			it('Body should be the FormData unaltered', () => {
+			it('body should be the given FormData', () => {
 				expect(returnedOptions.body).is.equals(A_FormData_BODY);
 			});
 		});
@@ -367,10 +381,11 @@ describe('FetchService', () => {
 				returnedOptions = FetchService.addPostOptions(AN_URLSearchParams_BODY);
 			});
 
-			it('Body should be the URLSearchParams unaltered', () => {
+			thenHeadersShouldContainsXFormUrlEncodedContentType();
+
+			it('body should be the given URLSearchParams', () => {
 				expect(returnedOptions.body).is.equals(AN_URLSearchParams_BODY);
 			});
 		});
 	});
-
 });

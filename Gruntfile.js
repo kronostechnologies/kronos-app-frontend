@@ -11,8 +11,8 @@ module.exports = function(grunt) {
 
     bump: {
       options: {
-        files: ['package.json', 'bower.json'],
-        commitFiles: ['js/dist/*.js', 'package.json', 'bower.json'],
+        files: ['package.json', 'bower.json', 'package-lock.json'],
+        commitFiles: ['js/dist/*.js', 'package.json', 'bower.json', 'package-lock.json'],
         push: true,
 	      pushTo: 'origin'
       }
@@ -60,6 +60,7 @@ module.exports = function(grunt) {
     grunt.task.run('build');
     grunt.task.run('mochaTest');
     grunt.task.run('bump:' + versionType);
+    grunt.task.run('publish');
   });
 
 };

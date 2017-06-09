@@ -27,6 +27,8 @@ export class FetchResponseDataError extends ExtendableError {
 	}
 }
 
+const X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded;charset=UTF-8';
+
 export default class FetchService {
 
 	constructor(app: Application){
@@ -71,6 +73,12 @@ export default class FetchService {
 		xsrfHeaders.forEach((v, h)=>{
 			options.headers.set(h, v);
 		});
+
+		if(URLSearchParams.polyfill && typeof options.body === 'object' && options.body instanceof URLSearchParams && !options.headers.has('Content-type')){
+			options.body = options.body.toString();
+			options.headers.set('Content-type', X_WWW_FORM_URLENCODED);
+		}
+
 		return options;
 	}
 
@@ -200,15 +208,11 @@ export default class FetchService {
 		// String default to urlencode
 		if(typeof body === "string"){
 			if(!options.headers.has('Content-type')){
-				options.headers.set('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+				options.headers.set('Content-type', X_WWW_FORM_URLENCODED);
 			}
 		}
 		else if(typeof body === 'object'){
-
-			if(body instanceof URLSearchParams){
-				options.headers.set('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-			}
-			else if(!(body instanceof FormData)){
+			if(!(body instanceof URLSearchParams || body instanceof FormData )){
 				body = new URLSearchParams(encodeParam(body));
 			}
 		}

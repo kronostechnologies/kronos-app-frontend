@@ -25,6 +25,7 @@ describe('FetchService', () => {
 	const XSRF_HEADER = 'X-Kronos-XSRF';
 	const XSRF_HEADER_VALUE = 'ASDFASFDSAFDSAFDFD';
 	const XSRF_HEADERS = {'X-Kronos-XSRF' : XSRF_HEADER_VALUE};
+	const CONTENT_TYPE_HEADER = 'Content-Type';
 	const A_POST_STRING = '&key=value';
 	const A_VIEW_LOCATION = '#goto_my_view';
 	const A_SESSKEY = 'ABCDEF';
@@ -34,6 +35,7 @@ describe('FetchService', () => {
 	const AN_OBJECT_NESTED_BODY = { field1: { subfeld1: 'value1'}, field2: 'value2'};
 	const URL_ENCODED_OBJECT_NESTED_BODY = 'field1%5Bsubfeld1%5D=value1&field2=value2';
 	const AN_URLSearchParams_BODY = new URLSearchParams();
+	const OPTIONS_WITH_URLSearchParams_BODY = { body: AN_URLSearchParams_BODY };
 	const A_FormData_BODY = new FormData();
 	const URL_ENCODED_CONTENT_TYPE = 'application/x-www-form-urlencoded;charset=UTF-8';
 	const A_CUSTOM_CONTENT_TYPE = 'CustomContentType';
@@ -84,10 +86,11 @@ describe('FetchService', () => {
 			beforeEach(() => {
 				fetchMock.get(AN_URL, TEXT_RESPONSE_DATA);
 				response = fetchService.fetch(AN_URL);
+				return response;
 			});
 
 			it('should call fetch with the url', () => {
-				return response.then(() => expect(fetchMock.lastUrl()).to.equal(AN_URL));
+				expect(fetchMock.lastUrl()).to.equal(AN_URL);
 			});
 
 			it('should eventually return a Response object', () => {
@@ -96,23 +99,15 @@ describe('FetchService', () => {
 			});
 
 			it('should set the same-origin options to enable cookies', () => {
-				return response.then(() =>
-					expect(fetchMock.lastOptions()).to.have.property('credentials', 'same-origin')
-				);
+				expect(fetchMock.lastOptions()).to.have.property('credentials', 'same-origin');
 			});
 
 			it('should add the application xsrf headers', () => {
-				return response.then(() => {
-					let options = fetchMock.lastOptions();
-					let headers = options.headers;
-
-					return Promise.all([
-						expect(options).to.have.property('headers'),
-						expect(headers.get(XSRF_HEADER)).to.equals(XSRF_HEADER_VALUE)
-					])
-				});
+				let options = fetchMock.lastOptions();
+				let headers = options.headers;
+				expect(options).to.have.property('headers');
+				expect(headers.get(XSRF_HEADER)).to.equals(XSRF_HEADER_VALUE);
 			});
-
 		});
 
 		describe('with error(500) response', () => {
@@ -207,6 +202,53 @@ describe('FetchService', () => {
 
 		});
 
+		describe('with polyfilled URLSearchParams body option', () => {
+
+			let response;
+			beforeEach(() => {
+				fetchMock.get(AN_URL, TEXT_RESPONSE_DATA);
+				response = fetchService.fetch(AN_URL, OPTIONS_WITH_URLSearchParams_BODY);
+				return response;
+			});
+
+			it('should add Content-Type:x-www-form-urlencoded header', () => {
+				let options = fetchMock.lastOptions();
+				let headers = options.headers;
+
+				expect(options).to.have.property('headers');
+				expect(headers.get(CONTENT_TYPE_HEADER)).to.equals(URL_ENCODED_CONTENT_TYPE);
+			});
+
+		});
+
+		describe('with polyfilled URLSearchParams body option', () => {
+
+			let response;
+
+			before(() => {
+				URLSearchParams.polyfill = false;
+			});
+
+			after(() => {
+				URLSearchParams.polyfill = true;
+			});
+
+			beforeEach(() => {
+				fetchMock.get(AN_URL, TEXT_RESPONSE_DATA);
+				response = fetchService.fetch(AN_URL, OPTIONS_WITH_URLSearchParams_BODY);
+				return response;
+			});
+
+
+			it('should not add Content-Type:x-www-form-urlencoded header', () => {
+				let options = fetchMock.lastOptions();
+				let headers = options.headers;
+
+				expect(options).to.have.property('headers');
+				expect(headers.get(CONTENT_TYPE_HEADER)).to.equals(null);
+			});
+
+		});
 
 	});
 
@@ -299,7 +341,7 @@ describe('FetchService', () => {
 		let returnedOptions;
 
 		const thenHeadersShouldContainsXFormUrlEncodedContentType = function(){
-			it('headers contains x-form-urlencoded content type', () => {
+			it('headers contains x-www-form-urlencoded content type', () => {
 				expect(returnedOptions.headers.get('Content-type')).to.equals(URL_ENCODED_CONTENT_TYPE);
 			});
 		};
@@ -380,8 +422,6 @@ describe('FetchService', () => {
 			beforeEach(() => {
 				returnedOptions = FetchService.addPostOptions(AN_URLSearchParams_BODY);
 			});
-
-			thenHeadersShouldContainsXFormUrlEncodedContentType();
 
 			it('body should be the given URLSearchParams', () => {
 				expect(returnedOptions.body).is.equals(AN_URLSearchParams_BODY);

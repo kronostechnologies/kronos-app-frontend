@@ -348,7 +348,9 @@ var FetchService = function () {
 				}
 			} else if ((typeof body === 'undefined' ? 'undefined' : _typeof(body)) === 'object') {
 
-				if (!(body instanceof URLSearchParams || body instanceof FormData)) {
+				if (body instanceof URLSearchParams) {
+					options.headers.set('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+				} else if (!(body instanceof FormData)) {
 					body = new URLSearchParams((0, _jqueryParam2.default)(body));
 				}
 			}

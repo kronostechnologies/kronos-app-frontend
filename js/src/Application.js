@@ -1305,7 +1305,6 @@ export default class Application extends EventEmitter{
 	 * @param opacity Cover opacity, between 0 and 1, in increment of 0.2 (i.e 0.8)
 	 */
 	showOverlay(color, opacity, id, zIndex) {
-		if(!zIndex) zIndex = 500;
 		if(!id) id = 'overlay';
 
 		if(this.debug)
@@ -1323,11 +1322,11 @@ export default class Application extends EventEmitter{
 			opacity = '0';
 
 		$('#'+id).css({
-			height:				$(document).height(),
+			bottom:             0,
 			left:				0,
-			position:			'absolute',
+			position:			'fixed',
+			right:              0,
 			top:				0,
-			width:				(this._iPad ? $('body').width() : '100%'),
 			zIndex:				zIndex,
 			backgroundColor:	color,
 			opacity:			opacity
@@ -1561,26 +1560,14 @@ export default class Application extends EventEmitter{
 		const self = this;
 		this.showOverlay('#000', 0.4);
 
-		let $modal2 = $('<div></div>')
-			.addClass('modal-2')
-			.append(
-				$('<div></div>')
-				.addClass('sprite modal-3')
-				.append(content)
-		);
+		let $modalDialog = $('<div></div>')
+			.attr('id', 'modal_dialog')
+			.css({'display': 'none'})
+			.append(content);
 
 		if(width) {
-			$modal2.css('width', width);
+			$modalDialog.css('width', width);
 		}
-
-		let $modalDialog = $('<div></div>')
-			.addClass('modal')
-			.attr('id', 'modal_dialog')
-			.css({
-				'display': 'none',
-				'top': self._scrollTop() + 'px'
-			})
-			.append($modal2);
 
 		$('body').append($modalDialog);
 

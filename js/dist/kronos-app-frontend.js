@@ -1851,7 +1851,6 @@ var Application = function (_EventEmitter) {
 	}, {
 		key: 'showOverlay',
 		value: function showOverlay(color, opacity, id, zIndex) {
-			if (!zIndex) zIndex = 500;
 			if (!id) id = 'overlay';
 
 			if (this.debug) console.debug('Show overlay');
@@ -1866,11 +1865,11 @@ var Application = function (_EventEmitter) {
 			if (!opacity) opacity = '0';
 
 			$('#' + id).css({
-				height: $(document).height(),
+				bottom: 0,
 				left: 0,
-				position: 'absolute',
+				position: 'fixed',
+				right: 0,
 				top: 0,
-				width: this._iPad ? $('body').width() : '100%',
 				zIndex: zIndex,
 				backgroundColor: color,
 				opacity: opacity
@@ -2123,16 +2122,11 @@ var Application = function (_EventEmitter) {
 			var self = this;
 			this.showOverlay('#000', 0.4);
 
-			var $modal2 = $('<div></div>').addClass('modal-2').append($('<div></div>').addClass('sprite modal-3').append(content));
+			var $modalDialog = $('<div></div>').attr('id', 'modal_dialog').css({ 'display': 'none' }).append(content);
 
 			if (width) {
-				$modal2.css('width', width);
+				$modalDialog.css('width', width);
 			}
-
-			var $modalDialog = $('<div></div>').addClass('modal').attr('id', 'modal_dialog').css({
-				'display': 'none',
-				'top': self._scrollTop() + 'px'
-			}).append($modal2);
 
 			$('body').append($modalDialog);
 

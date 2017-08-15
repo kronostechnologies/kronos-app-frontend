@@ -2120,7 +2120,7 @@ var Application = function (_EventEmitter) {
 		key: 'showModalDialog',
 		value: function showModalDialog(content, speed, callback, width) {
 			var self = this;
-			this.showOverlay('#000', 0.4);
+			this.showOverlay('#000', 0.4, 'overlay', 1);
 
 			var $modalDialog = $('<div></div>').attr('id', 'modal_dialog').css({ 'display': 'none' }).append(content);
 

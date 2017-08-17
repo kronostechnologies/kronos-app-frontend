@@ -1305,32 +1305,36 @@ export default class Application extends EventEmitter{
 	 * @param opacity Cover opacity, between 0 and 1, in increment of 0.2 (i.e 0.8)
 	 */
 	showOverlay(color, opacity, id, zIndex) {
-		if(!id) id = 'overlay';
-
-		if(this.debug)
+		if(this.debug) {
 			console.debug('Show overlay');
+		}
 
-		if($('#'+id).length > 0) // Loading is already shown
+		if(!id) {
+			id = 'overlay';
+		}
+
+		if($('#' + id).length > 0) {
+			// Loading is already shown
 			return;
+		}
 
-		$('body').append('<div id="'+id+'"></div>');
+		$('body').append('<div id="' + id + '"></div>');
 
-		if(!color)
+		if(!color) {
 			color = 'transparent';
+		}
 
-		if(!opacity)
+		if(!opacity) {
 			opacity = '0';
+		}
 
-		$('#'+id).css({
-			bottom:             0,
-			left:				0,
-			position:			'fixed',
-			right:              0,
-			top:				0,
-			zIndex:				zIndex,
-			backgroundColor:	color,
-			opacity:			opacity
-		}).fadeIn();
+		$('#' + id)
+			.addClass('dialog-overlay')
+			.css({
+				backgroundColor:    color,
+				opacity:            opacity,
+				zIndex:             zIndex
+			}).show();
 	}
 
 	/**
@@ -1558,7 +1562,7 @@ export default class Application extends EventEmitter{
 	 */
 	showModalDialog(content, speed, callback, width): Promise<jQuery> {
 		const self = this;
-		this.showOverlay('#000', 0.4, 'overlay', 1);
+		this.showOverlay('rgba(0, 0, 0, 0.4)', 1, 'overlay', 1);
 
 		let $modalDialog = $('<div></div>')
 			.attr('id', 'modal_dialog')
@@ -1569,10 +1573,10 @@ export default class Application extends EventEmitter{
 			$modalDialog.css('width', width);
 		}
 
-		$('body').append($modalDialog);
+		$('body').addClass('no-scroll').append($modalDialog);
 
 		return new Promise((resolve) => {
-			$modalDialog.slideDown(speed, resolve);
+			$modalDialog.show(0, resolve);
 		})
 		.then(()=> {
 			if(typeof callback === 'function') {
@@ -1598,12 +1602,15 @@ export default class Application extends EventEmitter{
 		})
 		.then(()=>{
 			this.hideOverlay();
-			if(use_detach){
+
+			if(use_detach) {
 				$modalDialog.detach();
 			}
-			else{
+			else {
 				$modalDialog.remove();
 			}
+
+			$('body').removeClass('no-scroll');
 
 			if(typeof callback === 'function') {
 				callback();

@@ -40,7 +40,12 @@ export default class FetchService {
 		options = this._processFetchOptions(options);
 		let abortable = FetchService.makeAbortable(fetch(url, options));
 		this._registerFetchPromise(abortable);
-		return abortable.promise.then((response) => this._checkStatus(response));
+		return abortable.promise
+			.catch(error => {
+				this.app.detectedNetworkError();
+				throw new FetchAbortError();
+			})
+			.then((response) => this._checkStatus(response));
 	}
 
 	fetchJson(url: string, options: FetchOptions): Promise{

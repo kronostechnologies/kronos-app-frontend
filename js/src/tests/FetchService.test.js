@@ -250,6 +250,25 @@ describe('FetchService', () => {
 
 		});
 
+		describe('returns a rejected promise', () => {
+			
+			let response;
+			beforeEach(() => {
+				fetchMock.get(AN_URL, Promise.reject('Failed to fetch'));
+				response = fetchService.fetch(AN_URL);
+				//return response;
+			});
+
+			it('should be rejected with FetchAbortError', () => {
+				return expect(response).to.eventually.be.rejected
+					.and.be.an.instanceOf(FetchAbortError);
+			});
+
+			it('should notifiy application with detectedNetworkError()', () => {
+				return response.catch(()=> expect(detectedNetworkErrorStub.calledOnce).to.equal(true));
+			});
+		});
+
 	});
 
 	describe('fetchJson', () => {

@@ -164,7 +164,10 @@ var FetchService = function () {
 			options = this._processFetchOptions(options);
 			var abortable = FetchService.makeAbortable(fetch(url, options));
 			this._registerFetchPromise(abortable);
-			return abortable.promise.then(function (response) {
+			return abortable.promise.catch(function (error) {
+				_this3.app.detectedNetworkError();
+				throw new FetchAbortError();
+			}).then(function (response) {
 				return _this3._checkStatus(response);
 			});
 		})

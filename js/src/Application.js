@@ -2677,7 +2677,7 @@ export default class Application extends EventEmitter{
 	}
 
 	isFetchAbortError(error) {
-		return typeof error === 'object' && error instanceof FetchAbortError;
+		return FetchService.isFetchAbortError(error);
 	}
 
 	isFetchResponseDataError(error) {

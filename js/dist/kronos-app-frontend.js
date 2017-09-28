@@ -165,8 +165,13 @@ var FetchService = function () {
 			var abortable = FetchService.makeAbortable(fetch(url, options));
 			this._registerFetchPromise(abortable);
 			return abortable.promise.catch(function (error) {
-				_this3.app.detectedNetworkError();
-				throw new FetchAbortError();
+
+				if (FetchService.isTypeErrorError(error) && !FetchService.isFetchAbortError(error)) {
+					_this3.app.detectedNetworkError();
+					throw new FetchAbortError();
+				}
+
+				throw error;
 			}).then(function (response) {
 				return _this3._checkStatus(response);
 			});
@@ -365,6 +370,16 @@ var FetchService = function () {
 
 			options.body = body;
 			return options;
+		}
+	}, {
+		key: 'isFetchAbortError',
+		value: function isFetchAbortError(error) {
+			return (typeof error === 'undefined' ? 'undefined' : _typeof(error)) === 'object' && error instanceof FetchAbortError;
+		}
+	}, {
+		key: 'isTypeErrorError',
+		value: function isTypeErrorError(error) {
+			return (typeof error === 'undefined' ? 'undefined' : _typeof(error)) === 'object' && error instanceof TypeError;
 		}
 	}]);
 
@@ -3309,7 +3324,7 @@ var Application = function (_EventEmitter) {
 	}, {
 		key: 'isFetchAbortError',
 		value: function isFetchAbortError(error) {
-			return (typeof error === 'undefined' ? 'undefined' : _typeof(error)) === 'object' && error instanceof _FetchService.FetchAbortError;
+			return _FetchService2.default.isFetchAbortError(error);
 		}
 	}, {
 		key: 'isFetchResponseDataError',

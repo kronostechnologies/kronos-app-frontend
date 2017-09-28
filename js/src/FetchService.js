@@ -31,6 +31,9 @@ const X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded;charset=UTF-8';
 
 export default class FetchService {
 
+	app: Application;
+	ongoingFetchPromises: Array<Promise>
+
 	constructor(app: Application){
 		this.app = app;
 		this.ongoingFetchPromises = [];
@@ -42,8 +45,14 @@ export default class FetchService {
 		this._registerFetchPromise(abortable);
 		return abortable.promise
 			.catch(error => {
-				this.app.detectedNetworkError();
-				throw new FetchAbortError();
+
+				if(FetchService.isTypeErrorError(error) && !FetchService.isFetchAbortError(error)){
+					this.app.detectedNetworkError();
+					throw new FetchAbortError();
+				}
+
+				throw error;
+
 			})
 			.then((response) => this._checkStatus(response));
 	}
@@ -224,5 +233,13 @@ export default class FetchService {
 
 		options.body = body;
 		return options;
+	}
+
+	static isFetchAbortError(error){
+		return typeof error === 'object' && error instanceof FetchAbortError;
+	}
+
+	static isTypeErrorError(error){
+		return typeof error === 'object' && error instanceof TypeError;
 	}
 }

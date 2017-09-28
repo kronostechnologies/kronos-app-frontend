@@ -250,13 +250,12 @@ describe('FetchService', () => {
 
 		});
 
-		describe('returns a rejected promise', () => {
+		describe('reject with TypeError', () => {
 			
 			let response;
 			beforeEach(() => {
-				fetchMock.get(AN_URL, Promise.reject('Failed to fetch'));
+				fetchMock.get(AN_URL, Promise.reject(new TypeError('Failed to fetch')));
 				response = fetchService.fetch(AN_URL);
-				//return response;
 			});
 
 			it('should be rejected with FetchAbortError', () => {
@@ -266,6 +265,27 @@ describe('FetchService', () => {
 
 			it('should notifiy application with detectedNetworkError()', () => {
 				return response.catch(()=> expect(detectedNetworkErrorStub.calledOnce).to.equal(true));
+			});
+		});
+
+		describe('reject with FetchAbortError', () => {
+
+			let response;
+			let fetchAbortError;
+			beforeEach(() => {
+				fetchAbortError = new FetchAbortError();
+				fetchMock.get(AN_URL, Promise.reject(fetchAbortError));
+				response = fetchService.fetch(AN_URL);
+			});
+
+			it('should be rejected with the same FetchAbortError', () => {
+				return expect(response).to.eventually.be.rejected
+					.and.be.an.instanceOf(FetchAbortError)
+					.and.be.equal(fetchAbortError);
+			});
+
+			it('should NOT notifiy application with detectedNetworkError()', () => {
+				return response.catch(()=> expect(detectedNetworkErrorStub.notCalled).to.equal(true));
 			});
 		});
 

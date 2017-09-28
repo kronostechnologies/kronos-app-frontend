@@ -41,6 +41,7 @@
     "grunt-mocha-test": "^0.13.2",
     "grunt-npm": "0.0.2",
     "grunt-webpack": "^2.0.1",
+    "husky": "^0.14.3",
     "jsx-control-statements": "^3.2.5",
     "mocha": "^3.4.2",
     "node-fetch": "^2.0.0-alpha.5",

@@ -16,6 +16,7 @@ export default class EditView extends View {
 		this._modified = false;
 		this._soft_modified = false;
 		this._validateSteps = [];
+		this._isUnloadRebound = false;
 
 
 		this.on('hook', ()=>{
@@ -74,35 +75,44 @@ export default class EditView extends View {
 	}
 
 	_initOnBeforeUnloadEvents() {
-		const self = this;
+		window.obj = this;
 
-		this._onBeforeUnloadBackup = window.onbeforeunload;
+		if (!this._isUnloadRebound) {
+			this._onBeforeUnloadBackup = window.onbeforeunload;
 
-		let onBeforeUnload = (event)=>{
-			if(typeof this._onBeforeUnloadBackup !== 'undefined'){
-				this._onBeforeUnloadBackup(event);
+			let onBeforeUnload = (event)=>{
+				if(typeof this._onBeforeUnloadBackup !== 'undefined'){
+					this._onBeforeUnloadBackup(event);
+				}
+				if(this._modified) {
+					return this.app._('SAVE_CHANGES_MESSAGE');
+				}
+			};
+
+			// Prevent IE to prompt that a change occured when clicking on a link with href=javascript:
+			if(navigator.appName === 'Microsoft Internet Explorer') {
+				$(document)
+					.on('mouseenter', 'a[href^="javascript:"]', () => {
+						window.onbeforeunload = null;
+					})
+					.on('mouseleave', 'a[href^="javascript:"]', () => {
+						window.onbeforeunload = onBeforeUnload;
+					});
 			}
-			if(this._modified) {
-				return this.app._('SAVE_CHANGES_MESSAGE');
-			}
-		};
 
-		// Prevent IE to prompt that a change occured when clicking on a link with href=javascript:
-		if(navigator.appName === 'Microsoft Internet Explorer') {
-			$(document)
-				.on('mouseenter', 'a[href^="javascript:"]', () => {
-					window.onbeforeunload = null;
-				})
-				.on('mouseleave', 'a[href^="javascript:"]', () => {
-					window.onbeforeunload = onBeforeUnload;
-				});
+			window.onbeforeunload = onBeforeUnload;
+			this._isUnloadRebound = true;
+		} else {
+			console.log("_initOnBeforeUnloadEvents already rebound onbeforeunload. Skipped. See stack trace below.");
+			console.trace();
 		}
-
-		window.onbeforeunload = onBeforeUnload;
 	}
 
 	_restoreOnBeforeUnloadEvents(){
-		window.onbeforeunload = this._onBeforeUnloadBackup;
+		if (this._isUnloadRebound) {
+			window.onbeforeunload = this._onBeforeUnloadBackup;
+			this._isUnloadRebound = false;
+		}
 	}
 
 	inject(model) {

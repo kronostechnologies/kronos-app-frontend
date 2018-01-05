@@ -4869,6 +4869,7 @@ var EditView = function (_View) {
 		_this._modified = false;
 		_this._soft_modified = false;
 		_this._validateSteps = [];
+		_this._isUnloadRebound = false;
 
 		_this.on('hook', function () {
 			var $contentForm = $('#content form');
@@ -4933,34 +4934,41 @@ var EditView = function (_View) {
 		value: function _initOnBeforeUnloadEvents() {
 			var _this2 = this;
 
-			var self = this;
+			if (!this._isUnloadRebound) {
+				this._onBeforeUnloadBackup = window.onbeforeunload;
 
-			this._onBeforeUnloadBackup = window.onbeforeunload;
+				var onBeforeUnload = function onBeforeUnload(event) {
+					if (typeof _this2._onBeforeUnloadBackup !== 'undefined') {
+						_this2._onBeforeUnloadBackup(event);
+					}
+					if (_this2._modified) {
+						return _this2.app._('SAVE_CHANGES_MESSAGE');
+					}
+				};
 
-			var onBeforeUnload = function onBeforeUnload(event) {
-				if (typeof _this2._onBeforeUnloadBackup !== 'undefined') {
-					_this2._onBeforeUnloadBackup(event);
+				// Prevent IE to prompt that a change occured when clicking on a link with href=javascript:
+				if (navigator.appName === 'Microsoft Internet Explorer') {
+					$(document).on('mouseenter', 'a[href^="javascript:"]', function () {
+						window.onbeforeunload = null;
+					}).on('mouseleave', 'a[href^="javascript:"]', function () {
+						window.onbeforeunload = onBeforeUnload;
+					});
 				}
-				if (_this2._modified) {
-					return _this2.app._('SAVE_CHANGES_MESSAGE');
-				}
-			};
 
-			// Prevent IE to prompt that a change occured when clicking on a link with href=javascript:
-			if (navigator.appName === 'Microsoft Internet Explorer') {
-				$(document).on('mouseenter', 'a[href^="javascript:"]', function () {
-					window.onbeforeunload = null;
-				}).on('mouseleave', 'a[href^="javascript:"]', function () {
-					window.onbeforeunload = onBeforeUnload;
-				});
+				window.onbeforeunload = onBeforeUnload;
+				this._isUnloadRebound = true;
+			} else {
+				console.log("_initOnBeforeUnloadEvents already rebound onbeforeunload. Skipped. See stack trace below.");
+				console.trace();
 			}
-
-			window.onbeforeunload = onBeforeUnload;
 		}
 	}, {
 		key: '_restoreOnBeforeUnloadEvents',
 		value: function _restoreOnBeforeUnloadEvents() {
-			window.onbeforeunload = this._onBeforeUnloadBackup;
+			if (this._isUnloadRebound) {
+				window.onbeforeunload = this._onBeforeUnloadBackup;
+				this._isUnloadRebound = false;
+			}
 		}
 	}, {
 		key: 'inject',

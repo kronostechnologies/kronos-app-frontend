@@ -75,8 +75,6 @@ export default class EditView extends View {
 	}
 
 	_initOnBeforeUnloadEvents() {
-		window.obj = this;
-
 		if (!this._isUnloadRebound) {
 			this._onBeforeUnloadBackup = window.onbeforeunload;
 

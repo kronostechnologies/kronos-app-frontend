@@ -745,7 +745,7 @@ var app = {
 		}
 
 		if(config && config.sentry) {
-			Raven.config('https://' + config.sentry.key + '@app.getsentry.com/' + config.sentry.project, {release:config.application_version}).install();
+			Raven.config('https://' + config.sentry.key + '@sentry.io/' + config.sentry.project, {release:config.application_version}).install();
 
 			Raven.setTagsContext({
 				version: config.application_version

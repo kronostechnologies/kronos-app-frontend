@@ -681,7 +681,7 @@ var Application = function (_EventEmitter) {
 			this.checkStoredSession();
 
 			if (!config.application_version) {
-				throw this._throw('Applicaiton version not defined in configuration', true);
+				throw this._throw('Application version not defined in configuration', true);
 			}
 			this._application_version = config.application_version;
 
@@ -690,7 +690,7 @@ var Application = function (_EventEmitter) {
 			}
 
 			if (config && config.sentry) {
-				_ravenJs2.default.config('https://' + config.sentry.key + '@app.getsentry.com/' + config.sentry.project, { release: config.application_version });
+				_ravenJs2.default.config('https://' + config.sentry.key + '@sentry.io/' + config.sentry.project, { release: config.application_version });
 
 				_ravenJs2.default.setTagsContext({
 					version: config.application_version

@@ -3,4 +3,4 @@ machine:
     version: 6.10.2
   dependencies:
     pre:
-      npm install -g npm
+      npm install -g npm@5

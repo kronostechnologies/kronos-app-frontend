@@ -53,6 +53,7 @@
   "dependencies": {
     "es6-error": "^4.0.2",
     "formdata-polyfill": "^1.0.7",
+    "growl": "^1.10.5",
     "jquery": "^3.2.1",
     "jquery-param": "^0.2.0",
     "matchdep": "^1.0.1",

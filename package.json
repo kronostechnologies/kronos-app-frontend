@@ -5,7 +5,7 @@
   "main": "js/src/index.js",
   "module": "js/src/index.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha --compilers jsx:babel-register --slow 100 --recursive ./js/**/*.test.js",
+    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha --compilers jsx:babel-register --slow 100 --recursive ./js/**/*.test.js",
     "prepush": "npm tes"
   },
   "repository": {
@@ -43,7 +43,7 @@
     "grunt-webpack": "^2.0.1",
     "husky": "^0.14.3",
     "jsx-control-statements": "^3.2.5",
-    "mocha": "^3.4.2",
+    "mocha": "^5.2.0",
     "node-fetch": "^2.0.0-alpha.5",
     "sinon": "^2.3.2",
     "webpack": "^2.6.1",

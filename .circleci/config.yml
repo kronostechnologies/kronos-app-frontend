@@ -63,8 +63,8 @@ workflows:
           filters:
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+/
-            requires:
-              - checkout_code
+          requires:
+            - checkout_code
       - npm_test:
           filters:
             tags:

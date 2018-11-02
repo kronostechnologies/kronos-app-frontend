@@ -11,8 +11,8 @@ module.exports = function(grunt) {
 
     bump: {
       options: {
-        files: ['package.json', 'bower.json', 'package-lock.json'],
-        commitFiles: ['js/dist/*.js', 'package.json', 'bower.json', 'package-lock.json'],
+        files: ['package.json', 'bower.json'],
+        commitFiles: ['js/dist/*.js', 'package.json', 'bower.json'],
         push: true,
 	      pushTo: 'origin'
       }

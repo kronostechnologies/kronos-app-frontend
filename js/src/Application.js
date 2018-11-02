@@ -1,7 +1,7 @@
 // @flow
 
 import EventEmitter from 'events';
-import Raven from 'raven-js';
+import * as Sentry from '@sentry/browser';
 import BrowserDetect from "./BrowserDetect";
 import FetchService, {FetchAbortError, FetchResponseDataError} from './FetchService';
 
@@ -189,7 +189,7 @@ export default class Application extends EventEmitter{
 	logError(error_title, error){
 		console.warn(error_title + ':', (error && (error.stack || error)));
 		if(this.ravenEnabled){
-			Raven.captureException(error);
+			Sentry.captureException(error);
 		}
 	}
 
@@ -244,23 +244,22 @@ export default class Application extends EventEmitter{
 		}
 
 		if (config && config.sentry) {
-			Raven.config('https://' + config.sentry.key + '@sentry.io/' + config.sentry.project, { release: config.application_version });
 
-			Raven.setTagsContext({
-				version: config.application_version
+			Sentry.configureScope(scope => {
+				scope.setTag('version', config.application_version);
+				scope.setUser({
+					email: config.user.email,
+					id: config.user.id,
+					name: config.user.name
+				});
+				scope.setExtra('transaction', config.kronos_transaction_id);
 			});
 
-			Raven.setUserContext({
-				email: config.user.email,
-				id: config.user.id,
-				name: config.user.name
-			});
-
-			Raven.setExtraContext({
-				transaction: config.kronos_transaction_id,
-			});
-
-			Raven.install();
+			Sentry.init({
+				'dsn': config.sentry.dsn,
+				'release': config.application_version,
+				'environment': 'eric-dev'
+			})
 
 			this.ravenEnabled = true;
 		}

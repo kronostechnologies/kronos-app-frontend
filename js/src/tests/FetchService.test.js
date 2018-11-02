@@ -77,7 +77,7 @@ describe('FetchService', () => {
 		sandbox.restore();
 		fetchMock.restore();
 	});
-	
+
 	describe('fetch', () => {
 
 		describe('with valid response', () => {
@@ -134,7 +134,7 @@ describe('FetchService', () => {
 				fetchMock.get(AN_URL, AN_ABORT_RESPONSE);
 				response = fetchService.fetch(AN_URL);
 			});
-			
+
 			it('should be rejected with FetchAbortError', () => {
 				return expect(response).to.eventually.be.rejected
 					.and.be.an.instanceOf(FetchAbortError);
@@ -142,7 +142,7 @@ describe('FetchService', () => {
 
 		});
 
-		// Not testable with new version 
+		// Not testable with new version
 		// describe('with empty(0) response', () => {
 		//
 		// 	let response;
@@ -206,6 +206,11 @@ describe('FetchService', () => {
 		describe('with polyfilled URLSearchParams body option', () => {
 
 			let response;
+
+			before(() => {
+				URLSearchParams.polyfill = true;
+			});
+
 			beforeEach(() => {
 				fetchMock.get(AN_URL, TEXT_RESPONSE_DATA);
 				response = fetchService.fetch(AN_URL, OPTIONS_WITH_URLSearchParams_BODY);
@@ -252,7 +257,7 @@ describe('FetchService', () => {
 		});
 
 		describe('reject with TypeError', () => {
-			
+
 			let response;
 			beforeEach(() => {
 				fetchMock.get(AN_URL, Promise.reject(new TypeError('Failed to fetch')));

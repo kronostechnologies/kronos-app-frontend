@@ -2905,13 +2905,24 @@ export default class Application extends EventEmitter{
 	}
 
 	sentry_beforeSend(event, hint){
-		if(hint && this.isFetchAbortError(hint.originalException)){
-			// Don't trigger an error for that but keep a trace.
-			Sentry.addBreadcrumb({
-				message: 'FetchAbortError',
-				level: 'warning'
-			});
-			return null;
+		if(hint && typeof hint.originalException === 'object'){
+
+			if(hint.originalException instanceof FetchAbortError){
+				// Don't trigger an error for that but keep a trace.
+				Sentry.addBreadcrumb({
+					message: 'FetchAbortError',
+					level: 'warning'
+				});
+				return null;
+			}
+			else if(hint.originalException instanceof FetchResponseDataError){
+				// Don't trigger an error for that but keep a trace.
+				Sentry.addBreadcrumb({
+					message: 'FetchResponseDataError',
+					level: 'warning'
+				});
+				return null;
+			}
 		}
 
 		return event;

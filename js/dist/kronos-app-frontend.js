@@ -4456,13 +4456,23 @@ var Application = function (_EventEmitter) {
 	}, {
 		key: 'sentry_beforeSend',
 		value: function sentry_beforeSend(event, hint) {
-			if (hint && this.isFetchAbortError(hint.originalException)) {
-				// Don't trigger an error for that but keep a trace.
-				Sentry.addBreadcrumb({
-					message: 'FetchAbortError',
-					level: 'warning'
-				});
-				return null;
+			if (hint && _typeof(hint.originalException) === 'object') {
+
+				if (hint.originalException instanceof _FetchService.FetchAbortError) {
+					// Don't trigger an error for that but keep a trace.
+					Sentry.addBreadcrumb({
+						message: 'FetchAbortError',
+						level: 'warning'
+					});
+					return null;
+				} else if (hint.originalException instanceof _FetchService.FetchResponseDataError) {
+					// Don't trigger an error for that but keep a trace.
+					Sentry.addBreadcrumb({
+						message: 'FetchResponseDataError',
+						level: 'warning'
+					});
+					return null;
+				}
 			}
 
 			return event;

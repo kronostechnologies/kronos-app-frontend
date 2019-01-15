@@ -19,11 +19,11 @@ module.exports = function(grunt) {
     },
 
     webpack: {
-      options: {
-        stats: !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
-      },
 	  build: webpackConfig,
-	  dev: Object.assign({ watch: true }, webpackConfig)
+	  dev: Object.assign({
+        mode: "development",
+        watch: true
+      }, webpackConfig)
     },
 
     mochaTest: {
@@ -40,11 +40,11 @@ module.exports = function(grunt) {
 
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-  
+
   grunt.registerTask('build', [
     'webpack:build'
   ]);
-  
+
   grunt.registerTask('build-dev', [
     'webpack:dev'
   ]);

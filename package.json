@@ -5,7 +5,7 @@
   "main": "js/src/index.js",
   "module": "js/src/index.js",
   "scripts": {
-    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha --compilers jsx:babel-register --slow 100 --recursive ./js/**/*.test.js",
+    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha --require babel-core/register --slow 100 --recursive ./js/**/*.test.js",
     "prepush": "npm tes"
   },
   "repository": {

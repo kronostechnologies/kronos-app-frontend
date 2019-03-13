@@ -37,7 +37,6 @@
     "flow-bin": "^0.47.0",
     "grunt": "^1.0.3",
     "grunt-bump": "^0.8.0",
-    "grunt-conventional-changelog": "^6.1.0",
     "grunt-mocha-test": "^0.13.2",
     "grunt-npm": "0.0.2",
     "grunt-webpack": "^2.0.1",

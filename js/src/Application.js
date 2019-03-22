@@ -554,14 +554,15 @@ export default class Application extends EventEmitter{
 	/**
 	 *	Show a modal dialog telling the user something bad happened. He can try again or go back to where he was before.
 	 */
-	_showFatalError(error) {
+	_showFatalError(error, traceId) {
 		var self = this;
 
 		this.showModalDialog('<h2>'+self._('ERROR')+'</h2>\
 						<p>\
 							<strong>'+self._('FATAL_ERROR_OCCURED')+'</strong>\
-							<br />\
-					init	</p>\
+							<br />'+
+						+ (traceId ? `<span style="color:#aaa; font-size: 10px;">Trace ID: ${traceId}</span>` : '') + '\
+						</p>\
 						<p class="submit">\
 							'+self._('FATAL_ERROR__YOU_CAN')+' <a id="fatal-error-reload" href="javascript:void(0);">'+self._('FATAL_ERROR__RELOAD_PAGE')+'</a> '+self._('OR')+' <a id="fatal-error-stepback" href="javascript:void(0);">'+self._('FATAL_ERROR__GO_BACK')+'</a>\
 						</p>', 'fast', function() {
@@ -898,7 +899,7 @@ export default class Application extends EventEmitter{
 				},
 				dataType:'json',
 				headers: self.getXSRFHeaders(),
-				success: function(response) {
+				success: function(response, textStatus, jqXHR) {
 					self._hideLoading();
 
 					if(self.isOpeningViewCancelled) {
@@ -915,16 +916,18 @@ export default class Application extends EventEmitter{
 					}
 
 					if(response.status == 'error') {
+						const traceId = Application.getTraceIdFromJQueryXHR(jqXHR);
+
 						var info = response.data;
 						if(info.code == 600) { // VIEW_CMD_ERROR;
 							// Hopefuly this won't happen
-							self._showFatalError('An error occured server side while fetching view data "'+view+'" (600)');
+							self._showFatalError('An error occured server side while fetching view data "'+view+'" (600)', traceId);
 						}
 						else if(info.code == 601 || info.code == 602) { // VIEW_ACL_ERROR or MODEL_ACL_ERROR
 							self._showNavigationError();
 						}
 						else { // Unknown error
-							self._showFatalError('An unknown error was sent from server while fetching view data "'+view+'" ('+info.error+')');
+							self._showFatalError('An unknown error was sent from server while fetching view data "'+view+'" ('+info.error+')', traceId);
 						}
 
 						return false;
@@ -947,7 +950,8 @@ export default class Application extends EventEmitter{
 							console.debug(error);
 						}
 
-						self._showFatalError('An error occured while fetching view data "'+view+'" ('+status+')');
+						const traceId = Application.getTraceIdFromJQueryXHR(jqXHR);
+						self._showFatalError('An error occured while fetching view data "'+view+'" ('+status+')', traceId);
 					});
 				}
 			});
@@ -2926,5 +2930,12 @@ export default class Application extends EventEmitter{
 		}
 
 		return event;
+	}
+
+	static getTraceIdFromJQueryXHR(jqXHR){
+		if(jqXHR && jqXHR.getResponseHeader){
+			return jqXHR.getResponseHeader('x-kronos-transactionid') || null;
+		}
+		return null;
 	}
 }

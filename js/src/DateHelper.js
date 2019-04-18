@@ -64,9 +64,12 @@ export default class DateHelper {
 	}
 
 	format(date, format) {
-		date = this.parse(date);
+		date = moment(date);
 
-		if(!date) {
+		if(!date.isValid()) {
+			if(this.app.debug) {
+				console.debug('Invalid date string');
+			}
 			return '';
 		}
 
@@ -74,37 +77,36 @@ export default class DateHelper {
 			format = 'long';
 		}
 
-		if(format == 'input') {
-			return moment(date).format('YYYY-MM-DD');
+		if(format === 'input') {
+			return date.format('YYYY-MM-DD');
 		}
-		else if(format == 'long') {
-			return moment(date).format('LL');
+		else if(format === 'long') {
+			return date.format('LL');
 		}
-		else if(format == 'longtime') {
-			return moment(date).format('LLL');
+		else if(format === 'longtime') {
+			return date.format('LLL');
 		}
-		else if(format == 'short') {
-			return this.app.lang === "en" ? moment(date).format('MMMM D') : moment(date).format('D MMMM');
+		else if(format === 'short') {
+			return this.app.lang === "en" ? date.format('MMMM D') : date.format('D MMMM');
 		}
-		else if(format == 'longabbrmonth') {
-			return moment(date).format('ll');
+		else if(format === 'longabbrmonth') {
+			return date.format('ll');
 		}
-		else if(format == 'time') {
+		else if(format === 'time') {
 			var timeformat = 'LT';
 
 			if($.isPlainObject(this.app.config) && typeof this.app.config.time_format === "string") {
 				timeformat = this.app.config.time_format === "24h" ? "HH:mm" : "hh:mm A";
 			}
-			return moment(date).format(timeformat);
+			return date.format(timeformat);
 		}
-		else if(format == 'dashboard') {
-			return this.app.lang === "en" ? moment(date).format('dddd, MMMM D') : moment(date).format('dddd, D MMMM');
+		else if(format === 'dashboard') {
+			return this.app.lang === "en" ? date.format('dddd, MMMM D') : date.format('dddd, D MMMM');
 		}
 		if(this.app.debug) {
 			console.debug('Unknown date format "' + format + '"');
 		}
 		return '';
-
 	}
 
 	getMonthName(month) {

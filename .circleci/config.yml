@@ -6,7 +6,7 @@ aliases:
 jobs:
   checkout_code:
     docker:
-      - image: node:9
+      - image: node:10
     steps:
       - checkout
       - persist_to_workspace:
@@ -15,7 +15,7 @@ jobs:
             - .
   yarn_install:
     docker:
-      - image: node:9
+      - image: node:10
     resource_class: large
     steps:
       - attach_workspace:
@@ -36,7 +36,7 @@ jobs:
 
   grunt:
     docker:
-      - image: node:9
+      - image: node:10
     steps:
       - attach_workspace:
           at: .
@@ -52,7 +52,7 @@ jobs:
             - js/dist
   yarn_test:
     docker:
-      - image: node:9
+      - image: node:10
     steps:
       - attach_workspace:
           at: .

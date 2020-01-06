@@ -270,7 +270,7 @@ export default class Application extends EventEmitter{
 		// Find default view
 		for (const k in this.views) {
 			const view = this.views[k];
-			if (view.default === '1') {
+			if (view.default === '1' || view.default === true) {
 				this.default_view = k;
 			}
 		}

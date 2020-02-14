@@ -2,3 +2,4 @@
 
 - Removed AsyncTask
 - Removed showQuestionCommentDialog()
+- Removed getXHRRequest()

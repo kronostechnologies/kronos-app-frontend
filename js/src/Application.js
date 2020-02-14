@@ -33,8 +33,6 @@ export default class Application extends EventEmitter{
 		this.messages = false;
 
 		// Application configurations
-		this.JS_PATH = '/';
-		this.IMG_PATH = '/';
 		this.VIRTUALPATH = '/';
 		this.SESSION_KEY = false;
 
@@ -215,8 +213,6 @@ export default class Application extends EventEmitter{
 		}
 
 		// Application configurations
-		this.JS_PATH = config.JS_PATH;
-		this.IMG_PATH = config.IMG_PATH;
 		this.VIRTUALPATH = config.VIRTUALPATH;
 		this.SESSION_KEY = config.SESSION_KEY;
 		this.replaced_session_key = false;
@@ -803,15 +799,15 @@ export default class Application extends EventEmitter{
 
 		this._getViewObject(this.currentView).then((viewObject) => {
 
-			self._hideLoading();
-			self.abortOngoingXHR();
+			this.hideLoading();
+			this.abortOngoingXHR();
 
 			var cached = this._isViewCached(view);
 			if(cached && this.debug) {
 				console.debug('View "'+view+'" is in cache (' + this.lang + ')');
 			}
 
-			self._onFetchView(viewObject);
+			this._onFetchView(viewObject);
 
 			// Ask the requested view to transmute hash to query parameters
 			var params = viewObject.parseHash(this.hash);
@@ -827,12 +823,12 @@ export default class Application extends EventEmitter{
 				}
 			}
 
-			params.k  = self.SESSION_KEY;
-			params.view  = self.currentView;
+			params.k  = this.SESSION_KEY;
+			params.view  = this.currentView;
 			params.cmd = 'view';
 			params.cached = cached;
 			params.version = this.getApplicationVersion();
-			params.uv = self.userVersion;
+			params.uv = this.userVersion;
 
 			if(this.replaced_session_key) {
 				params.rk = this.replaced_session_key;
@@ -845,12 +841,12 @@ export default class Application extends EventEmitter{
 				url:'index.php?'+param_string,
 				type : 'POST',
 				data: {
-					context : self.getContext()
+					context : this.getContext()
 				},
 				dataType:'json',
-				headers: self.getXSRFHeaders(),
+				headers: this.getXSRFHeaders(),
 				success: function(response, textStatus, jqXHR) {
-					self._hideLoading();
+					self.hideLoading();
 
 					if(self.isOpeningViewCancelled) {
 						self.isOpeningView = false;
@@ -888,7 +884,7 @@ export default class Application extends EventEmitter{
 				},
 				error: function(jqXHR, status, error) {
 					self.isOpeningView = false;
-					self._hideLoading();
+					self.hideLoading();
 
 					self.validateXHR(jqXHR).then((isValidXHR)=>{
 						if(!isValidXHR){
@@ -907,10 +903,7 @@ export default class Application extends EventEmitter{
 			});
 
 			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
-			this._loadingTimeout = setTimeout(function() {
-				self._showLoading();
-			}, this._loadingDelay);
-
+			this.showLoadingAfterTimeout();
 		});
 	}
 
@@ -1173,51 +1166,26 @@ export default class Application extends EventEmitter{
 		}
 	}
 
+
 	/**
 	 * Show a loading animation and put a cover over the whole page.
 	 */
+	showLoadingAfterTimeout() {
+		this._loadingTimeout = setTimeout(() => {
+			if(this._loadingTimeout) {
+				clearTimeout(this._loadingTimeout);
+				this._loadingTimeout = 0;
+
+				this._showLoading();
+			}
+		}, this._loadingDelay);
+	}
+
+	/**
+	 * Dom manipulations to show the loading animation.
+	 */
 	_showLoading() {
-		if(this._loadingTimeout) {
-			clearTimeout(this._loadingTimeout);
-			this._loadingTimeout = 0;
-
-			if(this.debug){
-				console.debug('Show loading overlay');
-			}
-
-			if($('#loading-overlay').length > 0) {
-				// Loading is already shown
-				return;
-			}
-
-			// Whole page cover
-			this.showOverlay();
-
-			// Add required html
-			$('body').append('<img id="loading-overlay-image" src="'+this.IMG_PATH+'ajax-loader-big.gif" /><div id="loading-overlay"></div>');
-
-			// Calculate the content height (gray zone)
-			var main_height = $('#main').height()+parseInt($('#main').css('padding-top'), 10)+parseInt($('#main').css('padding-bottom'), 10);
-
-			$('#loading-overlay-image').css({
-				top:				$('#main').offset().top,
-				paddingTop:			parseInt(main_height / 2, 10)+'px',
-				position:			'absolute',
-				left:				Math.floor($('#main').width() / 2),
-				zIndex:				89
-			});
-
-			$('#loading-overlay').css({
-				height:				main_height,
-				left:				0,
-				position:			'absolute',
-				top:				$('#main').offset().top,
-				width:				'100%',
-				zIndex:				90,
-				backgroundColor:	'#000',
-				opacity:			0.4
-			}).fadeIn();
-		}
+		// Must be implemented in superclass.
 	}
 
 	/**
@@ -1229,24 +1197,24 @@ export default class Application extends EventEmitter{
 	/**
 	 * Hide the loading animation and covers
 	 */
-	_hideLoading() {
+	hideLoading() {
 		this.beforeHideLoading();
 		clearTimeout(this._loadingTimeout);
 		this._loadingTimeout = 0;
 
-		if(this.debug) {
-			console.debug('Hide loading overlay');
-		}
-
-		$('#loading-overlay').remove();
-		$('#loading-overlay-image').remove();
-
-		this.hideOverlay();
+		this._hideLoading();
 		this.afterHideLoading();
 	}
 
 	/**
-	 * Happens whenever the _hideLoading function is finished.
+	 * Do dom manipulations to hide loading.
+	 */
+	_hideLoading() {
+		// Must be implemented in superclass.
+	}
+
+	/**
+	 * Happens whenever the hideLoading function is finished.
 	 * This function is meant to be overriden by a child class.
 	 */
 	afterHideLoading(){}
@@ -2266,15 +2234,13 @@ export default class Application extends EventEmitter{
 
 		if(showLoading) {
 			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
-			this._loadingTimeout = setTimeout(() => {
-				this._showLoading();
-			}, this._loadingDelay);
+			this.showLoadingAfterTimeout();
 		}
 
 		return this.fetchService.fetch(url, options)
 			.finally(() => {
 				if(showLoading){
-					this._hideLoading();
+					this.hideLoading();
 				}
 				if(showOverlay){
 					this.hideOverlay();

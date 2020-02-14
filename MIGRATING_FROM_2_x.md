@@ -3,3 +3,4 @@
 - Removed AsyncTask
 - Removed showQuestionCommentDialog()
 - Removed getXHRRequest()
+- Removed jquery.ajaxUploader

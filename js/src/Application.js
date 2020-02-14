@@ -317,7 +317,7 @@ export default class Application extends EventEmitter{
 	}
 
 	/**
-	 * Get XSRF data to append to a post request (ex: in ajaxUploader)
+	 * Get XSRF data to append to a post request
 	 * @returns {{}}
 	 */
 	getXSRFData() {

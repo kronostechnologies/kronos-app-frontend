@@ -26,11 +26,8 @@ export default class Application extends EventEmitter{
 
 		// Debugging and error handling
 		this.debug = false;
-		this.sendErrors = false;
-		this.sendErrorsOnUnload = false;
 		this.silent = false;
 		this.trace_retirement = false;
-		this._errors = [];
 		this.ajaxQueryLoading = false;
 		this.pingInterval = false; // If this is defined in a child object; a timer will be fired every "pingInterval"ms with a ping command via get.
 		this.messages = false;
@@ -200,14 +197,6 @@ export default class Application extends EventEmitter{
 		// Error configs
 		if (config.debug) {
 			this.debug = true;
-		}
-
-		if (config.sendError) {
-			this.sendErrors = true;
-		}
-
-		if (config.sendErrorsOnUnload) {
-			this.sendErrorsOnUnload = true;
 		}
 
 		if (config.silent) {
@@ -441,10 +430,6 @@ export default class Application extends EventEmitter{
 	 * This function is triggered just before the browser change or close the page.
 	 */
 	_beforeUnload(e) {
-		if(this.sendErrors || this.sendErrorsOnUnload) {
-			this._sendErrors();
-		}
-
 		this.abortOngoingXHR();
 
 		return; // Simply quit page. Return false or true for standard confirmation page, or return a question to the user for a custom dialog. IE does not support null. Simply return nothing.
@@ -485,37 +470,7 @@ export default class Application extends EventEmitter{
 			// That was not JSON ... but we don't care
 		}
 
-		if(this.sendErrors) {
-			this._errors.push({description:description, page:page, line:line});
-
-			if(this._errors.length > 10) {
-				this._sendErrors();
-			}
-		}
-
 		return this.silent;
-	}
-
-	/**
-	 * Send catched errors to the server
-	 *
-	 * TODO : Offline mode
-	 */
-	_sendErrors() {
-		var t = this;
-		if(this._errors.length > 0) {
-			var errors = [];
-			for(var i = 0; i < this._errors.length; i++) {
-				for(var k in this._errors[i]) {
-					errors.push('error['+i+']['+k+']='+encodeURIComponent(this._errors[i][k]));
-				}
-			}
-
-			$.ajax({async: false, url: 'index.php?k=' + t.SESSION_KEY + '&action=error&'+errors.join('&')}); // TODO: Real error receiving method
-
-			delete(this._errors);
-			this._errors = [];
-		}
 	}
 
 	_showNavigationError() {
@@ -566,7 +521,6 @@ export default class Application extends EventEmitter{
 			$('#fatal-error-stepback').click(()=>{
 				self._hideFatalError('stepback');
 			});
-			self._errors.push({description:error, page:'Application.js', line:0});
 		});
 	}
 

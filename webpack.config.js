@@ -21,9 +21,14 @@ module.exports = {
 						options: {
 							cacheDirectory: true, // important for performance
 							presets: [
-								'es2015', 'react',
+								'es2015',
+								'react',
 							],
-							plugins: ['jsx-control-statements', 'transform-flow-strip-types', 'syntax-dynamic-import'],
+							plugins: [
+								'jsx-control-statements',
+								'transform-flow-strip-types',
+								'syntax-dynamic-import',
+							],
 						}
 					}
 				]

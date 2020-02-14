@@ -90,6 +90,12 @@ export default class Application extends EventEmitter{
 		this.sentryEnabled = false;
 	}
 
+	async bootstrap(config){
+		this.init();
+		await this.configure(config);
+		this.start();
+	}
+
 	/**
 	 * Initialize application
 	 */
@@ -117,9 +123,6 @@ export default class Application extends EventEmitter{
 			},
 				this.pingInterval);
 		}
-
-
-
 
 		// Error catching function
 		window.onerror = function (description, page, line) {
@@ -193,7 +196,7 @@ export default class Application extends EventEmitter{
 	/**
 	 * Configure how the application is built and how it works
 	 */
-	configure(config) {
+	async configure(config) {
 		// Error configs
 		if (config.debug) {
 			this.debug = true;
@@ -253,8 +256,8 @@ export default class Application extends EventEmitter{
 			this.sentryEnabled = true;
 		}
 
-		this._configure(config);
-		this.setUserConfig(config.user);
+		await this._configure(config);
+		await this.setUserConfig(config.user);
 
 		// Find default view
 		for (const k in this.views) {
@@ -319,28 +322,30 @@ export default class Application extends EventEmitter{
 		return data;
 	}
 
-	setUserConfig(user_config){
-		var t = this;
+	async setUserConfig(user_config){
+		this.userVersion = user_config.version;
+		this.userName = user_config.name;
+		this.userEmail = user_config.email;
+		this.userType = user_config.type;
+		this.menus = user_config.menus;
+		this.views = user_config.views;
+		this.userIsAssumed = user_config['assumed'];
+		this.userIsCpanelAssumed = user_config['cpanel_assumed'];
+		this.cpanelUserName = user_config['cpanel_user_name'];
 
-		t.userVersion = user_config.version;
-		t.userName = user_config.name;
-		t.userEmail = user_config.email;
-		t.userType = user_config.type;
-		t.menus = user_config.menus;
-		t.views = user_config.views;
-		t.userIsAssumed = user_config['assumed'];
-		t.userIsCpanelAssumed = user_config['cpanel_assumed'];
-		t.cpanelUserName = user_config['cpanel_user_name'];
-
-		t.setLocale(user_config.locale);
-		t._setUserConfig(user_config);
+		await this.setLocale(user_config.locale);
+		await this._setUserConfig(user_config);
 
 		this._buildHeader();
 	}
 
-	_setUserConfig() { }
+	async _setUserConfig() { }
 
-	setLocale(locale){
+	async _buildHeader() { }
+
+	async setLocale(locale) { };
+
+	async setLocale(locale){
 		if(this.locale == locale){
 			return;
 		}
@@ -357,13 +362,7 @@ export default class Application extends EventEmitter{
 
 		//Load language file
 		if(!this._messages[this.lang]){
-			$.ajax({
-				url: this.JS_PATH + this.lang + '.js',
-				data: false,
-				dataType: 'script',
-				async:false,
-				cache:true
-			});
+			await this.loadLangFile(this.lang);
 		}
 
 		//Update datepicker locale
@@ -381,6 +380,10 @@ export default class Application extends EventEmitter{
 		$(".localeBound").trigger('setLocaleEvent');
 
 		this._setLocale(locale);
+	}
+
+	async loadLangFile(lang){
+		// Implement to load language file async
 	}
 
 	/**

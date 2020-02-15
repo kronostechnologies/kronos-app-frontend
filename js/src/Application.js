@@ -271,6 +271,10 @@ export default class Application extends EventEmitter{
 		return this._application_version;
 	}
 
+	getViewApiPath() {
+		return 'index.php';
+	}
+
 	/**
 	 * Get current XSRF cookie value
 	 * @returns {*}
@@ -838,7 +842,7 @@ export default class Application extends EventEmitter{
 			var param_string = $.param(params);
 
 			$.ajax({
-				url:'index.php?'+param_string,
+				url: this.getViewApiPath() + '?' + param_string,
 				type : 'POST',
 				data: {
 					context : this.getContext()
@@ -2213,7 +2217,7 @@ export default class Application extends EventEmitter{
 			}
 		}
 
-		return 'index.php?k=' + encodeURIComponent(this.SESSION_KEY) + '&view=' + encodeURIComponent(view) + '&cmd=' + encodeURIComponent(cmd) + paramsString;
+		return this.getViewApiPath() + '?k=' + encodeURIComponent(this.SESSION_KEY) + '&view=' + encodeURIComponent(view) + '&cmd=' + encodeURIComponent(cmd) + paramsString;
 	}
 
 	fetch(url , options: FetchOptions): Promise {

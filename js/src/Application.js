@@ -88,12 +88,6 @@ export default class Application extends EventEmitter{
 		this.sentryEnabled = false;
 	}
 
-	async bootstrap(config){
-		this.init();
-		await this.configure(config);
-		this.start();
-	}
-
 	/**
 	 * Initialize application
 	 */

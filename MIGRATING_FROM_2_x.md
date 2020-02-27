@@ -1,6 +1,5 @@
 # Migration notes for 2.x to 3.x
 
-- New function bootstrap() to start the app (may still changes...)
 - New function loadLangFile() to load lang file if needed.
 - `_showOverlay()` and `_hideOverlay()` meaning has changed. They only perform dom manipulations.  showOverlay and hideOverlay should be called.
 - Removed AsyncTask

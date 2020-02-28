@@ -26,18 +26,13 @@ export default class Application extends EventEmitter{
 
 		// Debugging and error handling
 		this.debug = false;
-		this.sendErrors = false;
-		this.sendErrorsOnUnload = false;
 		this.silent = false;
 		this.trace_retirement = false;
-		this._errors = [];
 		this.ajaxQueryLoading = false;
 		this.pingInterval = false; // If this is defined in a child object; a timer will be fired every "pingInterval"ms with a ping command via get.
 		this.messages = false;
 
 		// Application configurations
-		this.JS_PATH = '/';
-		this.IMG_PATH = '/';
 		this.VIRTUALPATH = '/';
 		this.SESSION_KEY = false;
 
@@ -121,9 +116,6 @@ export default class Application extends EventEmitter{
 				this.pingInterval);
 		}
 
-
-
-
 		// Error catching function
 		window.onerror = function (description, page, line) {
 			// Support jsmonitor.io
@@ -196,18 +188,10 @@ export default class Application extends EventEmitter{
 	/**
 	 * Configure how the application is built and how it works
 	 */
-	configure(config) {
+	async configure(config) {
 		// Error configs
 		if (config.debug) {
 			this.debug = true;
-		}
-
-		if (config.sendError) {
-			this.sendErrors = true;
-		}
-
-		if (config.sendErrorsOnUnload) {
-			this.sendErrorsOnUnload = true;
 		}
 
 		if (config.silent) {
@@ -223,8 +207,6 @@ export default class Application extends EventEmitter{
 		}
 
 		// Application configurations
-		this.JS_PATH = config.JS_PATH;
-		this.IMG_PATH = config.IMG_PATH;
 		this.VIRTUALPATH = config.VIRTUALPATH;
 		this.SESSION_KEY = config.SESSION_KEY;
 		this.replaced_session_key = false;
@@ -264,8 +246,8 @@ export default class Application extends EventEmitter{
 			this.sentryEnabled = true;
 		}
 
-		this._configure(config);
-		this.setUserConfig(config.user);
+		await this._configure(config);
+		await this.setUserConfig(config.user);
 
 		// Find default view
 		for (const k in this.views) {
@@ -281,6 +263,10 @@ export default class Application extends EventEmitter{
 
 	getApplicationVersion() {
 		return this._application_version;
+	}
+
+	getViewApiPath() {
+		return 'index.php';
 	}
 
 	/**
@@ -317,7 +303,7 @@ export default class Application extends EventEmitter{
 	}
 
 	/**
-	 * Get XSRF data to append to a post request (ex: in ajaxUploader)
+	 * Get XSRF data to append to a post request
 	 * @returns {{}}
 	 */
 	getXSRFData() {
@@ -330,28 +316,30 @@ export default class Application extends EventEmitter{
 		return data;
 	}
 
-	setUserConfig(user_config){
-		var t = this;
+	async setUserConfig(user_config){
+		this.userVersion = user_config.version;
+		this.userName = user_config.name;
+		this.userEmail = user_config.email;
+		this.userType = user_config.type;
+		this.menus = user_config.menus;
+		this.views = user_config.views;
+		this.userIsAssumed = user_config['assumed'];
+		this.userIsCpanelAssumed = user_config['cpanel_assumed'];
+		this.cpanelUserName = user_config['cpanel_user_name'];
 
-		t.userVersion = user_config.version;
-		t.userName = user_config.name;
-		t.userEmail = user_config.email;
-		t.userType = user_config.type;
-		t.menus = user_config.menus;
-		t.views = user_config.views;
-		t.userIsAssumed = user_config['assumed'];
-		t.userIsCpanelAssumed = user_config['cpanel_assumed'];
-		t.cpanelUserName = user_config['cpanel_user_name'];
-
-		t.setLocale(user_config.locale);
-		t._setUserConfig(user_config);
+		await this.setLocale(user_config.locale);
+		await this._setUserConfig(user_config);
 
 		this._buildHeader();
 	}
 
-	_setUserConfig() { }
+	async _setUserConfig() { }
 
-	setLocale(locale){
+	async _buildHeader() { }
+
+	async setLocale(locale) { };
+
+	async setLocale(locale){
 		if(this.locale == locale){
 			return;
 		}
@@ -368,13 +356,7 @@ export default class Application extends EventEmitter{
 
 		//Load language file
 		if(!this._messages[this.lang]){
-			$.ajax({
-				url: this.JS_PATH + this.lang + '.js',
-				data: false,
-				dataType: 'script',
-				async:false,
-				cache:true
-			});
+			await this.loadLangFile(this.lang);
 		}
 
 		//Update datepicker locale
@@ -392,6 +374,10 @@ export default class Application extends EventEmitter{
 		$(".localeBound").trigger('setLocaleEvent');
 
 		this._setLocale(locale);
+	}
+
+	async loadLangFile(lang){
+		// Implement to load language file async
 	}
 
 	/**
@@ -428,16 +414,9 @@ export default class Application extends EventEmitter{
 	}
 
 	hook(){
-		var t = this;
-
 		if(typeof this._hook == 'function'){
 			this._hook();
 		}
-
-		//Init Zendesk
-		$('.hook_question_comments').click(function(){
-			t.showQuestionCommentDialog();
-		});
 	}
 
 	loadMessages(lang, messages) {
@@ -448,10 +427,6 @@ export default class Application extends EventEmitter{
 	 * This function is triggered just before the browser change or close the page.
 	 */
 	_beforeUnload(e) {
-		if(this.sendErrors || this.sendErrorsOnUnload) {
-			this._sendErrors();
-		}
-
 		this.abortOngoingXHR();
 
 		return; // Simply quit page. Return false or true for standard confirmation page, or return a question to the user for a custom dialog. IE does not support null. Simply return nothing.
@@ -492,37 +467,7 @@ export default class Application extends EventEmitter{
 			// That was not JSON ... but we don't care
 		}
 
-		if(this.sendErrors) {
-			this._errors.push({description:description, page:page, line:line});
-
-			if(this._errors.length > 10) {
-				this._sendErrors();
-			}
-		}
-
 		return this.silent;
-	}
-
-	/**
-	 * Send catched errors to the server
-	 *
-	 * TODO : Offline mode
-	 */
-	_sendErrors() {
-		var t = this;
-		if(this._errors.length > 0) {
-			var errors = [];
-			for(var i = 0; i < this._errors.length; i++) {
-				for(var k in this._errors[i]) {
-					errors.push('error['+i+']['+k+']='+encodeURIComponent(this._errors[i][k]));
-				}
-			}
-
-			$.ajax({async: false, url: 'index.php?k=' + t.SESSION_KEY + '&action=error&'+errors.join('&')}); // TODO: Real error receiving method
-
-			delete(this._errors);
-			this._errors = [];
-		}
 	}
 
 	_showNavigationError() {
@@ -573,7 +518,6 @@ export default class Application extends EventEmitter{
 			$('#fatal-error-stepback').click(()=>{
 				self._hideFatalError('stepback');
 			});
-			self._errors.push({description:error, page:'Application.js', line:0});
 		});
 	}
 
@@ -853,15 +797,15 @@ export default class Application extends EventEmitter{
 
 		this._getViewObject(this.currentView).then((viewObject) => {
 
-			self._hideLoading();
-			self.abortOngoingXHR();
+			this.hideLoading();
+			this.abortOngoingXHR();
 
 			var cached = this._isViewCached(view);
 			if(cached && this.debug) {
 				console.debug('View "'+view+'" is in cache (' + this.lang + ')');
 			}
 
-			self._onFetchView(viewObject);
+			this._onFetchView(viewObject);
 
 			// Ask the requested view to transmute hash to query parameters
 			var params = viewObject.parseHash(this.hash);
@@ -877,12 +821,12 @@ export default class Application extends EventEmitter{
 				}
 			}
 
-			params.k  = self.SESSION_KEY;
-			params.view  = self.currentView;
+			params.k  = this.SESSION_KEY;
+			params.view  = this.currentView;
 			params.cmd = 'view';
 			params.cached = cached;
 			params.version = this.getApplicationVersion();
-			params.uv = self.userVersion;
+			params.uv = this.userVersion;
 
 			if(this.replaced_session_key) {
 				params.rk = this.replaced_session_key;
@@ -892,15 +836,15 @@ export default class Application extends EventEmitter{
 			var param_string = $.param(params);
 
 			$.ajax({
-				url:'index.php?'+param_string,
+				url: this.getViewApiPath() + '?' + param_string,
 				type : 'POST',
 				data: {
-					context : self.getContext()
+					context : this.getContext()
 				},
 				dataType:'json',
-				headers: self.getXSRFHeaders(),
+				headers: this.getXSRFHeaders(),
 				success: function(response, textStatus, jqXHR) {
-					self._hideLoading();
+					self.hideLoading();
 
 					if(self.isOpeningViewCancelled) {
 						self.isOpeningView = false;
@@ -938,7 +882,7 @@ export default class Application extends EventEmitter{
 				},
 				error: function(jqXHR, status, error) {
 					self.isOpeningView = false;
-					self._hideLoading();
+					self.hideLoading();
 
 					self.validateXHR(jqXHR).then((isValidXHR)=>{
 						if(!isValidXHR){
@@ -957,10 +901,7 @@ export default class Application extends EventEmitter{
 			});
 
 			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
-			this._loadingTimeout = setTimeout(function() {
-				self._showLoading();
-			}, this._loadingDelay);
-
+			this.showLoadingAfterTimeout();
 		});
 	}
 
@@ -1223,51 +1164,26 @@ export default class Application extends EventEmitter{
 		}
 	}
 
+
 	/**
 	 * Show a loading animation and put a cover over the whole page.
 	 */
+	showLoadingAfterTimeout() {
+		this._loadingTimeout = setTimeout(() => {
+			if(this._loadingTimeout) {
+				clearTimeout(this._loadingTimeout);
+				this._loadingTimeout = 0;
+
+				this._showLoading();
+			}
+		}, this._loadingDelay);
+	}
+
+	/**
+	 * Dom manipulations to show the loading animation.
+	 */
 	_showLoading() {
-		if(this._loadingTimeout) {
-			clearTimeout(this._loadingTimeout);
-			this._loadingTimeout = 0;
-
-			if(this.debug){
-				console.debug('Show loading overlay');
-			}
-
-			if($('#loading-overlay').length > 0) {
-				// Loading is already shown
-				return;
-			}
-
-			// Whole page cover
-			this.showOverlay();
-
-			// Add required html
-			$('body').append('<img id="loading-overlay-image" src="'+this.IMG_PATH+'ajax-loader-big.gif" /><div id="loading-overlay"></div>');
-
-			// Calculate the content height (gray zone)
-			var main_height = $('#main').height()+parseInt($('#main').css('padding-top'), 10)+parseInt($('#main').css('padding-bottom'), 10);
-
-			$('#loading-overlay-image').css({
-				top:				$('#main').offset().top,
-				paddingTop:			parseInt(main_height / 2, 10)+'px',
-				position:			'absolute',
-				left:				Math.floor($('#main').width() / 2),
-				zIndex:				89
-			});
-
-			$('#loading-overlay').css({
-				height:				main_height,
-				left:				0,
-				position:			'absolute',
-				top:				$('#main').offset().top,
-				width:				'100%',
-				zIndex:				90,
-				backgroundColor:	'#000',
-				opacity:			0.4
-			}).fadeIn();
-		}
+		// Must be implemented in superclass.
 	}
 
 	/**
@@ -1279,24 +1195,24 @@ export default class Application extends EventEmitter{
 	/**
 	 * Hide the loading animation and covers
 	 */
-	_hideLoading() {
+	hideLoading() {
 		this.beforeHideLoading();
 		clearTimeout(this._loadingTimeout);
 		this._loadingTimeout = 0;
 
-		if(this.debug) {
-			console.debug('Hide loading overlay');
-		}
-
-		$('#loading-overlay').remove();
-		$('#loading-overlay-image').remove();
-
-		this.hideOverlay();
+		this._hideLoading();
 		this.afterHideLoading();
 	}
 
 	/**
-	 * Happens whenever the _hideLoading function is finished.
+	 * Do dom manipulations to hide loading.
+	 */
+	_hideLoading() {
+		// Must be implemented in superclass.
+	}
+
+	/**
+	 * Happens whenever the hideLoading function is finished.
 	 * This function is meant to be overriden by a child class.
 	 */
 	afterHideLoading(){}
@@ -1807,204 +1723,6 @@ export default class Application extends EventEmitter{
 		});
 	}
 
-	showQuestionCommentDialog(comment_type){
-
-		var self = this;
-
-		var content = '<h2>'+self._('QUESTION_COMMENT_SUGGESTION')+'</h2>\
-		<div class="header_line"></div>\
-		<div id="hook_question_comment_form">\
-		<dl class="form left_form">\
-		<dt><label style="width:100px">' + self._('COMMENT_TYPE') + '</label></dt>\
-		<dd><select id="hook_question_comment_type">\
-		<option value="QUESTION">' + self._('QUESTION') + '</option>\
-		<option value="COMMENT">' + self._('COMMENT') + '</option>\
-		<option value="SUGGESTION">' + self._('SUGGESTION') + '</option>\
-		</select></dd>\
-		<dt><label style="width:100px">' + self._('COMMENT_FROM') + '</label></dt>\
-		<dd><input type="text" id="hook_question_comment_from" style="width:350px" disabled="disabled" /></dd>\
-		<dt><label style="width:100px">' + self._('COMMENT_SUBJECT') + '</label></dt>\
-		<dd><input type="text" id="hook_question_comment_subject" style="width:350px" /></dd>\
-		<div id="hook_question_comment_attachement_div">\
-		<dt><label style="width:100px">' + self._('ATTACHMENT') + '</label></dt>\
-		<dd><div id="file_upload"></div></dd>\
-		<dd><ul style="margin-left:115px;" id="uploaded_files_names"></ul><dd>\
-		<br />\
-		</div>\
-		<dd><textarea id="hook_question_comment_textarea" style="width:500px;height:150px"></textarea></dd>\
-		</dl>\
-		<p class="submit">\
-		<input type="submit" id="hook_send_question_comment" value="'+self._('OK')+'" /> <a href="javascript:void(0);" id="hook_cancel_question_comment">'+self._('CANCEL')+'</a>\
-		</p>\
-		</div>\
-		<div id="hook_question_comment_sent" style="display:none"><p>' + self._('THANK_YOU_FOR_YOUR_COMMENTS') + '</p></div>';
-
-		var i = 0;
-
-		self.showModalDialog(content, 'normal', function(){
-
-			if(comment_type) $('#hook_question_comment_type').val(comment_type);
-
-			$('#hook_question_comment_from').val(self.userEmail);
-
-			$('#hook_send_question_comment').safeClick(function() {
-
-				var type = $('#hook_question_comment_type').val();
-				var subject = $('#hook_question_comment_subject').val();
-				var from = $('#hook_question_comment_from').val();
-				var message = $('#hook_question_comment_textarea').val();
-
-				if(!subject){
-					$('#hook_question_comment_subject').hintError(self._('FIELD_REQUIRED')).focus();
-					return false;
-				}
-
-				if(!message){
-					$('#hook_question_comment_textarea').hintError(self._('FIELD_REQUIRED')).focus();
-					return false;
-				}
-
-				var postString = '&type=' + encodeURIComponent(type) +
-					'&subject=' + encodeURIComponent(subject) +
-					'&from=' + encodeURIComponent(from) +
-					'&message=' + encodeURIComponent(message) +
-					'&tmp_dir=' + encodeURIComponent(self.tmp_dir);
-
-				$.ajax({
-					url:'index.php?k=' + self.SESSION_KEY + '&sendComment' ,
-					type: 'POST',
-					data: postString,
-					dataType:'json',
-					headers: self.getXSRFHeaders(),
-					success: function(data) {
-
-						if(data.status && data.status == 'error') {
-							self.showError();
-							self.hideModalDialog('fast');
-							return false;
-						}
-
-						setTimeout(function(){
-							self.hideModalDialog('fast');
-						}, 2000);
-
-						removeQCSAjaxFolder(self.tmp_dir);
-						return true;
-
-					},
-					error: function(jqXHR, status, error) {
-						self.hideModalDialog('fast');
-						self.validateXHR(jqXHR).then((isValidXHR)=>{
-							if(!isValidXHR){
-								return;
-							}
-							self.showError();
-						});
-					}
-				});
-
-				$('#hook_question_comment_form').fadeOut(function(){
-					$("#hook_question_comment_sent").show();
-				});
-
-			});
-
-			$('#hook_cancel_question_comment').safeClick(function() {
-				self.tmp_dir = '';
-				self.hideModalDialog('fast');
-
-			});
-
-			$('#hook_question_comment_subject').focus();
-		}, 550);
-
-		this.QCS_uploader = [];
-		function generateQCSAjaxUploader(){
-			return $('#file_upload').ajaxUploader({
-				url:'index.php?k=' + self.SESSION_KEY + '&uploadFile&tmp_dir=' + self.tmp_dir,
-				autoUpload : true,
-				progressBarConfig: {
-					barImage: 'img/progressbg_orange.gif'
-				},
-				success: function (data, status){
-					if(data.ajax_filename){
-						var element_number = i++;
-						var filename = data.ajax_filename;
-						self.tmp_dir = data.tmp_dir;
-						$('#uploaded_files_names').append('<li id="ajax_file_'+ element_number + '" style="list-style:none;">' + filename + '&nbsp&nbsp<span class="ico icon-cross" id="ajax_file_remove_' + element_number + '" style="position: absolute; margin-bottom:10px;"></span></li>');
-						$('#ajax_file_remove_'+ element_number).on('click', function(){
-							removeQCSAjaxFile(self.tmp_dir, filename, element_number);
-						});
-						self.QCS_uploader.push(generateQCSAjaxUploader());
-					}
-					else if(data.error){
-						console.debug(data.error);
-						self.showMessage(self._('ERROR'), self._('UPLOAD_FILE_ERROR_OCCURED'));
-					}
-				},
-				error: function (jqXHR, status, error){
-					console.debug('Error uploading attachment.');
-					self.showMessage(self._('ERROR'), self._('UPLOAD_FILE_ERROR_OCCURED'));
-				}
-			});
-		}
-
-		this.QCS_uploader.push(generateQCSAjaxUploader());
-
-		function removeQCSAjaxFile(folder, filename, div_number){
-
-			var postString = '&file=' + encodeURIComponent(filename) +
-				'&fld=' + encodeURIComponent(folder);
-
-			$.ajax({
-				url:'index.php?k=' + self.SESSION_KEY + '&removeQCSAjaxFile',
-				type: 'POST',
-				data: postString,
-				dataType:'json',
-				headers: self.getXSRFHeaders(),
-				success: function(data) {
-					$('#ajax_file_'+ div_number).remove();
-					$('#ajax_file_remove_'+ div_number).remove();
-					return true;
-				},
-				error: function (jqXHR, status, error){
-					self.validateXHR(jqXHR).then((isValidXHR)=> {
-						if(!isValidXHR){
-							return;
-						}
-						console.log(error);
-					});
-
-				}
-			});
-		}
-
-		function removeQCSAjaxFolder(folder){
-
-			self.tmp_dir = '';
-			$.ajax({
-				url:'index.php?k=' + self.SESSION_KEY + '&removeQCSAjaxFolder',
-				type: 'POST',
-				data: '&fld=' + encodeURIComponent(folder),
-				dataType:'json',
-				headers: self.getXSRFHeaders(),
-				success: function(data) {
-					return true;
-				},
-				error: function (jqXHR, status, error){
-					self.validateXHR(jqXHR).then((isValidXHR)=> {
-						if(!isValidXHR){
-							return;
-						}
-						console.log(error);
-					});
-				}
-			});
-		}
-	}
-
-
-
 	requestUnmount(callback) {
 		this.unmounts.push(callback);
 	}
@@ -2464,79 +2182,6 @@ export default class Application extends EventEmitter{
 		});
 	}
 
-	getXHRRequest(url, successCallback, loading, errorCallback, button, skipOverlayHandling) {
-		var self = this;
-
-		var xhrRequest = $.ajax({
-			url: url,
-			type : 'GET',
-			dataType:'json',
-
-			success: function(response) {
-				if(!skipOverlayHandling){
-					self.hideOverlay();
-					self._hideLoading();
-				}
-
-				if(button)
-					$(button).prop('disabled', false);
-
-				var data;
-				if(typeof response.data != 'undefined'){
-					data = response.data;
-				}
-				else {
-					data = response;
-				}
-
-				if(response.status && response.status == 'error') {
-					if(typeof errorCallback == 'function'){
-						errorCallback(data );
-					}
-					else if(typeof data.message != 'undefined'){
-						self.showError(data.message);
-					}
-					else {
-						self.showError();
-					}
-				}
-				else if(typeof successCallback == 'function') {
-					successCallback(data);
-				}
-			},
-			error: function(jqXHR, status, error) {
-				if(!skipOverlayHandling) {
-					self.hideOverlay();
-					self._hideLoading();
-				}
-
-				if(button) {
-					$(button).prop('disabled', false);
-				}
-
-				self.validateXHR(jqXHR).then((isValidXHR)=> {
-					if(!isValidXHR){
-						return;
-					}
-					if(this.debug) {
-						console.debug('AJAX query error');
-						console.debug(status);
-						console.debug(error);
-					}
-
-					if(typeof errorCallback == 'function') {
-						errorCallback();
-					}
-					else {
-						self.showError();
-					}
-				});
-			}
-		});
-
-		return xhrRequest;
-	}
-
 	registerXHR(xhr) {
 		this._ongoing_xhrs.push(xhr);
 	}
@@ -2566,7 +2211,7 @@ export default class Application extends EventEmitter{
 			}
 		}
 
-		return 'index.php?k=' + encodeURIComponent(this.SESSION_KEY) + '&view=' + encodeURIComponent(view) + '&cmd=' + encodeURIComponent(cmd) + paramsString;
+		return this.getViewApiPath() + '?k=' + encodeURIComponent(this.SESSION_KEY) + '&view=' + encodeURIComponent(view) + '&cmd=' + encodeURIComponent(cmd) + paramsString;
 	}
 
 	fetch(url , options: FetchOptions): Promise {
@@ -2587,15 +2232,13 @@ export default class Application extends EventEmitter{
 
 		if(showLoading) {
 			// If we don't receive an awnser after 1.5 second, a loading overlay will appear
-			this._loadingTimeout = setTimeout(() => {
-				this._showLoading();
-			}, this._loadingDelay);
+			this.showLoadingAfterTimeout();
 		}
 
 		return this.fetchService.fetch(url, options)
 			.finally(() => {
 				if(showLoading){
-					this._hideLoading();
+					this.hideLoading();
 				}
 				if(showOverlay){
 					this.hideOverlay();

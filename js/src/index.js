@@ -7,7 +7,6 @@ import DateHelper from './DateHelper';
 import removeDiacritics from './removeDiacritics';
 import Router from './Router';
 import BrowserDetect from './BrowserDetect';
-import AsyncTask from './AsyncTask';
 import FetchService, {FetchAbortError, FetchResponseDataError} from './FetchService';
 
 module.exports = {
@@ -20,7 +19,6 @@ module.exports = {
 	removeDiacritics,
 	jQueryExtend,
 	BrowserDetect,
-	AsyncTask,
 	FetchService,
 	FetchAbortError,
 	FetchResponseDataError,

@@ -8,6 +8,7 @@
 - Removed jquery.ajaxUploader
 - Removed the _sendErrors mecanism and application._errors collection (warning the _errors collection is used directly).  js.sendErrors and js.sendErrorsOnUnload backend options not used anymore.
 - Removed JS_PATH, IMG_PATH
+- Removed silent js config
 
 ## Functions that are now async
 

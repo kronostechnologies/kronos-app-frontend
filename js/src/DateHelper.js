@@ -118,7 +118,7 @@ export default class DateHelper {
 		var returnValue = moment.months(month);
 
 		if($.isArray(returnValue))
-			this.app._throw('Unknown month "'+month+'"');
+			console.warn('Unknown month "'+month+'"');
 		else
 			return returnValue;
 

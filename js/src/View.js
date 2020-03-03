@@ -169,7 +169,7 @@ export default class View extends EventEmitter{
 
 	_hook(hash) {
 		if (this.app.debug) {
-			this.app._throw('View does not implement _hook function');
+			console.warn('View does not implement _hook function');
 		}
 		return Promise.resolve();
 	}
@@ -184,7 +184,7 @@ export default class View extends EventEmitter{
 
 	_inject(model: {}) {
 		if (this.app.debug) {
-			this.app._throw('View does not implement _inject function');
+			console.warn('View does not implement _inject function');
 		}
 		return Promise.resolve();
 	}
@@ -221,7 +221,7 @@ export default class View extends EventEmitter{
 
 	_onCancelClose() {
 		if (this.app.debug) {
-			this.app._throw('View does not implement _onCancelClose function');
+			console.warn('View does not implement _onCancelClose function');
 		}
 	}
 

@@ -26,7 +26,6 @@ export default class Application extends EventEmitter{
 
 		// Debugging and error handling
 		this.debug = false;
-		this.silent = false;
 		this.trace_retirement = false;
 		this.ajaxQueryLoading = false;
 		this.pingInterval = false; // If this is defined in a child object; a timer will be fired every "pingInterval"ms with a ping command via get.
@@ -192,10 +191,6 @@ export default class Application extends EventEmitter{
 		// Error configs
 		if (config.debug) {
 			this.debug = true;
-		}
-
-		if (config.silent) {
-			this.silent = true;
 		}
 
 		if (config.trace_retirement) {
@@ -437,7 +432,7 @@ export default class Application extends EventEmitter{
 	 * Added to support sending fatal errors.
 	 */
 	_throw(message, fatal) {
-		return $.toJSON({message:message, type:(fatal ? 'fatal' : 'error')});
+		return JSON.stringify({message:message, type:(fatal ? 'fatal' : 'error')});
 	}
 
 
@@ -454,8 +449,7 @@ export default class Application extends EventEmitter{
 		}
 
 		try {
-			var error = $.secureEvalJSON(description.replace('uncaught exception: ', ''));
-
+			var error = JSON.parse(description.replace('uncaught exception: ', ''));
 			if(error.type == 'fatal') {
 				this._showFatalError(error.message);
 			}
@@ -467,7 +461,7 @@ export default class Application extends EventEmitter{
 			// That was not JSON ... but we don't care
 		}
 
-		return this.silent;
+		return false;
 	}
 
 	_showNavigationError() {
@@ -1704,10 +1698,6 @@ export default class Application extends EventEmitter{
 
 	showMessage(title, message, content) {
 		const self = this;
-		if(title === '')
-			this._throw('Missing title', true);
-		if(message === '')
-			this._throw('Missing message', true);
 
 		self.showModalDialog('<h2>'+title+'</h2>\
 						<p>\

@@ -1,7 +1,7 @@
 # Migration notes for 2.x to 3.x
 
 - New function loadLangFile() to load lang file if needed.
-- `_showOverlay()` and `_hideOverlay()` meaning has changed. They only perform dom manipulations.  showOverlay and hideOverlay should be called.
+- `_showLoading()` and `_hideLoading()` meaning has changed. They only perform dom manipulations.  showLoadingAfterTimeout and hideOverlay should be called.
 - Removed AsyncTask
 - Removed showQuestionCommentDialog()
 - Removed getXHRRequest()

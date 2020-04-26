@@ -4,3 +4,8 @@ node_modules/
 .idea
 .kbuild
 package-lock.json
+
+# Yarn (not using zero-install)
+**/.yarn/*
+!**/.yarn/releases
+!**/.yarn/plugins

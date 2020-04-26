@@ -1,3 +1,5 @@
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 import jQueryExtend from './jQueryExtend';
 import sprintf from './sprintf';
 import Application from './Application';
@@ -9,7 +11,7 @@ import Router from './Router';
 import BrowserDetect from './BrowserDetect';
 import FetchService, {FetchAbortError, FetchResponseDataError} from './FetchService';
 
-module.exports = {
+export {
 	Application,
 	View,
 	EditView,
@@ -22,8 +24,4 @@ module.exports = {
 	FetchService,
 	FetchAbortError,
 	FetchResponseDataError,
-	externals: {
-		jquery: 'jQuery',
-		'raven-js': 'raven-js'
-	}
 };

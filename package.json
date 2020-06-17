@@ -5,8 +5,10 @@
   "main": "js/src/index.js",
   "module": "js/src/index.js",
   "scripts": {
-    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha --require babel-core/register --slow 100 --recursive ./js/**/*.test.js",
-    "prepush": "npm tes"
+    "test": "cross-env NODE_ENV=test mocha --require babel-core/register --slow 100 --recursive ./js/**/*.test.js",
+    "test:ci": "yarn test",
+    "eslint": "eslint js/src Gruntfile.js webpack.config.js",
+    "eslint:ci": "yarn eslint --format junit -o build/tests/eslint/junit.xml"
   },
   "repository": {
     "type": "git",
@@ -15,6 +17,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@equisoft/eslint-config": "~2.0.0-alpha.3",
     "babel-core": "^6.26.3",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^7.0.0",
@@ -26,13 +29,10 @@
     "babel-register": "^6.26.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
+    "cross-env": "~7.0.2",
     "ecma-proposal-promise-finally": "github:tc39/proposal-promise-finally",
-    "eslint": "^6.8",
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-plugin-flowtype": "^4.6.0",
-    "eslint-plugin-import": "^2.20.0",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.17.0",
+    "eslint": "^7.2.0",
+    "eslint-plugin-flowtype": "^5.1.3",
     "fetch-mock": "^5.11.0",
     "flow-bin": "^0.47.0",
     "grunt": "^1.0.3",
@@ -40,7 +40,6 @@
     "grunt-mocha-test": "^0.13.2",
     "grunt-npm": "0.0.2",
     "grunt-webpack": "^2.0.1",
-    "husky": "^0.14.3",
     "jsx-control-statements": "^3.2.5",
     "matchdep": "^2.0",
     "mocha": "^5.2.0",

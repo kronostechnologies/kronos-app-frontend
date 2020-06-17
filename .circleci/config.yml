@@ -1,86 +1,82 @@
-version: 2
+version: 2.1
+
 aliases:
   # Variables
-  - &yarn_install_cache_key v1-yarn-install-{{ checksum "yarn.lock" }}
-  - &yarn_home_cache_key v1-yarn-{{ arch }}
-jobs:
-  checkout_code:
+  - &project_working_directory ~/project
+  - &yarn_cache_version v1
+
+orbs:
+  eq: equisoft/build-tools@0.0.7
+
+executors:
+  node:
+    working_directory: *project_working_directory
     docker:
       - image: node:10
+
+commands:
+  attach-project-directory:
+    steps:
+      - attach_workspace:
+          at: *project_working_directory
+
+  yarn-install:
+    steps:
+      - eq/with-yarn-cache:
+          cache-version: *yarn_cache_version
+          yarn-legacy: true
+
+jobs:
+  init-workspace:
+    executor: node
     steps:
       - checkout
       - persist_to_workspace:
-          root: .
-          paths:
-            - .
-  yarn_install:
-    docker:
-      - image: node:10
-    resource_class: large
-    steps:
-      - attach_workspace:
-          at: .
-      - restore_cache:
-          keys:
-            - *yarn_home_cache_key
-      - restore_cache:
-          keys:
-            - *yarn_install_cache_key
-      - run: yarn --frozen-lockfile
-      - save_cache:
-          key: *yarn_install_cache_key
-          paths: node_modules
-      - save_cache:
-          key: *yarn_home_cache_key
-          paths: ~/.cache/yarn
+          root: '.'
+          paths: '.'
 
-  grunt:
-    docker:
-      - image: node:10
+  yarn-install:
+    executor: node
     steps:
-      - attach_workspace:
-          at: .
-      - restore_cache:
-          name: "Restoring yarn install cache"
-          keys:
-            - *yarn_install_cache_key
+      - attach-project-directory
+      - yarn-install
 
-      - run: ./node_modules/grunt/bin/grunt build
+  build:
+    executor: node
+    steps:
+      - attach-project-directory
+      - yarn-install
+      - run: yarn grunt build
       - persist_to_workspace:
           root: .
           paths:
             - js/dist
-  yarn_test:
-    docker:
-      - image: node:10
+
+  eslint:
+    executor: node
     steps:
-      - attach_workspace:
-          at: .
-      - restore_cache:
-          name: "Restoring yarn install cache"
-          keys:
-            - *yarn_install_cache_key
-      - run: yarn test
+      - attach-project-directory
+      - yarn-install
+      - run: yarn eslint:ci
+
+  test:
+    executor: node
+    steps:
+      - attach-project-directory
+      - yarn-install
+      - run: yarn test:ci
+
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - checkout_code
-      - yarn_install:
-          filters:
-            tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+      - init-workspace
+      - yarn-install:
           requires:
-            - checkout_code
-      - yarn_test:
-          filters:
-            tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+            - init-workspace
+      - test:
           requires:
-            - yarn_install
-      - grunt:
-          filters:
-            tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+            - yarn-install
+      - build:
           requires:
-            - yarn_install
+            - yarn-install

@@ -779,7 +779,7 @@ export default class Application extends EventEmitter{
 	}
 
 	_onFetchView(viewObject){	}
-	_onLoadView(viewObject, data, hiddenParams) { }
+	_onLoadView(viewObject, data, hiddenParams) { }
 
 	/**
 	 * Fetch view html and model from server

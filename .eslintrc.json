@@ -1,35 +1,15 @@
 {
   "parser": "babel-eslint",
-  "extends": ["airbnb/base", "plugin:react/recommended", "plugin:flowtype/recommended"],
-  "rules": {
-    "indent": [2, "tab"],
-    "vars-on-top": 0,
-    "camelcase": 0,
-    "class-methods-use-this": 0,
-    "no-mixed-spaces-and-tabs": 0,
-    "no-console": 0,
-    "func-names": 0,
-    "comma-dangle": 0,
-    "no-case-declarations": 0,
-    "no-param-reassign": 1,
-    "import/no-extraneous-dependencies": 0,
-    "import/prefer-default-export": 0,
-    "import/no-unresolved": [2, { "ignore": ["^[~]"] }],
-    "import/extensions": [2, { "ignore": ["^[~]"] }],
-    "no-underscore-dangle": 0,
-    "prefer-template": 0,
-    "no-undef": 1,
-    "object-shorthand": 1,
-    "quotes": [2, "single"],
-    "no-tabs": 0,
-    "max-len": [2, 220, 2, {
-        "ignoreUrls": true,
-        "ignoreComments": false
-      }
-    ],
-    "keyword-spacing": 0,
-    "new-cap": 0,
-    "react/require-extension": 0
+  "extends": [
+    "@equisoft/eslint-config",
+    "plugin:flowtype/recommended"
+  ],
+  "plugins": [
+    "flowtype"
+  ],
+  "env": {
+    "browser": true,
+    "mocha": true
   },
   "globals": {
     "dataLayer": true,
@@ -38,13 +18,11 @@
     "moment": true,
     "tinymce": true,
     "_": true,
-    "$": true,
-    "React": true,
-    "ReactDOM": true,
-    "window": true
+    "$": true
   },
-  "plugins": [
-    "react",
-    "flowtype"
-  ]
+  "settings": {
+    "flowtype": {
+      "onlyFilesWithFlowAnnotation": true
+    }
+  }
 }

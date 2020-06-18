@@ -5,10 +5,25 @@ This package contains javascript components and common css files for legacy Kron
 This is an internal framework. It's not realy designed to be shared.
 
 
+## Deploy a new version
+```
+# Make sure test pass
+yarn test
+
+# Built dist must be committed
+yarn build
+git add dist
+
+# Bump version and tag
+yarn version --minor
+git push origin master --tags
+
+# Publish to npm
+yarn publish
+```
+
 ## Directories
 
 - `js/src`: Main javascript sources.
 - `js/dist`: Library built with webpack.
 - `js/jquery`: Some jquery legacy components.
-- `css`: Scss files shared by Kronos application.
-

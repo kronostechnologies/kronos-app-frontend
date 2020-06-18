@@ -10,7 +10,7 @@ module.exports = {
 		path: path.resolve(__dirname, 'js', 'dist'),
 		filename: "[name].js",
 		library: 'kronosAppFrontend',
-		libraryTarget: 'umd',
+		libraryTarget: 'commonjs',
 	},
 	target: 'web',
 	externals: {

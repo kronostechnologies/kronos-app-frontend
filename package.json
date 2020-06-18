@@ -5,7 +5,10 @@
   "main": "js/src/index.js",
   "module": "js/src/index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test mocha --require babel-core/register --slow 100 --recursive ./js/**/*.test.js",
+    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js --color -p",
+    "build:dev": "cross-env NODE_ENV=development webpack --config webpack.config.js --color -p",
+    "build:watch": "cross-env NODE_ENV=development webpack --config webpack.config.js --color --watch -p",
+    "test": "cross-env NODE_ENV=test mocha --require ./js/src/testInit.js --slow 100 --recursive ./js/**/*.test.js",
     "test:ci": "yarn test",
     "eslint": "eslint js/src Gruntfile.js webpack.config.js",
     "eslint:ci": "yarn eslint --format junit -o build/tests/eslint/junit.xml"
@@ -40,12 +43,6 @@
     "fetch-mock": "^5.11.0",
     "flow-bin": "^0.47.0",
     "formdata-polyfill": "^1.0.7",
-    "grunt": "^1.1.0",
-    "grunt-bump": "^0.8.0",
-    "grunt-cli": "^1.3.2",
-    "grunt-mocha-test": "^0.13.2",
-    "grunt-npm": "0.0.2",
-    "grunt-webpack": "^3.1.3",
     "jsx-control-statements": "^3.2.5",
     "matchdep": "^2.0",
     "mocha": "^5.2.0",
@@ -64,8 +61,5 @@
     "jquery": "^3.4",
     "jquery-param": "^0.2.0",
     "moment": "^2.17.1"
-  },
-  "resolutions": {
-    "grunt-cli/resolve": "^1.12.0"
   }
 }

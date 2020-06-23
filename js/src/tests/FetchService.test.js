@@ -1,18 +1,11 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {Response, Headers} from 'node-fetch'
 import fetchMock from 'fetch-mock';
-import 'url-search-params-polyfill';
-import FormData from 'formdata-polyfill';
+import {Response} from 'node-fetch'
+import './polyfill.js';
 import sinon from 'sinon';
 import FetchService, {FetchAbortError} from '../FetchService'
-import { DOMParser } from 'xmldom'
 
-global.DOMParser = DOMParser;
-global.Headers = Headers;
-global.Response = Response;
-global.FormData = FormData;
-fetchMock.setImplementations({Headers, Response});
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
@@ -42,7 +35,6 @@ describe('FetchService', () => {
 
 	let AN_ERROR_RESPONSE;
 	let AN_ABORT_RESPONSE;
-	let A_EMPTY_RESPONSE;
 	let AN_UNAUTHORIZED_RESPONSE;
 	let AN_UNAUTHORIZED_RESPONSE_WITH_VIEW;
 	const AN_EMPTY_BODY = '';
@@ -57,15 +49,13 @@ describe('FetchService', () => {
 	let detectedNetworkErrorStub;
 	let detectedExpiredSessionStub;
 
-	const sandbox = sinon.sandbox.create();
+	const sandbox = sinon.createSandbox();
 
 	let fetchService;
 
 	beforeEach(() => {
 		AN_ERROR_RESPONSE = new Response(AN_EMPTY_BODY, {status: 500});
 		AN_ABORT_RESPONSE = new Response(AN_EMPTY_BODY, {status: 0, statusText: 'abort'});
-		//A_EMPTY_RESPONSE = new Response(AN_EMPTY_BODY, {status: 0});
-		//A_EMPTY_RESPONSE.status = 0;
 		AN_UNAUTHORIZED_RESPONSE = new Response(AN_EMPTY_BODY, {status: 401});
 		AN_UNAUTHORIZED_RESPONSE_WITH_VIEW = new Response(JSON.stringify({view: A_VIEW_LOCATION}), {status: 401});
 		detectedNetworkErrorStub = sandbox.stub(app, 'detectedNetworkError');
@@ -141,26 +131,6 @@ describe('FetchService', () => {
 			});
 
 		});
-
-		// Not testable with new version
-		// describe('with empty(0) response', () => {
-		//
-		// 	let response;
-		// 	beforeEach(() => {
-		// 		fetchMock.get(AN_URL, A_EMPTY_RESPONSE);
-		// 		response = fetchService.fetch(AN_URL);
-		// 	});
-		//
-		// 	it('should be rejected with FetchAbortError', () => {
-		// 		return expect(response).to.eventually.be.rejected
-		// 			.and.be.an.instanceOf(FetchAbortError);
-		// 	});
-		//
-		// 	it('should notifiy application with detectedNetworkError()', () => {
-		// 		return response.catch(()=> expect(detectedNetworkErrorStub.calledOnce).to.equal(true));
-		// 	});
-		//
-		// });
 
 		describe('with unauthorized(401) response', () => {
 

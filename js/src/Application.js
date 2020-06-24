@@ -1988,47 +1988,6 @@ export default class Application extends EventEmitter{
 			return result;
 	}
 
-	formatSIN(sin) {
-		var old_sin = sin;
-
-		//Remove whitespace
-		old_sin = old_sin.replace(new RegExp("[^\\d]", 'g'), '');
-
-		var new_sin = old_sin.substr(0, 3) + ' ' + old_sin.substr(3,3) + ' ' + old_sin.substr(6,3);
-		return $.trim(new_sin);
-	}
-
-	isSINValid(sin) {
-
-		if(sin === '')
-			return true;
-
-		if(sin == '*** *** ***')
-			return true;
-
-		sin = sin.replace(new RegExp("[^\\d]", 'g'), '');
-
-		if(sin.length != 9)
-			return false;
-
-		var total = parseInt(sin.charAt(0)) + parseInt(sin.charAt(2)) + parseInt(sin.charAt(4)) + parseInt(sin.charAt(6));
-
-		for(var i = 1; i <= 7; i += 2) {
-			var tmp = parseInt(sin.charAt(i))*2;
-			if(tmp >= 10)
-				tmp = tmp - 9;
-
-			total += tmp;
-		}
-
-		total += parseInt(sin.charAt(8));
-		if((total%10) !== 0)
-			return false;
-		else {
-			return true;
-		}
-	}
-
 	/**
 	 * Format field value objects provided by model (id, value_fr, value_en)
 	 */

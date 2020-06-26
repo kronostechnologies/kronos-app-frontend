@@ -24,7 +24,6 @@ commands:
     steps:
       - eq/with-yarn-cache:
           cache-version: *yarn_cache_version
-          yarn-legacy: true
 
 jobs:
   init-workspace:
@@ -46,7 +45,7 @@ jobs:
     steps:
       - attach-project-directory
       - yarn-install
-      - run: yarn grunt build
+      - run: yarn build
       - persist_to_workspace:
           root: .
           paths:

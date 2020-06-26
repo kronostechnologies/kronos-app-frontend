@@ -11,10 +11,10 @@ module.exports = function(grunt) {
 
     bump: {
       options: {
-        files: ['package.json', 'bower.json'],
-        commitFiles: ['js/dist/*.js', 'package.json', 'bower.json'],
+        files: ['package.json'],
+        commitFiles: ['js/dist/*.js', 'package.json'],
         push: true,
-	      pushTo: 'origin'
+        pushTo: 'origin'
       }
     },
 
@@ -30,7 +30,7 @@ module.exports = function(grunt) {
       test: {
         options: {
           reporter: 'spec',
-          require: 'babel-register',
+          require: '@babel/register',
           slow: 100
         },
         src: ['./js/**/*.test.js']

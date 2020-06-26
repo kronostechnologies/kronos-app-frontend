@@ -1,4 +1,5 @@
-var path = require('path');
+const path = require('path');
+const PnpWebpackPlugin = require(`pnp-webpack-plugin`);
 
 module.exports = {
 	mode: "production",
@@ -8,31 +9,49 @@ module.exports = {
 	output: {
 		path: path.resolve(__dirname, 'js', 'dist'),
 		filename: "[name].js",
-		library: 'kronosAppFrontend'
+		library: 'kronosAppFrontend',
+		libraryTarget: 'commonjs',
 	},
+	target: 'web',
+	externals: {
+		'@sentry/browser' : {
+			commonjs: '@sentry/browser',
+			commonjs2: '@sentry/browser'
+		},
+		'jquery': {
+			root: '$',
+			commonjs: 'jquery'
+		},
+		'jquery-param': 'jquery-param',
+		'moment': 'moment',
+		'es6-error' : 'es6-error',
+	},
+	devtool: 'source-map',
 	module: {
 		rules: [
 			{
-				test: /.jsx?$/,
+				test: /.js$/,
 				exclude: /node_modules/,
 				use: [
 					{
 						loader: 'babel-loader',
 						options: {
 							cacheDirectory: true, // important for performance
-							presets: [
-								'es2015',
-								'react',
-							],
-							plugins: [
-								'jsx-control-statements',
-								'transform-flow-strip-types',
-								'syntax-dynamic-import',
-							],
-						}
-					}
-				]
+							babelrc: true,
+						},
+					},
+				],
 			}
 		]
-	}
+	},
+    resolve: {
+        plugins: [
+            PnpWebpackPlugin,
+        ],
+    },
+    resolveLoader: {
+        plugins: [
+            PnpWebpackPlugin.moduleLoader(module),
+        ],
+    },
 };

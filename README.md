@@ -19,7 +19,8 @@ yarn version minor
 git push origin master --tags
 
 # Publish to npm
-yarn publish
+yarn npm login
+yarn npm publish
 ```
 
 ## Directories

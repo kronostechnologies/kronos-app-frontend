@@ -1,6 +1,6 @@
 {
   "name": "kronos-app-frontend",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "Javascript application framework by Kronos Technologies",
   "main": "js/dist/kronos-app-frontend.js",
   "module": "js/src/index.js",

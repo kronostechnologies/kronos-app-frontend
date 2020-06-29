@@ -12,7 +12,7 @@ executors:
   node:
     working_directory: *project_working_directory
     docker:
-      - image: node:10
+      - image: node:12
 
 commands:
   attach-project-directory:

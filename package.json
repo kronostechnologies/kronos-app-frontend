@@ -5,9 +5,9 @@
   "main": "js/dist/kronos-app-frontend.js",
   "module": "js/src/index.js",
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js --color -p",
-    "build:dev": "cross-env NODE_ENV=development webpack --config webpack.config.js --color -p",
-    "build:watch": "cross-env NODE_ENV=development webpack --config webpack.config.js --color --watch -p",
+    "build": "webpack --prod",
+    "build:dev": "webpack --dev",
+    "build:watch": "yarn build:dev --watch",
     "test": "cross-env NODE_ENV=test mocha --require ./js/src/testInit.js --slow 100 --recursive ./js/**/*.test.js",
     "test:ci": "yarn test",
     "eslint": "eslint js/src webpack.config.js",
@@ -47,12 +47,11 @@
     "formdata-polyfill": "^3.0.20",
     "mocha": "^8.0.1",
     "node-fetch": "^2.6.0",
-    "pnp-webpack-plugin": "^1.6.4",
     "regenerator-runtime": "^0.13.5",
     "sinon": "^9.0.2",
     "url-search-params-polyfill": "^8.1.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12",
+    "webpack": "^5.0.0-beta.20",
+    "webpack-cli": "^4.0.0-beta.8",
     "xmldom": "^0.3.0"
   },
   "dependencies": {

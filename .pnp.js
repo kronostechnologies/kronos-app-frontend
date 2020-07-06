@@ -166,6 +166,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:0.13.5"
       ],
       [
+        "shelljs",
+        "npm:0.8.4"
+      ],
+      [
         "sinon",
         "npm:9.0.2"
       ],
@@ -227,6 +231,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["node-fetch", "npm:2.6.0"],
             ["pnp-webpack-plugin", "npm:1.6.4"],
             ["regenerator-runtime", "npm:0.13.5"],
+            ["shelljs", "npm:0.8.4"],
             ["sinon", "npm:9.0.2"],
             ["url-search-params-polyfill", "npm:8.1.0"],
             ["webpack", "npm:4.43.0"],
@@ -5905,6 +5910,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["node-fetch", "npm:2.6.0"],
             ["pnp-webpack-plugin", "npm:1.6.4"],
             ["regenerator-runtime", "npm:0.13.5"],
+            ["shelljs", "npm:0.8.4"],
             ["sinon", "npm:9.0.2"],
             ["url-search-params-polyfill", "npm:8.1.0"],
             ["webpack", "npm:4.43.0"],
@@ -7494,6 +7500,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["rechoir", [
+        ["npm:0.6.2", {
+          "packageLocation": "./.yarn/cache/rechoir-npm-0.6.2-0df5f171ec-6646a6bce7.zip/node_modules/rechoir/",
+          "packageDependencies": [
+            ["rechoir", "npm:0.6.2"],
+            ["resolve", "patch:resolve@npm%3A1.17.0#builtin<compat/resolve>::version=1.17.0&hash=3388aa"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["regenerate", [
         ["npm:1.4.0", {
           "packageLocation": "./.yarn/cache/regenerate-npm-1.4.0-57972aeb0d-d797b03573.zip/node_modules/regenerate/",
@@ -7987,6 +8003,18 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/shebang-regex-npm-3.0.0-899a0cd65e-ea18044ffa.zip/node_modules/shebang-regex/",
           "packageDependencies": [
             ["shebang-regex", "npm:3.0.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["shelljs", [
+        ["npm:0.8.4", {
+          "packageLocation": "./.yarn/cache/shelljs-npm-0.8.4-e2890f4ce2-bdf68e3c2a.zip/node_modules/shelljs/",
+          "packageDependencies": [
+            ["shelljs", "npm:0.8.4"],
+            ["glob", "npm:7.1.6"],
+            ["interpret", "npm:1.4.0"],
+            ["rechoir", "npm:0.6.2"]
           ],
           "linkType": "HARD",
         }]

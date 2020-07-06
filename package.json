@@ -8,7 +8,6 @@
     "build": "cross-env NODE_ENV=production webpack --config internals/webpack/webpack.config.js --color -p",
     "build:dev": "cross-env NODE_ENV=development webpack --config internals/webpack/webpack.config.js --color -p",
     "build:watch": "cross-env NODE_ENV=development webpack --config internals/webpack/webpack.config.js --color --watch -p",
-
     "test": "cross-env NODE_ENV=test mocha --require ./js/src/testInit.js --slow 100 --recursive ./js/**/*.test.js",
     "test:ci": "yarn test",
     "eslint": "eslint js/src internals/webpack/webpack.config.js",
@@ -50,6 +49,7 @@
     "mocha": "^8.0.1",
     "node-fetch": "^2.6.0",
     "pnp-webpack-plugin": "^1.6.4",
+    "prompt-confirm": "^2.0.4",
     "regenerator-runtime": "^0.13.5",
     "shelljs": "^0.8.4",
     "sinon": "^9.0.2",

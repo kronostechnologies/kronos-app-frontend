@@ -15,7 +15,7 @@ yarn build
 git add dist
 
 # Bump version and tag
-yarn version minor
+yarn bump minor
 git push origin master --tags
 
 # Publish to npm

@@ -1874,10 +1874,10 @@ export default class Application extends EventEmitter{
 	/**
 	 * Format and localize a number
 	 * opts:
-	 * 	precision : Default precisions of the number
-	 *  facultative_decimals :  Hide decimals if value = 0;
 	 *  minimumFractionDigits : The minimum number of digits after the decimal separator
 	 *  maximumFractionDigits : The maximum number of digits after the decimal separator
+	 * 	precision (deprecated) : Default precisions of the number
+	 *  facultative_decimals (deprecated) :  Hide decimals if value = 0;
 	 */
 	formatNumber(value, opts) {
 		if (arguments.length === 0) return '';

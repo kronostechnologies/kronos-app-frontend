@@ -1879,113 +1879,36 @@ export default class Application extends EventEmitter{
 	 *
 	 */
 	formatNumber(value, opts) {
+		if (arguments.length === 0) return '';
 
-		if(arguments.length === 0) return '';
-		else if(!value && value !== 0) return '';
+		let number = parseFloat(value);
+		if (isNaN(number)) return '';
 
-		var default_options={precision: 2, facultative_decimals:true, positive:false, nbsp:false, rounded:true};
-		if(this.lang == 'fr'){
-			default_options = $.extend({decimal_separator:',', thousand_separator: ' '}, default_options);
-		}
-		else {
-			default_options = $.extend({decimal_separator:'.', thousand_separator: ','}, default_options);
-		}
+		const options = this.normalizeNumberFormatOptions(opts);
 
-		var options = $.extend(default_options, opts);
-
-		value = value+'';
-
-
-		var neg = false;
-		if(value.charAt(0) == '-') {
-			if(options.positive) {
-				value = '0';
-			}
-			else {
-				neg = true;
-				value = value.substr(1);
-			}
+		if (options.positive && number < 0) {
+			number = 0;
 		}
 
-		value = value.replace(/[^\d\-.,]/g, '');
+		return number.toLocaleString(
+			this.locale.replace('_', '-'),
+			options
+		);
+	}
 
-		if(options.decimal_separator == ','){
-			if(value.indexOf(options.decimal_separator) != -1){
-				value = value.replace(/\./g, '');
-				value = value.replace(/,/g, '.');
-			}
+	normalizeNumberFormatOptions(opts) {
+		let options = {
+			minimumFractionDigits: 0,
+			maximumFractionDigits: 2,
+			...opts
+		};
+		if (Number.isInteger(options.precision)) {
+			options.maximumFractionDigits = options.precision;
 		}
-
-		if(value === ''){
-			value = '0';
+		if (options.facultative_decimals === false && options.minimumFractionDigits <= 0) {
+			options.minimumFractionDigits = options.maximumFractionDigits;
 		}
-
-		value = value.replace(/,/g, '');
-		value = parseFloat(value) + '';
-
-		if(value == Number.NaN)
-			value = '';
-
-		var rounded;
-		var tmp;
-		if(options.precision===0){
-			rounded = this.parseFloat(value).toFixed(0);
-			tmp = rounded;
-		}
-		else {
-			if (options.rounded){
-				rounded = (Math.round(value * Math.pow(10, options.precision)) / Math.pow(10, options.precision)).toFixed(options.precision);
-			} else {
-				rounded = (Math.floor(value * Math.pow(10, options.precision)) / Math.pow(10, options.precision)).toFixed(options.precision);
-			}
-			tmp = rounded.substr(0, rounded.indexOf('.'));
-		}
-
-		var integer = '';
-		var pos = tmp.length;
-
-		if(pos > 3) {
-			do {
-				pos = pos - 3;
-
-				var size = 3;
-				if(pos < 0) {
-					size = 3 + pos;
-					pos = 0;
-				}
-
-				if(integer !== '')
-					integer = tmp.substr(pos, size) + options.thousand_separator + integer;
-				else
-					integer = tmp.substr(pos, size);
-
-			} while(pos > 0);
-		}
-		else {
-			integer = tmp;
-		}
-
-		var result;
-		if(options.precision===0 || (options.facultative_decimals && parseInt(rounded.substr(rounded.indexOf('.')+1)) === 0 )){
-			result = integer;
-		}
-		else {
-			integer += options.decimal_separator;
-			result = integer + rounded.substr(rounded.indexOf('.')+1);
-		}
-
-		if(options.end_space) {
-			result += ' ';
-		}
-
-		if(options.nbsp) {
-			result = result.replace(/ /g, '&nbsp;');
-		}
-
-		if(neg)
-			return '-'+result;
-		else
-			return result;
+		return options;
 	}
 
 	/**

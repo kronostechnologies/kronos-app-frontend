@@ -10,6 +10,12 @@ const A_VIEW_CMD = 'doSomeStuff';
 const A_VIEW_PARAM_STRING = '&param=XXX';
 const A_SESSKEY = 'ABCDEF';
 const A_VIEW_CMD_URL = 'index.php?k=ABCDEF&view=Contact%2FView&cmd=doSomeStuff&param=XXX';
+const FR_CA_LOCALE = 'fr-CA';
+const EN_CA_LOCALE = 'en-CA';
+const FR_CA_FORMATTED_NUMBER = '123 456 789,12';
+const EN_CA_FORMATTED_NUMBER = '123,456,789.12';
+const UNFORMATTED_NUMBER = 123456789.12;
+const NUMBER_WITH_LOTS_OF_DECIMAL = 123.45678;
 
 const NUMBER_TO_FORMAT = 3333333.3333;
 
@@ -109,5 +115,31 @@ describe('Application', () => {
 			});
 		});
 	});
+
+	describe('unformatNumber', () => {
+
+	    it('should unformat fr-CA numbers', () => {
+            let unformattedNumber = app.unformatNumber(FR_CA_FORMATTED_NUMBER, FR_CA_LOCALE);
+            expect(unformattedNumber).to.equal(UNFORMATTED_NUMBER);
+        });
+
+        it('should unformat en-CA numbers', () => {
+            let unformattedNumber = app.unformatNumber(EN_CA_FORMATTED_NUMBER, EN_CA_LOCALE);
+            expect(unformattedNumber).to.equal(UNFORMATTED_NUMBER);
+        });
+
+        it('should leave unformatted numbers as is', () => {
+            let unformattedNumber = app.unformatNumber(UNFORMATTED_NUMBER, FR_CA_LOCALE);
+            expect(unformattedNumber).to.equal(UNFORMATTED_NUMBER);
+        });
+    });
+
+    describe('formatMoneyForInput', () => {
+
+        it('should round to given precision', () => {
+            const formattedNumber = app.formatMoneyForInput(NUMBER_WITH_LOTS_OF_DECIMAL, 2);
+            expect(formattedNumber).to.equal(NUMBER_WITH_LOTS_OF_DECIMAL.toFixed(2));
+        });
+    });
 
 });

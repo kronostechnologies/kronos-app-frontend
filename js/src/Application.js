@@ -5,8 +5,8 @@ import * as Sentry from '@sentry/browser';
 import BrowserDetect from "./BrowserDetect";
 import FetchService, {FetchAbortError, FetchResponseDataError} from './FetchService';
 import numbro from "numbro";
-import languages from "numbro/dist/languages.min";
-Object.values(languages).forEach(l => numbro.registerLanguage(l));
+import numbroLanguages from "numbro/dist/languages.min";
+Object.values(numbroLanguages).forEach(l => numbro.registerLanguage(l));
 
 declare var $: jQuery;
 declare var window: Object;

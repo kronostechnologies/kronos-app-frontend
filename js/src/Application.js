@@ -4,6 +4,9 @@ import EventEmitter from 'events';
 import * as Sentry from '@sentry/browser';
 import BrowserDetect from "./BrowserDetect";
 import FetchService, {FetchAbortError, FetchResponseDataError} from './FetchService';
+import numbro from "numbro";
+import numbroLanguages from "numbro/dist/languages.min";
+Object.values(numbroLanguages).forEach(l => numbro.registerLanguage(l));
 
 declare var $: jQuery;
 declare var window: Object;
@@ -1832,18 +1835,23 @@ export default class Application extends EventEmitter{
 		}
 	}
 
+	unformatNumber(value, locale) {
+	    numbro.setLanguage(locale);
+	    const unformattedValue = numbro.unformat(value);
+	    if (typeof unformattedValue !== 'number') {
+	        return 0;
+        } else {
+	        return unformattedValue;
+        }
+    }
+
 	/**
 	 * Formats a float value to a format easily understandable for processing.
 	 */
 	formatMoneyForInput(value, precision) {
-		const formatNumberOptions = {
-			precision: precision ? precision : 2,
-			facultative_decimals: false,
-			decimal_separator: '.',
-			thousand_separator: ''
-		};
-
-		return this.formatNumber(value, formatNumberOptions);
+		precision = precision ? precision : 2;
+		let unformattedValue = this.unformatNumber(value, this.locale.replace('_', '-'));
+		return unformattedValue.toFixed(precision);
 	}
 
 	/**

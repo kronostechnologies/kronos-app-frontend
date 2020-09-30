@@ -158,6 +158,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:2.6.0"
       ],
       [
+        "numbro",
+        "npm:2.3.1"
+      ],
+      [
         "pnp-webpack-plugin",
         "npm:1.6.4"
       ],
@@ -233,6 +237,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["mocha", "npm:8.0.1"],
             ["moment", "npm:2.24.0"],
             ["node-fetch", "npm:2.6.0"],
+            ["numbro", "npm:2.3.1"],
             ["pnp-webpack-plugin", "npm:1.6.4"],
             ["prompt-confirm", "npm:2.0.4"],
             ["regenerator-runtime", "npm:0.13.5"],
@@ -2957,6 +2962,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/big.js-npm-5.2.2-e147c30820-ea33d7d256.zip/node_modules/big.js/",
           "packageDependencies": [
             ["big.js", "npm:5.2.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["bignumber.js", [
+        ["npm:8.1.1", {
+          "packageLocation": "./.yarn/cache/bignumber.js-npm-8.1.1-2666aae722-b5e38f727e.zip/node_modules/bignumber.js/",
+          "packageDependencies": [
+            ["bignumber.js", "npm:8.1.1"]
           ],
           "linkType": "HARD",
         }]
@@ -6319,6 +6333,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["mocha", "npm:8.0.1"],
             ["moment", "npm:2.24.0"],
             ["node-fetch", "npm:2.6.0"],
+            ["numbro", "npm:2.3.1"],
             ["pnp-webpack-plugin", "npm:1.6.4"],
             ["prompt-confirm", "npm:2.0.4"],
             ["regenerator-runtime", "npm:0.13.5"],
@@ -7165,6 +7180,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/number-is-nan-npm-1.0.1-845325a0fe-42251b2653.zip/node_modules/number-is-nan/",
           "packageDependencies": [
             ["number-is-nan", "npm:1.0.1"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["numbro", [
+        ["npm:2.3.1", {
+          "packageLocation": "./.yarn/cache/numbro-npm-2.3.1-486f040941-aac73193be.zip/node_modules/numbro/",
+          "packageDependencies": [
+            ["numbro", "npm:2.3.1"],
+            ["bignumber.js", "npm:8.1.1"]
           ],
           "linkType": "HARD",
         }]

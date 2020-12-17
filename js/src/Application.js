@@ -1478,7 +1478,7 @@ export default class Application extends EventEmitter{
 	 */
 	showModalDialog(content, speed, callback, width): Promise<jQuery> {
 		const self = this;
-		this.showOverlay('rgba(0, 0, 0, 0.4)', 1, 'overlay', 1);
+		this.showOverlay('rgba(0, 0, 0, 0.4)', 1, 'overlay');
 
 		let $modalDialog = $('<div></div>')
 			.attr('id', 'modal_dialog')

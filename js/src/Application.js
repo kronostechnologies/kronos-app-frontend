@@ -2367,16 +2367,14 @@ export default class Application extends EventEmitter{
 				throw this._throw('Cannot check stored session without XSRF Token');
 			}
 
-			if(window.opener) {
-				if(sessionStorage.getItem('window-name') != window.name) {
-					if(this.debug) {
-						console.debug('Opened from another tab, clearing cloned stored session');
-					}
+            if(sessionStorage.getItem('window-name') != window.name) {
+                if(this.debug) {
+                    console.debug('Opened from another tab, clearing cloned stored session');
+                }
 
-					sessionStorage.clear();
-					sessionStorage.setItem(self._xsrf_cookie_name, xsrf_token);
-				}
-			}
+                sessionStorage.clear();
+                sessionStorage.setItem(self._xsrf_cookie_name, xsrf_token);
+            }
 
 			var stored_token = sessionStorage.getItem(self._xsrf_cookie_name);
 			if(!stored_token || stored_token != xsrf_token) {

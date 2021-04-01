@@ -7,7 +7,7 @@ module.exports = {
 		'kronos-app-frontend': "./js/src/index.js"
 	},
 	output: {
-		path: path.resolve(__dirname, 'js', 'dist'),
+		path: path.resolve(process.cwd(), 'js', 'dist'),
 		filename: "[name].js",
 		libraryTarget: 'commonjs2',
 	},

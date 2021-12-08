@@ -2198,8 +2198,11 @@ export default class Application extends EventEmitter{
 			this.showError(errorMessage);
 		}
 
-		// Special flag to avoid loging error twice
-		error.handledByApplication = true;
+		if (!this.isErrorObject(error)) {
+		    // Special flag to avoid logging error twice
+                   error.handledByApplication = true;
+		}
+
 		throw error;
 	}
 
@@ -2208,11 +2211,15 @@ export default class Application extends EventEmitter{
 	}
 
 	isFetchResponseDataError(error) {
-		return typeof error === 'object' && error instanceof FetchResponseDataError;
+		return this.isErrorObject(error) && error instanceof FetchResponseDataError;
 	}
 
 	isErrorAlreadyHandled(error) {
-		return typeof error === 'object' && error.handledByApplication === true;
+		return this.isErrorObject(error) && error.handledByApplication === true;
+	}
+
+	isErrorObject(error) {
+	    return typeof error === 'object';
 	}
 
 	datepicker(selector, options) {

@@ -2198,7 +2198,7 @@ export default class Application extends EventEmitter{
 			this.showError(errorMessage);
 		}
 
-		if (!this.isErrorObject(error)) {
+		if (this.isErrorObject(error)) {
 		    // Special flag to avoid logging error twice
                    error.handledByApplication = true;
 		}

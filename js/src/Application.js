@@ -2214,12 +2214,12 @@ export default class Application extends EventEmitter{
 		return this.isErrorObject(error) && error instanceof FetchResponseDataError;
 	}
 
-    isErrorAlreadyHandled(error) {
-        if (this.isErrorObject(error)) {
-            return error.handledByApplication === true;
+        isErrorAlreadyHandled(error) {
+            if (this.isErrorObject(error)) {
+                return error.handledByApplication === true;
+            }
+            return false;
         }
-        return false;
-    }
 
 	isErrorObject(error) {
 	    return typeof error === 'object';

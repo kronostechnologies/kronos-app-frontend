@@ -2215,7 +2215,11 @@ export default class Application extends EventEmitter{
 	}
 
 	isErrorAlreadyHandled(error) {
-		return this.isErrorObject(error) && error.handledByApplication === true;
+        if (this.isErrorObject(error)) {
+            return error.handledByApplication === true;
+        }
+
+        return false;
 	}
 
 	isErrorObject(error) {

@@ -1,5 +1,6 @@
 const shell = require('shelljs');
-const Confirm = require('prompt-confirm');
+var readline = require('readline');
+
 const typeArgument = `${process.argv[process.argv.length - 1]}`.trim().toLowerCase();
 
 let type;
@@ -22,9 +23,23 @@ const releaseMessage = 'Release ' + tag;
 shell.exec(`git commit package.json -m "${releaseMessage}"`);
 shell.exec(`git tag -a -m "${releaseMessage}" ${tag}`);
 
-const prompt = new Confirm('Do you want to push?');
-prompt.run().then(result => {
-    if(result) {
-        shell.exec('git push origin HEAD --tags');
+
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+rl.question('Do you want to push? (Y/n)', function(answer) {
+    switch(answer.toLowerCase()) {
+        case 'y':
+        case 'yes':
+        case '':
+            shell.exec('git push origin HEAD --tags');
+            break;
     }
-})
+    rl.close();
+});
+
+rl.on('close', function () {
+    process.exit(0);
+});

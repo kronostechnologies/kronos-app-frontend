@@ -1,0 +1,20 @@
+internals
+
+# Help those file look good! Remove the ignore entry and fix the linter errors
+js/src/Application.js
+js/src/BrowserDetect.js
+js/src/DateHelper.js
+js/src/EditView.js
+js/src/FetchService.js
+js/src/jQueryExtend.js
+js/src/removeDiacritics.js
+js/src/Router.js
+js/src/SaveDialog.js
+js/src/sprintf.js
+js/src/testInit.js
+js/src/tests/Application.test.js
+js/src/tests/FetchService.test.js
+js/src/tests/polyfill.js
+js/src/tests/sprintf.test.js
+js/src/types.js
+js/src/View.js

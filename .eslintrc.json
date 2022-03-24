@@ -1,28 +1,38 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "extends": [
-    "@equisoft/eslint-config",
-    "plugin:flowtype/recommended"
+    "@equisoft/eslint-config"
   ],
-  "plugins": [
-    "flowtype"
-  ],
+  "plugins": ["chai-friendly"],
   "env": {
     "browser": true,
     "mocha": true
   },
   "globals": {
-    "dataLayer": true,
-    "console": true,
-    "google": true,
-    "moment": true,
-    "tinymce": true,
-    "_": true,
-    "$": true
   },
   "settings": {
-    "flowtype": {
-      "onlyFilesWithFlowAnnotation": true
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx"],
+        "paths": ["app"]
+      }
     }
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.js"],
+      "rules": {
+        "no-underscore-dangle": "off"
+      }
+    },
+    {
+      "files": ["*.test.js"],
+      "rules": {
+        "no-unused-expressions": "off",
+        "@typescript-eslint/no-unused-expressions": "off",
+        "chai-friendly/no-unused-expressions": "error",
+        "no-await-in-loop": "off"
+      }
+    }
+  ]
 }

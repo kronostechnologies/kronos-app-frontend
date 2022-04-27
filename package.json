@@ -1,18 +1,18 @@
 {
   "name": "kronos-app-frontend",
-  "version": "4.5.2",
-  "description": "Javascript application framework by Kronos Technologies",
+  "version": "0.0.1",
+  "description": "Javascript legacy application framework by Equisoft",
   "main": "js/dist/kronos-app-frontend.js",
   "module": "js/src/index.js",
+  "files": ["js/*"],
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --config internals/webpack/webpack.config.js --color",
     "build:dev": "cross-env NODE_ENV=development webpack --config internals/webpack/webpack.config.js --color",
     "build:watch": "cross-env NODE_ENV=development webpack --config internals/webpack/webpack.config.js --color --watch",
     "test": "cross-env NODE_ENV=test mocha --require ./js/src/testInit.js --slow 100 --recursive ./js/**/*.test.js",
     "test:ci": "NODE_ENV=test nyc -r clover --report-dir build/mocha/coverage mocha --require ./js/src/testInit.js --slow 100 --recursive ./js/**/*.test.js --reporter mocha-junit-reporter --reporter-options mochaFile=build/mocha/junit.xml --non-interactive  --no-progress",
-    "eslint": "./internals/scripts/eslint-ci.js",
-    "eslint:ci": "yarn eslint --format junit -o build/tests/eslint/junit.xml",
-    "bump": "node internals/scripts/bump.js"
+    "eslint": "eslint js/src",
+    "eslint:ci": "./internals/scripts/eslint-ci.js"
   },
   "repository": {
     "type": "git",

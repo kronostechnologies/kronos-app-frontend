@@ -6,6 +6,7 @@ node_modules/
 package-lock.json
 build/
 .nyc_output/
+js/dist/
 
 # Yarn (not using zero-install)
 **/.yarn/*

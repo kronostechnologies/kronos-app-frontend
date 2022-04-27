@@ -4,6 +4,8 @@ node_modules/
 .idea
 .kbuild
 package-lock.json
+build/
+.nyc_output/
 
 # Yarn (not using zero-install)
 **/.yarn/*

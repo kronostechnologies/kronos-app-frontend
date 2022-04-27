@@ -1,0 +1,102 @@
+name: Build and deploy
+
+on:
+  pull_request: {}
+  push:
+    branches:
+      - master
+    tags:
+      - v*.*.*
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      is-release: ${{ steps.metadata.outputs.is-release }}
+      publishable: ${{ steps.metadata.outputs.publishable }}
+      version: ${{ steps.metadata.outputs.version }}
+      npm-tag: ${{ steps.metadata.outputs.npm-tag }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup asdf-vm
+        uses: equisoft-actions/with-asdf-vm@v1
+
+      - name: Find application metadata
+        id: metadata
+        uses: equisoft-actions/nodejs-application-metadata@v1
+
+      - name: Install NPM dependencies
+        uses: equisoft-actions/yarn-install@v1
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs:
+      - setup
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup asdf-vm
+        uses: equisoft-actions/with-asdf-vm@v1
+
+      - name: Install NPM dependencies
+        uses: equisoft-actions/yarn-install@v1
+
+      - name: Run ESLint
+        uses: equisoft-actions/yarn-eslint@v1
+        with:
+          task-name: 'eslint:ci'
+
+  mocha:
+    name: Mocha
+    needs:
+      - setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup asdf-vm
+        uses: equisoft-actions/with-asdf-vm@v1
+
+      - name: Install NPM dependencies
+        uses: equisoft-actions/yarn-install@v1
+
+      - name: Run Mocha
+        uses: equisoft-actions/yarn-mocha@v1
+        with:
+          task-name: 'test:ci'
+          report-name: javascript-test-results.junit.xml
+          coverage-report-name: javascript-test-coverage.clover.xml
+
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs:
+      - setup
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup asdf-vm
+        uses: equisoft-actions/with-asdf-vm@v1
+
+      - name: Install NPM dependencies
+        uses: equisoft-actions/yarn-install@v1
+
+      - name: Build
+        run: yarn build
+
+      - name: Store package
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: js/dist/
+          retention-days: 1
+          if-no-files-found: error

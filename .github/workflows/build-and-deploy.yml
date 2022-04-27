@@ -100,3 +100,48 @@ jobs:
           path: js/dist/
           retention-days: 1
           if-no-files-found: error
+
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    needs:
+      - setup
+      - mocha
+      - lint
+      - build
+
+    if: ${{ needs.setup.outputs.publishable == 'true' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: js/dist/
+
+      - name: Setup asdf-vm
+        uses: equisoft-actions/with-asdf-vm@v1
+
+      - name: Install NPM dependencies
+        uses: equisoft-actions/yarn-install@v1
+
+      - name: Update package version
+        env:
+          VERSION: ${{ needs.setup.outputs.version }}
+        run: |
+          contents="$(jq ".version = \"${VERSION}\"" ./package.json)" && echo "${contents}" > ./package.json
+
+      - name: NPM Login
+        uses: equisoft-actions/yarn-npm-login@v1
+        with:
+          registry: registry.npmjs.org
+          token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Yarn publish
+        env:
+          VERSION: ${{ needs.setup.outputs.version }}
+        run: |
+          yarn npm publish --tag "${VERSION}" --tolerate-republish

@@ -137,7 +137,7 @@ jobs:
       - name: NPM Login
         uses: equisoft-actions/yarn-npm-login@v1
         with:
-          registry: registry.npmjs.org
+          registry: registry.yarnpkg.com
           token: ${{ secrets.NPM_TOKEN }}
 
       - name: Yarn publish

@@ -1,5 +1,5 @@
 {
-  "name": "kronos-app-frontend",
+  "name": "@equisoft/kronos-app-frontend",
   "version": "0.0.1",
   "description": "Javascript legacy application framework by Equisoft",
   "main": "js/dist/kronos-app-frontend.js",
@@ -72,9 +72,6 @@
     "jquery-param": "^1.1.8",
     "moment": "^2.29.1",
     "numbro": "^2.3.6"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
   },
   "packageManager": "yarn@3.2.0"
 }

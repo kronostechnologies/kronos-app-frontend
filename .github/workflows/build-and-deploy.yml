@@ -22,6 +22,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Fetch origin/master (for action-metadata commit check)
+        run: |
+          git fetch --no-tags --prune --depth=1000 origin +refs/heads/master:refs/remotes/origin/master
+
       - name: Setup asdf-vm
         uses: equisoft-actions/with-asdf-vm@v1
 

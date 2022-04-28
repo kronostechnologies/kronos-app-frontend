@@ -4,7 +4,7 @@
   "description": "Javascript legacy application framework by Equisoft",
   "main": "js/dist/kronos-app-frontend.js",
   "module": "js/src/index.js",
-  "files": ["js/*"],
+  "files": ["js/"],
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --config internals/webpack/webpack.config.js --color",
     "build:dev": "cross-env NODE_ENV=development webpack --config internals/webpack/webpack.config.js --color",
@@ -72,6 +72,9 @@
     "jquery-param": "^1.1.8",
     "moment": "^2.29.1",
     "numbro": "^2.3.6"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   },
   "packageManager": "yarn@3.2.0"
 }

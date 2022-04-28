@@ -144,7 +144,7 @@ jobs:
         env:
           VERSION: ${{ needs.setup.outputs.version }}
         run: |
-          yarn npm publish --tag "${VERSION}" --tolerate-republish
+          yarn npm publish --tag "${VERSION}" --tolerate-republish --access public
 
   notify:
     name: Notify

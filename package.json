@@ -1,18 +1,18 @@
 {
   "name": "kronos-app-frontend",
-  "version": "4.5.2",
-  "description": "Javascript application framework by Kronos Technologies",
+  "version": "0.0.1",
+  "description": "Javascript legacy application framework by Equisoft",
   "main": "js/dist/kronos-app-frontend.js",
   "module": "js/src/index.js",
+  "files": ["js/*"],
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --config internals/webpack/webpack.config.js --color",
     "build:dev": "cross-env NODE_ENV=development webpack --config internals/webpack/webpack.config.js --color",
     "build:watch": "cross-env NODE_ENV=development webpack --config internals/webpack/webpack.config.js --color --watch",
     "test": "cross-env NODE_ENV=test mocha --require ./js/src/testInit.js --slow 100 --recursive ./js/**/*.test.js",
-    "test:ci": "yarn test",
+    "test:ci": "NODE_ENV=test nyc -r clover --report-dir build/mocha/coverage mocha --require ./js/src/testInit.js --slow 100 --recursive ./js/**/*.test.js --reporter mocha-junit-reporter --reporter-options mochaFile=build/mocha/junit.xml --non-interactive  --no-progress",
     "eslint": "eslint js/src",
-    "eslint:ci": "yarn eslint --format junit -o build/tests/eslint/junit.xml",
-    "bump": "node internals/scripts/bump.js"
+    "eslint:ci": "./internals/scripts/eslint-ci.js"
   },
   "repository": {
     "type": "git",
@@ -35,6 +35,7 @@
     "@babel/register": "^7.17.7",
     "@babel/runtime": "^7.17.8",
     "@equisoft/eslint-config": "^2.0.2",
+    "@microsoft/eslint-formatter-sarif": "^2.1.7",
     "@xmldom/xmldom": "^0.8.1",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.4",
@@ -50,15 +51,18 @@
     "eslint-plugin-import": "^2.25.4",
     "fetch-mock": "^9.11.0",
     "flow-bin": "^0.174.1",
-    "formdata-polyfill": "^4.0.10",
+    "formdata-polyfill": "3.0.20",
     "mocha": "^9.2.2",
+    "mocha-junit-reporter": "2.0.2",
     "node-fetch": "^2.6",
+    "nyc": "15.1.0",
     "regenerator-runtime": "^0.13.9",
     "shelljs": "^0.8.5",
     "sinon": "^13.0.1",
     "url-search-params-polyfill": "^8.1.1",
     "webpack": "^5.70.0",
-    "webpack-cli": "^4.9.2"
+    "webpack-cli": "^4.9.2",
+    "yargs": "^17.4.1"
   },
   "dependencies": {
     "@sentry/browser": "^6.19.2",
@@ -68,5 +72,6 @@
     "jquery-param": "^1.1.8",
     "moment": "^2.29.1",
     "numbro": "^2.3.6"
-  }
+  },
+  "packageManager": "yarn@3.2.0"
 }

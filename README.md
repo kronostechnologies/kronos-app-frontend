@@ -7,20 +7,8 @@ This is an internal framework. It's not realy designed to be shared.
 
 ## Deploy a new version
 ```
-# Make sure test pass
-yarn test
-
-# Built dist must be committed
-yarn build
-git add dist
-
-# Bump version and tag
-yarn bump minor
-git push origin master --tags
-
-# Publish to npm
-yarn npm login
-yarn npm publish
+# Create a git tag with semver version and the CI will do the rest
+git t v1.0.0 #git tag -a -m v1.0.0 v1.0.0
 ```
 
 ## Directories

@@ -1668,7 +1668,7 @@ __metadata:
     "@xmldom/xmldom": 0.8.2
     babel-eslint: 10.1.0
     babel-loader: 8.2.5
-    blob-polyfill: 6.0.20211015
+    blob-polyfill: 7.0.20220408
     chai: 4.3.6
     chai-as-promised: 7.1.1
     core-js: 3.25.0
@@ -2618,10 +2618,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"blob-polyfill@npm:6.0.20211015":
-  version: 6.0.20211015
-  resolution: "blob-polyfill@npm:6.0.20211015"
-  checksum: 1e9f3c6451dbb8d4dbda29edbe40ea47a934fc2025f89b35b03a02ad5747836e57765715f61d9cdd80b092792ec85c5926617cadb7f32e69ca0b1a1456a2409c
+"blob-polyfill@npm:7.0.20220408":
+  version: 7.0.20220408
+  resolution: "blob-polyfill@npm:7.0.20220408"
+  checksum: bbd062e904d851b0e0a733265150d0c189a575f80a98256515d265e265ada6f92a787d43fedaa791c00910c174131f9d7168e8c158e3334c965d045358c177da
   languageName: node
   linkType: hard
 

@@ -67,7 +67,7 @@
     "yargs": "17.5.1"
   },
   "dependencies": {
-    "@sentry/browser": "^6.19.2",
+    "@sentry/browser": "^7.12.0",
     "es6-error": "^4.1.1",
     "events": "^3.3.0",
     "jquery": "^3.4",

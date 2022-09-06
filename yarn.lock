@@ -31,7 +31,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.0.0, @babel/core@npm:^7.17.8, @babel/core@npm:^7.7.5":
+"@babel/core@npm:7.17.9, @babel/core@npm:^7.0.0, @babel/core@npm:^7.7.5":
   version: 7.17.9
   resolution: "@babel/core@npm:7.17.9"
   dependencies:
@@ -54,7 +54,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/eslint-parser@npm:^7.17.0":
+"@babel/eslint-parser@npm:7.17.0":
   version: 7.17.0
   resolution: "@babel/eslint-parser@npm:7.17.0"
   dependencies:
@@ -391,7 +391,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-class-properties@npm:^7.16.7":
+"@babel/plugin-proposal-class-properties@npm:7.16.7, @babel/plugin-proposal-class-properties@npm:^7.16.7":
   version: 7.16.7
   resolution: "@babel/plugin-proposal-class-properties@npm:7.16.7"
   dependencies:
@@ -488,7 +488,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-object-rest-spread@npm:^7.16.7, @babel/plugin-proposal-object-rest-spread@npm:^7.17.3":
+"@babel/plugin-proposal-object-rest-spread@npm:7.17.3, @babel/plugin-proposal-object-rest-spread@npm:^7.16.7":
   version: 7.17.3
   resolution: "@babel/plugin-proposal-object-rest-spread@npm:7.17.3"
   dependencies:
@@ -515,7 +515,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-optional-chaining@npm:^7.16.7":
+"@babel/plugin-proposal-optional-chaining@npm:7.16.7, @babel/plugin-proposal-optional-chaining@npm:^7.16.7":
   version: 7.16.7
   resolution: "@babel/plugin-proposal-optional-chaining@npm:7.16.7"
   dependencies:
@@ -599,7 +599,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-dynamic-import@npm:^7.8.3":
+"@babel/plugin-syntax-dynamic-import@npm:7.8.3, @babel/plugin-syntax-dynamic-import@npm:^7.8.3":
   version: 7.8.3
   resolution: "@babel/plugin-syntax-dynamic-import@npm:7.8.3"
   dependencies:
@@ -852,7 +852,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-flow-strip-types@npm:^7.16.7":
+"@babel/plugin-transform-flow-strip-types@npm:7.16.7, @babel/plugin-transform-flow-strip-types@npm:^7.16.7":
   version: 7.16.7
   resolution: "@babel/plugin-transform-flow-strip-types@npm:7.16.7"
   dependencies:
@@ -1042,7 +1042,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-runtime@npm:^7.17.0":
+"@babel/plugin-transform-runtime@npm:7.17.0":
   version: 7.17.0
   resolution: "@babel/plugin-transform-runtime@npm:7.17.0"
   dependencies:
@@ -1137,7 +1137,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/polyfill@npm:^7.12.1":
+"@babel/polyfill@npm:7.12.1":
   version: 7.12.1
   resolution: "@babel/polyfill@npm:7.12.1"
   dependencies:
@@ -1147,7 +1147,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:^7.16.11":
+"@babel/preset-env@npm:7.16.11":
   version: 7.16.11
   resolution: "@babel/preset-env@npm:7.16.11"
   dependencies:
@@ -1231,7 +1231,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-flow@npm:^7.16.7":
+"@babel/preset-flow@npm:7.16.7":
   version: 7.16.7
   resolution: "@babel/preset-flow@npm:7.16.7"
   dependencies:
@@ -1259,7 +1259,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/register@npm:^7.17.7":
+"@babel/register@npm:7.17.7":
   version: 7.17.7
   resolution: "@babel/register@npm:7.17.7"
   dependencies:
@@ -1274,7 +1274,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:7.17.9, @babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.8.4":
   version: 7.17.9
   resolution: "@babel/runtime@npm:7.17.9"
   dependencies:
@@ -1329,7 +1329,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@equisoft/eslint-config@npm:^2.0.2":
+"@equisoft/eslint-config@npm:2.0.2":
   version: 2.0.2
   resolution: "@equisoft/eslint-config@npm:2.0.2"
   dependencies:
@@ -1346,55 +1346,55 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@equisoft/kronos-app-frontend@workspace:."
   dependencies:
-    "@babel/core": ^7.17.8
-    "@babel/eslint-parser": ^7.17.0
-    "@babel/plugin-proposal-class-properties": ^7.16.7
-    "@babel/plugin-proposal-object-rest-spread": ^7.17.3
-    "@babel/plugin-proposal-optional-chaining": ^7.16.7
-    "@babel/plugin-syntax-dynamic-import": ^7.8.3
-    "@babel/plugin-transform-flow-strip-types": ^7.16.7
-    "@babel/plugin-transform-runtime": ^7.17.0
-    "@babel/polyfill": ^7.12.1
-    "@babel/preset-env": ^7.16.11
-    "@babel/preset-flow": ^7.16.7
-    "@babel/register": ^7.17.7
-    "@babel/runtime": ^7.17.8
-    "@equisoft/eslint-config": ^2.0.2
-    "@microsoft/eslint-formatter-sarif": ^2.1.7
+    "@babel/core": 7.17.9
+    "@babel/eslint-parser": 7.17.0
+    "@babel/plugin-proposal-class-properties": 7.16.7
+    "@babel/plugin-proposal-object-rest-spread": 7.17.3
+    "@babel/plugin-proposal-optional-chaining": 7.16.7
+    "@babel/plugin-syntax-dynamic-import": 7.8.3
+    "@babel/plugin-transform-flow-strip-types": 7.16.7
+    "@babel/plugin-transform-runtime": 7.17.0
+    "@babel/polyfill": 7.12.1
+    "@babel/preset-env": 7.16.11
+    "@babel/preset-flow": 7.16.7
+    "@babel/register": 7.17.7
+    "@babel/runtime": 7.17.9
+    "@equisoft/eslint-config": 2.0.2
+    "@microsoft/eslint-formatter-sarif": 2.1.7
     "@sentry/browser": ^6.19.2
-    "@xmldom/xmldom": ^0.8.1
-    babel-eslint: ^10.1.0
-    babel-loader: ^8.2.4
-    blob-polyfill: ^6.0.20211015
-    chai: ^4.3.6
-    chai-as-promised: ^7.1.1
-    core-js: ^3.21.1
-    cross-env: ^7.0.3
+    "@xmldom/xmldom": 0.8.2
+    babel-eslint: 10.1.0
+    babel-loader: 8.2.5
+    blob-polyfill: 6.0.20211015
+    chai: 4.3.6
+    chai-as-promised: 7.1.1
+    core-js: 3.22.2
+    cross-env: 7.0.3
     es6-error: ^4.1.1
-    eslint: ^8.11.0
-    eslint-import-resolver-node: ^0.3.6
-    eslint-plugin-chai-friendly: ^0.7.2
-    eslint-plugin-flowtype: ^8.0.3
-    eslint-plugin-import: ^2.25.4
+    eslint: 8.14.0
+    eslint-import-resolver-node: 0.3.6
+    eslint-plugin-chai-friendly: 0.7.2
+    eslint-plugin-flowtype: 8.0.3
+    eslint-plugin-import: 2.26.0
     events: ^3.3.0
-    fetch-mock: ^9.11.0
-    flow-bin: ^0.174.1
+    fetch-mock: 9.11.0
+    flow-bin: 0.174.1
     formdata-polyfill: 3.0.20
     jquery: ^3.4
     jquery-param: ^1.1.8
-    mocha: ^9.2.2
+    mocha: 9.2.2
     mocha-junit-reporter: 2.0.2
     moment: ^2.29.1
-    node-fetch: ^2.6
+    node-fetch: 2.6.7
     numbro: ^2.3.6
     nyc: 15.1.0
-    regenerator-runtime: ^0.13.9
-    shelljs: ^0.8.5
-    sinon: ^13.0.1
-    url-search-params-polyfill: ^8.1.1
-    webpack: ^5.70.0
-    webpack-cli: ^4.9.2
-    yargs: ^17.4.1
+    regenerator-runtime: 0.13.9
+    shelljs: 0.8.5
+    sinon: 13.0.2
+    url-search-params-polyfill: 8.1.1
+    webpack: 5.72.0
+    webpack-cli: 4.9.2
+    yargs: 17.4.1
   languageName: unknown
   linkType: soft
 
@@ -1501,7 +1501,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/eslint-formatter-sarif@npm:^2.1.7":
+"@microsoft/eslint-formatter-sarif@npm:2.1.7":
   version: 2.1.7
   resolution: "@microsoft/eslint-formatter-sarif@npm:2.1.7"
   dependencies:
@@ -1879,7 +1879,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xmldom/xmldom@npm:^0.8.1":
+"@xmldom/xmldom@npm:0.8.2":
   version: 0.8.2
   resolution: "@xmldom/xmldom@npm:0.8.2"
   checksum: aeea8f670bfa52b3a1b2d355dab3bf4d58ef4969b1fd146a1ab91bf8acbb9d02953022e66e85279015a4e4027205620dfc001ed5d169b1711a09a0a079951e08
@@ -2108,7 +2108,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-eslint@npm:^10.1.0":
+"babel-eslint@npm:10.1.0":
   version: 10.1.0
   resolution: "babel-eslint@npm:10.1.0"
   dependencies:
@@ -2124,7 +2124,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-loader@npm:^8.2.4":
+"babel-loader@npm:8.2.5":
   version: 8.2.5
   resolution: "babel-loader@npm:8.2.5"
   dependencies:
@@ -2212,7 +2212,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"blob-polyfill@npm:^6.0.20211015":
+"blob-polyfill@npm:6.0.20211015":
   version: 6.0.20211015
   resolution: "blob-polyfill@npm:6.0.20211015"
   checksum: 1e9f3c6451dbb8d4dbda29edbe40ea47a934fc2025f89b35b03a02ad5747836e57765715f61d9cdd80b092792ec85c5926617cadb7f32e69ca0b1a1456a2409c
@@ -2352,7 +2352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai-as-promised@npm:^7.1.1":
+"chai-as-promised@npm:7.1.1":
   version: 7.1.1
   resolution: "chai-as-promised@npm:7.1.1"
   dependencies:
@@ -2363,7 +2363,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai@npm:^4.3.6":
+"chai@npm:4.3.6":
   version: 4.3.6
   resolution: "chai@npm:4.3.6"
   dependencies:
@@ -2595,6 +2595,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"core-js@npm:3.22.2, core-js@npm:^3.0.0":
+  version: 3.22.2
+  resolution: "core-js@npm:3.22.2"
+  checksum: 23efd6148d2f564852f23de426401c86f1d8af410eacccf22ae5dd82b1e9de558f05692cacd4b7e709d47993c670d7bca6f601d0b2ab32cf397a113fc5b7d80c
+  languageName: node
+  linkType: hard
+
 "core-js@npm:^2.6.5":
   version: 2.6.12
   resolution: "core-js@npm:2.6.12"
@@ -2602,14 +2609,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.0.0, core-js@npm:^3.21.1":
-  version: 3.22.2
-  resolution: "core-js@npm:3.22.2"
-  checksum: 23efd6148d2f564852f23de426401c86f1d8af410eacccf22ae5dd82b1e9de558f05692cacd4b7e709d47993c670d7bca6f601d0b2ab32cf397a113fc5b7d80c
-  languageName: node
-  linkType: hard
-
-"cross-env@npm:^7.0.3":
+"cross-env@npm:7.0.3":
   version: 7.0.3
   resolution: "cross-env@npm:7.0.3"
   dependencies:
@@ -2929,7 +2929,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-resolver-node@npm:^0.3.6":
+"eslint-import-resolver-node@npm:0.3.6, eslint-import-resolver-node@npm:^0.3.6":
   version: 0.3.6
   resolution: "eslint-import-resolver-node@npm:0.3.6"
   dependencies:
@@ -2949,7 +2949,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-chai-friendly@npm:^0.7.2":
+"eslint-plugin-chai-friendly@npm:0.7.2":
   version: 0.7.2
   resolution: "eslint-plugin-chai-friendly@npm:0.7.2"
   peerDependencies:
@@ -2958,7 +2958,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-flowtype@npm:^8.0.3":
+"eslint-plugin-flowtype@npm:8.0.3":
   version: 8.0.3
   resolution: "eslint-plugin-flowtype@npm:8.0.3"
   dependencies:
@@ -2972,7 +2972,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:^2.25.4":
+"eslint-plugin-import@npm:2.26.0":
   version: 2.26.0
   resolution: "eslint-plugin-import@npm:2.26.0"
   dependencies:
@@ -3047,7 +3047,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.11.0, eslint@npm:^8.9.0":
+"eslint@npm:8.14.0, eslint@npm:^8.9.0":
   version: 8.14.0
   resolution: "eslint@npm:8.14.0"
   dependencies:
@@ -3204,7 +3204,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fetch-mock@npm:^9.11.0":
+"fetch-mock@npm:9.11.0":
   version: 9.11.0
   resolution: "fetch-mock@npm:9.11.0"
   dependencies:
@@ -3331,7 +3331,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flow-bin@npm:^0.174.1":
+"flow-bin@npm:0.174.1":
   version: 0.174.1
   resolution: "flow-bin@npm:0.174.1"
   bin:
@@ -4622,7 +4622,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"mocha@npm:^9.2.2":
+"mocha@npm:9.2.2":
   version: 9.2.2
   resolution: "mocha@npm:9.2.2"
   dependencies:
@@ -4728,7 +4728,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6":
+"node-fetch@npm:2.6.7":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
   dependencies:
@@ -5273,7 +5273,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"regenerator-runtime@npm:^0.13.4, regenerator-runtime@npm:^0.13.9":
+"regenerator-runtime@npm:0.13.9, regenerator-runtime@npm:^0.13.4":
   version: 0.13.9
   resolution: "regenerator-runtime@npm:0.13.9"
   checksum: 65ed455fe5afd799e2897baf691ca21c2772e1a969d19bb0c4695757c2d96249eb74ee3553ea34a91062b2a676beedf630b4c1551cc6299afb937be1426ec55e
@@ -5540,7 +5540,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"shelljs@npm:^0.8.5":
+"shelljs@npm:0.8.5":
   version: 0.8.5
   resolution: "shelljs@npm:0.8.5"
   dependencies:
@@ -5571,7 +5571,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"sinon@npm:^13.0.1":
+"sinon@npm:13.0.2":
   version: 13.0.2
   resolution: "sinon@npm:13.0.2"
   dependencies:
@@ -6029,7 +6029,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"url-search-params-polyfill@npm:^8.1.1":
+"url-search-params-polyfill@npm:8.1.1":
   version: 8.1.1
   resolution: "url-search-params-polyfill@npm:8.1.1"
   checksum: c63169a8a70a256e73203c4404acf4fdbb38075f3f888ea38f92b09dc896190180cc9c072c927d7bb995c5a35e7729be8c4f7e876f83f8f8ab6fac263c971725
@@ -6090,7 +6090,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"webpack-cli@npm:^4.9.2":
+"webpack-cli@npm:4.9.2":
   version: 4.9.2
   resolution: "webpack-cli@npm:4.9.2"
   dependencies:
@@ -6140,7 +6140,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.70.0":
+"webpack@npm:5.72.0":
   version: 5.72.0
   resolution: "webpack@npm:5.72.0"
   dependencies:
@@ -6397,6 +6397,21 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"yargs@npm:17.4.1":
+  version: 17.4.1
+  resolution: "yargs@npm:17.4.1"
+  dependencies:
+    cliui: ^7.0.2
+    escalade: ^3.1.1
+    get-caller-file: ^2.0.5
+    require-directory: ^2.1.1
+    string-width: ^4.2.3
+    y18n: ^5.0.5
+    yargs-parser: ^21.0.0
+  checksum: e9012322870d7e4e912a6ae1f63b203e365f911c0cf158be92c36edefddfb3bd38ce17eb9ef0d18858a4777f047c50589ea22dacb44bd949169ba37dc6d34bee
+  languageName: node
+  linkType: hard
+
 "yargs@npm:^15.0.2":
   version: 15.4.1
   resolution: "yargs@npm:15.4.1"
@@ -6413,21 +6428,6 @@ fsevents@~2.3.2:
     y18n: ^4.0.0
     yargs-parser: ^18.1.2
   checksum: 40b974f508d8aed28598087720e086ecd32a5fd3e945e95ea4457da04ee9bdb8bdd17fd91acff36dc5b7f0595a735929c514c40c402416bbb87c03f6fb782373
-  languageName: node
-  linkType: hard
-
-"yargs@npm:^17.4.1":
-  version: 17.4.1
-  resolution: "yargs@npm:17.4.1"
-  dependencies:
-    cliui: ^7.0.2
-    escalade: ^3.1.1
-    get-caller-file: ^2.0.5
-    require-directory: ^2.1.1
-    string-width: ^4.2.3
-    y18n: ^5.0.5
-    yargs-parser: ^21.0.0
-  checksum: e9012322870d7e4e912a6ae1f63b203e365f911c0cf158be92c36edefddfb3bd38ce17eb9ef0d18858a4777f047c50589ea22dacb44bd949169ba37dc6d34bee
   languageName: node
   linkType: hard
 

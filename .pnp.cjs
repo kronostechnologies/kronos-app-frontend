@@ -52,7 +52,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@xmldom/xmldom", "npm:0.8.2"],\
             ["babel-eslint", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:10.1.0"],\
             ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:8.2.5"],\
-            ["blob-polyfill", "npm:6.0.20211015"],\
+            ["blob-polyfill", "npm:7.0.20220408"],\
             ["chai", "npm:4.3.6"],\
             ["chai-as-promised", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:7.1.1"],\
             ["core-js", "npm:3.25.0"],\
@@ -2774,7 +2774,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@xmldom/xmldom", "npm:0.8.2"],\
             ["babel-eslint", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:10.1.0"],\
             ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:8.2.5"],\
-            ["blob-polyfill", "npm:6.0.20211015"],\
+            ["blob-polyfill", "npm:7.0.20220408"],\
             ["chai", "npm:4.3.6"],\
             ["chai-as-promised", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:7.1.1"],\
             ["core-js", "npm:3.25.0"],\
@@ -3991,10 +3991,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["blob-polyfill", [\
-        ["npm:6.0.20211015", {\
-          "packageLocation": "./.yarn/cache/blob-polyfill-npm-6.0.20211015-63f9f357ed-1e9f3c6451.zip/node_modules/blob-polyfill/",\
+        ["npm:7.0.20220408", {\
+          "packageLocation": "./.yarn/cache/blob-polyfill-npm-7.0.20220408-e780b0b8c9-bbd062e904.zip/node_modules/blob-polyfill/",\
           "packageDependencies": [\
-            ["blob-polyfill", "npm:6.0.20211015"]\
+            ["blob-polyfill", "npm:7.0.20220408"]\
           ],\
           "linkType": "HARD"\
         }]\

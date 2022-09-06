@@ -1664,6 +1664,7 @@ __metadata:
     "@babel/runtime": 7.19.0
     "@equisoft/eslint-config": 2.0.2
     "@microsoft/eslint-formatter-sarif": 3.0.0
+    "@sentry/browser": ^7.12.0
     "@xmldom/xmldom": 0.8.2
     babel-eslint: 10.1.0
     babel-loader: 8.2.5
@@ -1697,8 +1698,6 @@ __metadata:
     webpack: 5.74.0
     webpack-cli: 4.10.0
     yargs: 17.5.1
-  peerDependencies:
-    "@sentry/browser": ^7.12.0
   languageName: unknown
   linkType: soft
 
@@ -1921,6 +1920,58 @@ __metadata:
     mkdirp: ^1.0.4
     rimraf: ^3.0.2
   checksum: 1388777b507b0c592d53f41b9d182e1a8de7763bc625fc07999b8edbc22325f074e5b3ec90af79c89d6987fdb2325bc66d59f483258543c14a43661621f841b0
+  languageName: node
+  linkType: hard
+
+"@sentry/browser@npm:^7.12.0":
+  version: 7.12.1
+  resolution: "@sentry/browser@npm:7.12.1"
+  dependencies:
+    "@sentry/core": 7.12.1
+    "@sentry/types": 7.12.1
+    "@sentry/utils": 7.12.1
+    tslib: ^1.9.3
+  checksum: 7aba4ea056a2aa1b8d619f85f0f20643392fb288598e4399c6d83dd35991f174311030979a5f7a61a9e57a4ecc43c0989ba4e0fae98554bed2528e095071e8e2
+  languageName: node
+  linkType: hard
+
+"@sentry/core@npm:7.12.1":
+  version: 7.12.1
+  resolution: "@sentry/core@npm:7.12.1"
+  dependencies:
+    "@sentry/hub": 7.12.1
+    "@sentry/types": 7.12.1
+    "@sentry/utils": 7.12.1
+    tslib: ^1.9.3
+  checksum: c8cd62220a327bb4f7b1a97503c19b40710da0d880d7b881384e224aa470c983410c836d5dd85a2cd88166301771a0cea3fd2f93b53d17b29e82457282bb7d01
+  languageName: node
+  linkType: hard
+
+"@sentry/hub@npm:7.12.1":
+  version: 7.12.1
+  resolution: "@sentry/hub@npm:7.12.1"
+  dependencies:
+    "@sentry/types": 7.12.1
+    "@sentry/utils": 7.12.1
+    tslib: ^1.9.3
+  checksum: f6607969a0dd16e6892ec56675a5dadcde20f39a031a39541816ae1a56a65cc4f26b942859c85ce40992c8a0959020bf0c27e4bd68bdc96adcf499ce6f147252
+  languageName: node
+  linkType: hard
+
+"@sentry/types@npm:7.12.1":
+  version: 7.12.1
+  resolution: "@sentry/types@npm:7.12.1"
+  checksum: 5a60d8c92ecf4f69a5e584441312d42acbc87f7865e78079e8f8757474874b0deae69707f2d0e74ea0e6bf1665b1d7887e201a53154ddfecb2630a0d5a200342
+  languageName: node
+  linkType: hard
+
+"@sentry/utils@npm:7.12.1":
+  version: 7.12.1
+  resolution: "@sentry/utils@npm:7.12.1"
+  dependencies:
+    "@sentry/types": 7.12.1
+    tslib: ^1.9.3
+  checksum: 22fa506c6e3116ec950a10aaf98929b70264c90fa83bfb4752da779753f312277a44f705c45102ce06b1781d99db2ea4e4e66662d0fde1792e8cae2559e63b5b
   languageName: node
   linkType: hard
 
@@ -6431,6 +6482,13 @@ fsevents@~2.3.2:
     minimist: ^1.2.6
     strip-bom: ^3.0.0
   checksum: 8afa01c673ebb4782ba53d3a12df97fa837ce524f8ad38ee4e2b2fd57f5ac79abc21c574e9e9eb014d93efe7fe8214001b96233b5c6ea75bd1ea82afe17a4c6d
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^1.9.3":
+  version: 1.14.1
+  resolution: "tslib@npm:1.14.1"
+  checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
   languageName: node
   linkType: hard
 

@@ -47,7 +47,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/register", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:7.18.9"],\
             ["@babel/runtime", "npm:7.19.0"],\
             ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.0.2"],\
-            ["@microsoft/eslint-formatter-sarif", "npm:2.1.7"],\
+            ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
             ["@sentry/browser", "npm:6.19.7"],\
             ["@xmldom/xmldom", "npm:0.8.2"],\
             ["babel-eslint", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:10.1.0"],\
@@ -2769,7 +2769,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/register", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:7.18.9"],\
             ["@babel/runtime", "npm:7.19.0"],\
             ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.0.2"],\
-            ["@microsoft/eslint-formatter-sarif", "npm:2.1.7"],\
+            ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
             ["@sentry/browser", "npm:6.19.7"],\
             ["@xmldom/xmldom", "npm:0.8.2"],\
             ["babel-eslint", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:10.1.0"],\
@@ -2990,10 +2990,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@microsoft/eslint-formatter-sarif", [\
-        ["npm:2.1.7", {\
-          "packageLocation": "./.yarn/cache/@microsoft-eslint-formatter-sarif-npm-2.1.7-904292757a-056cee88b1.zip/node_modules/@microsoft/eslint-formatter-sarif/",\
+        ["npm:3.0.0", {\
+          "packageLocation": "./.yarn/cache/@microsoft-eslint-formatter-sarif-npm-3.0.0-fe6e25eb71-47c5d2e356.zip/node_modules/@microsoft/eslint-formatter-sarif/",\
           "packageDependencies": [\
-            ["@microsoft/eslint-formatter-sarif", "npm:2.1.7"],\
+            ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
             ["eslint", "npm:8.14.0"],\
             ["jschardet", "npm:3.0.0"],\
             ["lodash", "npm:4.17.21"],\

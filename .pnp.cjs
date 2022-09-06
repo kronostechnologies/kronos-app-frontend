@@ -48,7 +48,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/runtime", "npm:7.19.0"],\
             ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.0.2"],\
             ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
-            ["@sentry/browser", "npm:7.12.1"],\
             ["@xmldom/xmldom", "npm:0.8.2"],\
             ["babel-eslint", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:10.1.0"],\
             ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:8.2.5"],\
@@ -2770,7 +2769,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/runtime", "npm:7.19.0"],\
             ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.0.2"],\
             ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
-            ["@sentry/browser", "npm:7.12.1"],\
             ["@xmldom/xmldom", "npm:0.8.2"],\
             ["babel-eslint", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:10.1.0"],\
             ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:8.2.5"],\
@@ -3051,64 +3049,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@npmcli/move-file", "npm:2.0.0"],\
             ["mkdirp", "npm:1.0.4"],\
             ["rimraf", "npm:3.0.2"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["@sentry/browser", [\
-        ["npm:7.12.1", {\
-          "packageLocation": "./.yarn/cache/@sentry-browser-npm-7.12.1-c2ca597609-7aba4ea056.zip/node_modules/@sentry/browser/",\
-          "packageDependencies": [\
-            ["@sentry/browser", "npm:7.12.1"],\
-            ["@sentry/core", "npm:7.12.1"],\
-            ["@sentry/types", "npm:7.12.1"],\
-            ["@sentry/utils", "npm:7.12.1"],\
-            ["tslib", "npm:1.14.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["@sentry/core", [\
-        ["npm:7.12.1", {\
-          "packageLocation": "./.yarn/cache/@sentry-core-npm-7.12.1-4c562c8c6e-c8cd62220a.zip/node_modules/@sentry/core/",\
-          "packageDependencies": [\
-            ["@sentry/core", "npm:7.12.1"],\
-            ["@sentry/hub", "npm:7.12.1"],\
-            ["@sentry/types", "npm:7.12.1"],\
-            ["@sentry/utils", "npm:7.12.1"],\
-            ["tslib", "npm:1.14.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["@sentry/hub", [\
-        ["npm:7.12.1", {\
-          "packageLocation": "./.yarn/cache/@sentry-hub-npm-7.12.1-5dd0d6295b-f6607969a0.zip/node_modules/@sentry/hub/",\
-          "packageDependencies": [\
-            ["@sentry/hub", "npm:7.12.1"],\
-            ["@sentry/types", "npm:7.12.1"],\
-            ["@sentry/utils", "npm:7.12.1"],\
-            ["tslib", "npm:1.14.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["@sentry/types", [\
-        ["npm:7.12.1", {\
-          "packageLocation": "./.yarn/cache/@sentry-types-npm-7.12.1-5ddb944198-5a60d8c92e.zip/node_modules/@sentry/types/",\
-          "packageDependencies": [\
-            ["@sentry/types", "npm:7.12.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["@sentry/utils", [\
-        ["npm:7.12.1", {\
-          "packageLocation": "./.yarn/cache/@sentry-utils-npm-7.12.1-c601bb806b-22fa506c6e.zip/node_modules/@sentry/utils/",\
-          "packageDependencies": [\
-            ["@sentry/utils", "npm:7.12.1"],\
-            ["@sentry/types", "npm:7.12.1"],\
-            ["tslib", "npm:1.14.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -8438,15 +8378,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["json5", "npm:1.0.1"],\
             ["minimist", "npm:1.2.6"],\
             ["strip-bom", "npm:3.0.0"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["tslib", [\
-        ["npm:1.14.1", {\
-          "packageLocation": "./.yarn/cache/tslib-npm-1.14.1-102499115e-dbe628ef87.zip/node_modules/tslib/",\
-          "packageDependencies": [\
-            ["tslib", "npm:1.14.1"]\
           ],\
           "linkType": "HARD"\
         }]\

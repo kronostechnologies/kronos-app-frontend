@@ -67,7 +67,6 @@
     "yargs": "17.5.1"
   },
   "dependencies": {
-    "@sentry/browser": "^7.0.0",
     "es6-error": "^4.1.1",
     "events": "^3.3.0",
     "jquery": "^3.4",
@@ -75,5 +74,8 @@
     "moment": "^2.29.1",
     "numbro": "^2.3.6"
   },
-  "packageManager": "yarn@3.2.3"
+  "packageManager": "yarn@3.2.3",
+  "peerDependencies": {
+    "@sentry/browser": "^7.12.0"
+  }
 }

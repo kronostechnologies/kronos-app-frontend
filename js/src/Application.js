@@ -225,6 +225,7 @@ export default class Application extends EventEmitter {
                 dsn: config.sentry.dsn,
                 release: config.application_version,
                 beforeSend: this.sentry_beforeSend.bind(this),
+                sendDefaultPii: true
             });
 
             Sentry.configureScope((scope) => {

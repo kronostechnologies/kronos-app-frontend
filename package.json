@@ -38,7 +38,7 @@
     "@babel/runtime": "7.19.0",
     "@equisoft/eslint-config": "3.0.2",
     "@microsoft/eslint-formatter-sarif": "3.0.0",
-    "@xmldom/xmldom": "0.8.2",
+    "@xmldom/xmldom": "0.8.3",
     "babel-eslint": "10.1.0",
     "babel-loader": "8.2.5",
     "blob-polyfill": "7.0.20220408",

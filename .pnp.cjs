@@ -44,7 +44,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:3.0.2"],\
             ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
             ["@sentry/browser", "npm:7.12.1"],\
-            ["@xmldom/xmldom", "npm:0.8.2"],\
+            ["@xmldom/xmldom", "npm:0.8.3"],\
             ["babel-eslint", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:10.1.0"],\
             ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:8.2.5"],\
             ["blob-polyfill", "npm:7.0.20220408"],\
@@ -2857,7 +2857,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:3.0.2"],\
             ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
             ["@sentry/browser", "npm:7.12.1"],\
-            ["@xmldom/xmldom", "npm:0.8.2"],\
+            ["@xmldom/xmldom", "npm:0.8.3"],\
             ["babel-eslint", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:10.1.0"],\
             ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:8.2.5"],\
             ["blob-polyfill", "npm:7.0.20220408"],\
@@ -3564,10 +3564,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@xmldom/xmldom", [\
-        ["npm:0.8.2", {\
-          "packageLocation": "./.yarn/cache/@xmldom-xmldom-npm-0.8.2-dbf61336d0-aeea8f670b.zip/node_modules/@xmldom/xmldom/",\
+        ["npm:0.8.3", {\
+          "packageLocation": "./.yarn/cache/@xmldom-xmldom-npm-0.8.3-fb5ef746aa-087303060f.zip/node_modules/@xmldom/xmldom/",\
           "packageDependencies": [\
-            ["@xmldom/xmldom", "npm:0.8.2"]\
+            ["@xmldom/xmldom", "npm:0.8.3"]\
           ],\
           "linkType": "HARD"\
         }]\

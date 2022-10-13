@@ -488,6 +488,32 @@ export default class Application extends EventEmitter {
         });
     }
 
+    _showNoAccessError() {
+        const self = this;
+        self.showModalDialog(`<h2>${self._('NAVIGATION_ERROR')}</h2>\
+                                        <p>\
+                                            <strong>${self._('INVALID_PAGE_REQUEST')}</strong>\
+                                            <br />\
+                                        </p>\
+                                        <p class="submit">\
+                                            <input type="submit" id="hook_create_error_close" value="${self._('OK')}" />\
+                                        </p>`, 'fast', () => {
+            $('#hook_create_error_close').safeClick(() => {
+                self.hideModalDialog('fast');
+
+                // stop looking at the location for now ...
+                self._stopObservation();
+
+                // ... revert page change ...
+                self.hash = self.stepBack();
+                self.addHistory(self.hash);
+
+                // ... and then start to observe again
+                self._observe();
+            });
+        });
+    }
+
     /**
      *    Show a modal dialog telling the user something bad happened. He can try again or go back to where he was before.
      */
@@ -849,6 +875,7 @@ export default class Application extends EventEmitter {
                     }
 
                     if (response.status == 'error') {
+                        console.log('ERROR', response);
                         const traceId = Application.getTraceIdFromJQueryXHR(jqXHR);
 
                         const info = response.data;
@@ -858,6 +885,8 @@ export default class Application extends EventEmitter {
                                 traceId);
                         } else if (info.code == 601 || info.code == 602) { // VIEW_ACL_ERROR or MODEL_ACL_ERROR
                             self._showNavigationError();
+                        } else if (info.code == 604) { // NO_ACCESS
+                            self._showNoAccessError();
                         } else { // Unknown error
                             self._showFatalError(`An unknown error was sent from server while fetching view data "${view}" (${info.error})`,
                                 traceId);

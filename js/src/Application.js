@@ -462,6 +462,12 @@ export default class Application extends EventEmitter {
         return false;
     }
 
+    /** over-ridden in kronos-crm/app/views/App/Application.js */
+    _showAccessDeniedError(traceId) {
+        const self = this;
+        self._showFatalError('', traceId);
+    }
+
     _showNavigationError() {
         const self = this;
         self.showModalDialog(`<h2>${self._('NAVIGATION_ERROR')}</h2>\
@@ -858,6 +864,8 @@ export default class Application extends EventEmitter {
                                 traceId);
                         } else if (info.code == 601 || info.code == 602) { // VIEW_ACL_ERROR or MODEL_ACL_ERROR
                             self._showNavigationError();
+                        } else if (info.code == 604) {
+                            self._showAccessDeniedError(traceId);
                         } else { // Unknown error
                             self._showFatalError(`An unknown error was sent from server while fetching view data "${view}" (${info.error})`,
                                 traceId);

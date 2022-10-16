@@ -54,6 +54,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/compat-data@npm:^7.19.4":
+  version: 7.19.4
+  resolution: "@babel/compat-data@npm:7.19.4"
+  checksum: 757fdaeb6756c2d323ff56f60fb8e670292108cda6abf762a56c0d40910ecc4d2c7e283dbdfbcee6bc28c74ad659144352609e1cb49d31e101ab13ea5ce90072
+  languageName: node
+  linkType: hard
+
 "@babel/core@npm:7.19.3":
   version: 7.19.3
   resolution: "@babel/core@npm:7.19.3"
@@ -751,7 +758,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-object-rest-spread@npm:7.18.9, @babel/plugin-proposal-object-rest-spread@npm:^7.18.9":
+"@babel/plugin-proposal-object-rest-spread@npm:7.19.4":
+  version: 7.19.4
+  resolution: "@babel/plugin-proposal-object-rest-spread@npm:7.19.4"
+  dependencies:
+    "@babel/compat-data": ^7.19.4
+    "@babel/helper-compilation-targets": ^7.19.3
+    "@babel/helper-plugin-utils": ^7.19.0
+    "@babel/plugin-syntax-object-rest-spread": ^7.8.3
+    "@babel/plugin-transform-parameters": ^7.18.8
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 90a2a59da305e6c8c83831e16079193df33d727a77a90972e286af2c8c0295fddb91b0978b88f16f63080d08a82b08ce3ee82a88b0488b3c51decc73c1d35786
+  languageName: node
+  linkType: hard
+
+"@babel/plugin-proposal-object-rest-spread@npm:^7.18.9":
   version: 7.18.9
   resolution: "@babel/plugin-proposal-object-rest-spread@npm:7.18.9"
   dependencies:
@@ -1733,7 +1755,7 @@ __metadata:
     "@babel/core": 7.19.3
     "@babel/eslint-parser": 7.19.1
     "@babel/plugin-proposal-class-properties": 7.18.6
-    "@babel/plugin-proposal-object-rest-spread": 7.18.9
+    "@babel/plugin-proposal-object-rest-spread": 7.19.4
     "@babel/plugin-proposal-optional-chaining": 7.18.9
     "@babel/plugin-syntax-dynamic-import": 7.8.3
     "@babel/plugin-transform-flow-strip-types": 7.19.0
@@ -1762,11 +1784,11 @@ __metadata:
     eslint-plugin-import: 2.26.0
     events: ^3.3.0
     fetch-mock: 9.11.0
-    flow-bin: 0.188.2
+    flow-bin: 0.190.0
     formdata-polyfill: 3.0.20
     jquery: ^3.4
     jquery-param: ^1.1.8
-    mocha: 10.0.0
+    mocha: 10.1.0
     mocha-junit-reporter: 2.1.0
     moment: ^2.29.1
     node-fetch: 2.6.7
@@ -2146,13 +2168,6 @@ __metadata:
   version: 17.0.29
   resolution: "@types/node@npm:17.0.29"
   checksum: bb9d7bce9d6d3882efd9d63b773b548dce98df4bd57eff8ceaa316aa2f3346e36d3618764cc93da84bbff92005174a35eec3465cde91ee973ef1c351ffa40074
-  languageName: node
-  linkType: hard
-
-"@ungap/promise-all-settled@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@ungap/promise-all-settled@npm:1.1.2"
-  checksum: 08d37fdfa23a6fe8139f1305313562ebad973f3fac01bcce2773b2bda5bcb0146dfdcf3cb6a722cf0a5f2ca0bc56a827eac8f1e7b3beddc548f654addf1fc34c
   languageName: node
   linkType: hard
 
@@ -3943,12 +3958,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flow-bin@npm:0.188.2":
-  version: 0.188.2
-  resolution: "flow-bin@npm:0.188.2"
+"flow-bin@npm:0.190.0":
+  version: 0.190.0
+  resolution: "flow-bin@npm:0.190.0"
   bin:
     flow: cli.js
-  checksum: 6ccfacc66e536c5ee1ec0b250ae8ff74b69a9832f64eed06450d0893317dfa213d93d03f019b836aa04e959bc597f39f548bd1fdbeedcffac279ff65f1ec762f
+  checksum: ecdcb87668ace20ab2cede83a10a567d2d8252b48aeb67d0a3737f34376f2fcd427ffd366d40b55591d40803399bc5d7ded772be8cd0e4f7279579e09a855884
   languageName: node
   linkType: hard
 
@@ -5251,11 +5266,10 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"mocha@npm:10.0.0":
-  version: 10.0.0
-  resolution: "mocha@npm:10.0.0"
+"mocha@npm:10.1.0":
+  version: 10.1.0
+  resolution: "mocha@npm:10.1.0"
   dependencies:
-    "@ungap/promise-all-settled": 1.1.2
     ansi-colors: 4.1.1
     browser-stdout: 1.3.1
     chokidar: 3.5.3
@@ -5280,7 +5294,7 @@ fsevents@~2.3.2:
   bin:
     _mocha: bin/_mocha
     mocha: bin/mocha.js
-  checksum: ba49ddcf8015a467e744b06c396aab361b1281302e38e7c1269af25ba51ff9ab681a9c36e9046bb7491e751cd7d5ce85e276a00ce7e204f96b2c418e4595edfe
+  checksum: c64c7305769e09ae5559c1cd31eae8b4c7c0e19e328cf54d1374e5555a0f01e3d5dced99882911d927e0a9d0c613d0644a1750b848a2848fb7dcf4684f97f65f
   languageName: node
   linkType: hard
 

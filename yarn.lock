@@ -1615,12 +1615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.19.4":
-  version: 7.19.4
-  resolution: "@babel/runtime@npm:7.19.4"
+"@babel/runtime@npm:7.20.0":
+  version: 7.20.0
+  resolution: "@babel/runtime@npm:7.20.0"
   dependencies:
-    regenerator-runtime: ^0.13.4
-  checksum: 66b7e3c13e9ee1d2c9397ea89144f29a875edee266a0eb2d9971be51b32fdbafc85808c7a45e011e6681899bb804b4e2ee2aed6dc07108dbbd6b11b6cc2afba6
+    regenerator-runtime: ^0.13.10
+  checksum: 637fca51db34f3a59d329b7e0d01163769fe94915fdb04e4ac4ba62de9f1ca637ce3a564fe3b0166ccdd7f02f14b6a5707ee3e550b3e01c72327c6620d8e6a8b
   languageName: node
   linkType: hard
 
@@ -1781,7 +1781,7 @@ __metadata:
     "@babel/preset-env": 7.19.4
     "@babel/preset-flow": 7.18.6
     "@babel/register": 7.18.9
-    "@babel/runtime": 7.19.4
+    "@babel/runtime": 7.20.0
     "@equisoft/eslint-config": 3.0.3
     "@microsoft/eslint-formatter-sarif": 3.0.0
     "@sentry/browser": ^7.12.0
@@ -1801,7 +1801,7 @@ __metadata:
     eslint-plugin-import: 2.26.0
     events: ^3.3.0
     fetch-mock: 9.11.0
-    flow-bin: 0.190.1
+    flow-bin: 0.191.0
     formdata-polyfill: 3.0.20
     jquery: ^3.4
     jquery-param: ^1.1.8
@@ -3947,12 +3947,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flow-bin@npm:0.190.1":
-  version: 0.190.1
-  resolution: "flow-bin@npm:0.190.1"
+"flow-bin@npm:0.191.0":
+  version: 0.191.0
+  resolution: "flow-bin@npm:0.191.0"
   bin:
     flow: cli.js
-  checksum: 89c7a06eac6b38299620e57b7df0003e7b21418dcc7d35ed5d9576f02b64245c6908564967a1b6e9392ab65d2f2587377e19bf49260dd6bf8abdbcb4b36139f4
+  checksum: 84b3ba07521c2253d069e090fb3a076371ee4926b78bdbc241a32ed725a1bf19656ed9831367c1e8f93884f893548649cd069bd3d6f4f08523b5fa97bf1e0b96
   languageName: node
   linkType: hard
 
@@ -5864,7 +5864,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"regenerator-runtime@npm:0.13.10":
+"regenerator-runtime@npm:0.13.10, regenerator-runtime@npm:^0.13.10":
   version: 0.13.10
   resolution: "regenerator-runtime@npm:0.13.10"
   checksum: 09893f5a9e82932642d9a999716b6c626dc53ef2a01307c952ebbf8e011802360163a37c304c18a6c358548be5a72b448e37209954a18696f21e438c81cbb4b9

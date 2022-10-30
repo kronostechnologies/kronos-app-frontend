@@ -1785,7 +1785,7 @@ __metadata:
     "@equisoft/eslint-config": 3.0.3
     "@microsoft/eslint-formatter-sarif": 3.0.0
     "@sentry/browser": ^7.12.0
-    "@xmldom/xmldom": 0.8.3
+    "@xmldom/xmldom": 0.8.4
     babel-eslint: 10.1.0
     babel-loader: 8.2.5
     blob-polyfill: 7.0.20220408
@@ -1806,7 +1806,7 @@ __metadata:
     jquery: ^3.4
     jquery-param: ^1.1.8
     mocha: 10.1.0
-    mocha-junit-reporter: 2.1.0
+    mocha-junit-reporter: 2.1.1
     moment: ^2.29.1
     node-fetch: 2.6.7
     numbro: ^2.3.6
@@ -2372,10 +2372,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xmldom/xmldom@npm:0.8.3":
-  version: 0.8.3
-  resolution: "@xmldom/xmldom@npm:0.8.3"
-  checksum: 087303060fc794f0ec8c0e9031362c1ae56eb1cf06b291cc178602462c072fb9f84657a430ae9c8c1b4c0d33549259e89ed14ebc86ca1a696f253bdd7f0dffcf
+"@xmldom/xmldom@npm:0.8.4":
+  version: 0.8.4
+  resolution: "@xmldom/xmldom@npm:0.8.4"
+  checksum: 9046735714c47e95732449481954653788df5f93fa968a186ae62e6c201c0f9f7bed03647bbdfe25f26532d07a99604a48fadeddecbe437bae0edcf207751e02
   languageName: node
   linkType: hard
 
@@ -3200,7 +3200,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:4.3.4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.2, debug@npm:^4.3.3":
+"debug@npm:4, debug@npm:4.3.4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
   dependencies:
@@ -3212,7 +3212,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:^2.2.0, debug@npm:^2.6.9":
+"debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
   dependencies:
@@ -5067,7 +5067,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"md5@npm:^2.1.0":
+"md5@npm:^2.3.0":
   version: 2.3.0
   resolution: "md5@npm:2.3.0"
   dependencies:
@@ -5196,7 +5196,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:^1.0.3, mkdirp@npm:^1.0.4":
+"mkdirp@npm:^1.0.3, mkdirp@npm:^1.0.4, mkdirp@npm:~1.0.4":
   version: 1.0.4
   resolution: "mkdirp@npm:1.0.4"
   bin:
@@ -5205,29 +5205,18 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:~0.5.1":
-  version: 0.5.6
-  resolution: "mkdirp@npm:0.5.6"
+"mocha-junit-reporter@npm:2.1.1":
+  version: 2.1.1
+  resolution: "mocha-junit-reporter@npm:2.1.1"
   dependencies:
-    minimist: ^1.2.6
-  bin:
-    mkdirp: bin/cmd.js
-  checksum: 0c91b721bb12c3f9af4b77ebf73604baf350e64d80df91754dc509491ae93bf238581e59c7188360cec7cb62fc4100959245a42cfe01834efedc5e9d068376c2
-  languageName: node
-  linkType: hard
-
-"mocha-junit-reporter@npm:2.1.0":
-  version: 2.1.0
-  resolution: "mocha-junit-reporter@npm:2.1.0"
-  dependencies:
-    debug: ^2.2.0
-    md5: ^2.1.0
-    mkdirp: ~0.5.1
+    debug: ^4.3.4
+    md5: ^2.3.0
+    mkdirp: ~1.0.4
     strip-ansi: ^6.0.1
-    xml: ^1.0.0
+    xml: ^1.0.1
   peerDependencies:
     mocha: ">=2.2.5"
-  checksum: 26b3ce65159f36ce3861e0d3b15ec2e6d1dd5aa8b1619665a6d64e1fc8aba6bf37ecd0eb5368663143060ec9a7696b59642b524c870e674d8d4b093c50139ca2
+  checksum: 87a7e2e5169d9a50405d844c10bcfb45a6dd2873539249de5b4508c6276dc118997646760512b2efd2780ac84e1ae519909dde0dfb672f1b8208df2042cd0731
   languageName: node
   linkType: hard
 
@@ -6962,7 +6951,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"xml@npm:^1.0.0":
+"xml@npm:^1.0.1":
   version: 1.0.1
   resolution: "xml@npm:1.0.1"
   checksum: 11b5545ef3f8fec3fa29ce251f50ad7b6c97c103ed4d851306ec23366f5fa4699dd6a942262df52313a0cd1840ab26256da253c023bad3309d8ce46fe6020ca0

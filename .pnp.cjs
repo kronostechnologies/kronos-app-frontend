@@ -50,7 +50,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["blob-polyfill", "npm:7.0.20220408"],\
             ["chai", "npm:4.3.7"],\
             ["chai-as-promised", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:7.1.1"],\
-            ["core-js", "npm:3.26.0"],\
+            ["core-js", "npm:3.26.1"],\
             ["cross-env", "npm:7.0.3"],\
             ["es6-error", "npm:4.1.1"],\
             ["eslint", "npm:8.27.0"],\
@@ -2977,7 +2977,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["blob-polyfill", "npm:7.0.20220408"],\
             ["chai", "npm:4.3.7"],\
             ["chai-as-promised", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:7.1.1"],\
-            ["core-js", "npm:3.26.0"],\
+            ["core-js", "npm:3.26.1"],\
             ["cross-env", "npm:7.0.3"],\
             ["es6-error", "npm:4.1.1"],\
             ["eslint", "npm:8.27.0"],\
@@ -4695,10 +4695,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "HARD"\
         }],\
-        ["npm:3.26.0", {\
-          "packageLocation": "./.yarn/unplugged/core-js-npm-3.26.0-bb48de0ef9/node_modules/core-js/",\
+        ["npm:3.26.1", {\
+          "packageLocation": "./.yarn/unplugged/core-js-npm-3.26.1-42575888f8/node_modules/core-js/",\
           "packageDependencies": [\
-            ["core-js", "npm:3.26.0"]\
+            ["core-js", "npm:3.26.1"]\
           ],\
           "linkType": "HARD"\
         }]\

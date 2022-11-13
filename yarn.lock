@@ -1885,7 +1885,7 @@ __metadata:
     eslint-plugin-import: 2.26.0
     events: ^3.3.0
     fetch-mock: 9.11.0
-    flow-bin: 0.192.0
+    flow-bin: 0.193.0
     formdata-polyfill: 3.0.20
     jquery: ^3.4
     jquery-param: ^1.1.8
@@ -1899,7 +1899,7 @@ __metadata:
     shelljs: 0.8.5
     sinon: 14.0.2
     url-search-params-polyfill: 8.1.1
-    webpack: 5.74.0
+    webpack: 5.75.0
     webpack-cli: 4.10.0
     yargs: 17.6.2
   languageName: unknown
@@ -4061,12 +4061,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flow-bin@npm:0.192.0":
-  version: 0.192.0
-  resolution: "flow-bin@npm:0.192.0"
+"flow-bin@npm:0.193.0":
+  version: 0.193.0
+  resolution: "flow-bin@npm:0.193.0"
   bin:
     flow: cli.js
-  checksum: 48574caf681ec1cf7d3eb7ba6fe31dfad88f37db8c34f06101c2791435eb1070d869c6936e351a3e900ac0d3be6c74d8044614276ce51a52cbcef7ac0b57f3e7
+  checksum: db7ea167bf2265d67d52c4f05d5f92959de4fbc0d74e14f846d32b0d80de26018034efe67e751377a332714a5bb0f6e56b0a58b32914a7a1a477ef2acc3cab57
   languageName: node
   linkType: hard
 
@@ -6898,9 +6898,9 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.74.0":
-  version: 5.74.0
-  resolution: "webpack@npm:5.74.0"
+"webpack@npm:5.75.0":
+  version: 5.75.0
+  resolution: "webpack@npm:5.75.0"
   dependencies:
     "@types/eslint-scope": ^3.7.3
     "@types/estree": ^0.0.51
@@ -6931,7 +6931,7 @@ fsevents@~2.3.2:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 320c41369a75051b19e18c63f408b3dcc481852e992f83d311771c5ec0f05f2946385e8ebef62030cf3587f0a3d2f12779ffdb191569a966847289ba7313f946
+  checksum: 2bcc5f3c195f375944e8af2f00bf2feea39cb9fda5f763b0d1b00077f1c51783db25c94d3fae96a07dead9fa085e6ae7474417e5ab31719c9776ea5969ceb83a
   languageName: node
   linkType: hard
 

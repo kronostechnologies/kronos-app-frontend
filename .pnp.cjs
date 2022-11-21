@@ -70,7 +70,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["node-fetch", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.6.7"],\
             ["numbro", "npm:2.3.6"],\
             ["nyc", "npm:15.1.0"],\
-            ["regenerator-runtime", "npm:0.13.10"],\
+            ["regenerator-runtime", "npm:0.13.11"],\
             ["shelljs", "npm:0.8.5"],\
             ["sinon", "npm:14.0.2"],\
             ["url-search-params-polyfill", "npm:8.1.1"],\
@@ -2997,7 +2997,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["node-fetch", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.6.7"],\
             ["numbro", "npm:2.3.6"],\
             ["nyc", "npm:15.1.0"],\
-            ["regenerator-runtime", "npm:0.13.10"],\
+            ["regenerator-runtime", "npm:0.13.11"],\
             ["shelljs", "npm:0.8.5"],\
             ["sinon", "npm:14.0.2"],\
             ["url-search-params-polyfill", "npm:8.1.1"],\
@@ -7874,6 +7874,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/regenerator-runtime-npm-0.13.10-57e3c1406b-09893f5a9e.zip/node_modules/regenerator-runtime/",\
           "packageDependencies": [\
             ["regenerator-runtime", "npm:0.13.10"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:0.13.11", {\
+          "packageLocation": "./.yarn/cache/regenerator-runtime-npm-0.13.11-90bf536060-27481628d2.zip/node_modules/regenerator-runtime/",\
+          "packageDependencies": [\
+            ["regenerator-runtime", "npm:0.13.11"]\
           ],\
           "linkType": "HARD"\
         }],\

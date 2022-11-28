@@ -1878,7 +1878,7 @@ __metadata:
     core-js: 3.26.1
     cross-env: 7.0.3
     es6-error: ^4.1.1
-    eslint: 8.27.0
+    eslint: 8.28.0
     eslint-import-resolver-node: 0.3.6
     eslint-plugin-chai-friendly: 0.7.2
     eslint-plugin-flowtype: 8.0.3
@@ -1890,7 +1890,7 @@ __metadata:
     jquery: ^3.4
     jquery-param: ^1.1.8
     mocha: 10.1.0
-    mocha-junit-reporter: 2.1.1
+    mocha-junit-reporter: 2.2.0
     moment: ^2.29.1
     node-fetch: 2.6.7
     numbro: ^2.3.6
@@ -3725,9 +3725,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:8.27.0":
-  version: 8.27.0
-  resolution: "eslint@npm:8.27.0"
+"eslint@npm:8.28.0":
+  version: 8.28.0
+  resolution: "eslint@npm:8.28.0"
   dependencies:
     "@eslint/eslintrc": ^1.3.3
     "@humanwhocodes/config-array": ^0.11.6
@@ -3770,7 +3770,7 @@ __metadata:
     text-table: ^0.2.0
   bin:
     eslint: bin/eslint.js
-  checksum: 153b022d309e1b647a73b1bb0fa98912add699b06e279084155f23c6f2b5fc5abd05411fc1ba81608a24bbfaf044ca079544c16fffa6fc987b8f676c9960a2c4
+  checksum: 1b793486b2ec80f0602d75fff7116f7c39a3286f523608a999eead9bec4154a06841785d2b4fb87f8292a94cf85778c1dbfaec727772a09c4d604fdb9ff0809a
   languageName: node
   linkType: hard
 
@@ -4112,7 +4112,7 @@ __metadata:
 
 "fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
   dependencies:
     node-gyp: latest
   conditions: os=darwin
@@ -5315,9 +5315,9 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"mocha-junit-reporter@npm:2.1.1":
-  version: 2.1.1
-  resolution: "mocha-junit-reporter@npm:2.1.1"
+"mocha-junit-reporter@npm:2.2.0":
+  version: 2.2.0
+  resolution: "mocha-junit-reporter@npm:2.2.0"
   dependencies:
     debug: ^4.3.4
     md5: ^2.3.0
@@ -5326,7 +5326,7 @@ fsevents@~2.3.2:
     xml: ^1.0.1
   peerDependencies:
     mocha: ">=2.2.5"
-  checksum: 87a7e2e5169d9a50405d844c10bcfb45a6dd2873539249de5b4508c6276dc118997646760512b2efd2780ac84e1ae519909dde0dfb672f1b8208df2042cd0731
+  checksum: 476dc12b676b8313ddac8ed27c5b43c86d6d54770efa0081a35a58f3a6717a504cc871058850da0611e7fc42e17201332390dc516096d51a189f12ff2141d420
   languageName: node
   linkType: hard
 
@@ -6125,7 +6125,7 @@ fsevents@~2.3.2:
 
 "resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.12.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>":
   version: 1.22.0
-  resolution: "resolve@patch:resolve@npm%3A1.22.0#~builtin<compat/resolve>::version=1.22.0&hash=07638b"
+  resolution: "resolve@patch:resolve@npm%3A1.22.0#~builtin<compat/resolve>::version=1.22.0&hash=c3c19d"
   dependencies:
     is-core-module: ^2.8.1
     path-parse: ^1.0.7

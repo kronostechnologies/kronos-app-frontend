@@ -72,7 +72,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["nyc", "npm:15.1.0"],\
             ["regenerator-runtime", "npm:0.13.11"],\
             ["shelljs", "npm:0.8.5"],\
-            ["sinon", "npm:14.0.2"],\
+            ["sinon", "npm:15.0.0"],\
             ["url-search-params-polyfill", "npm:8.1.1"],\
             ["webpack", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:5.75.0"],\
             ["webpack-cli", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:5.0.0"],\
@@ -2999,7 +2999,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["nyc", "npm:15.1.0"],\
             ["regenerator-runtime", "npm:0.13.11"],\
             ["shelljs", "npm:0.8.5"],\
-            ["sinon", "npm:14.0.2"],\
+            ["sinon", "npm:15.0.0"],\
             ["url-search-params-polyfill", "npm:8.1.1"],\
             ["webpack", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:5.75.0"],\
             ["webpack-cli", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:5.0.0"],\
@@ -8232,10 +8232,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["sinon", [\
-        ["npm:14.0.2", {\
-          "packageLocation": "./.yarn/cache/sinon-npm-14.0.2-76bb0b1579-de7730cd77.zip/node_modules/sinon/",\
+        ["npm:15.0.0", {\
+          "packageLocation": "./.yarn/cache/sinon-npm-15.0.0-27e29c2290-97febf6c6c.zip/node_modules/sinon/",\
           "packageDependencies": [\
-            ["sinon", "npm:14.0.2"],\
+            ["sinon", "npm:15.0.0"],\
             ["@sinonjs/commons", "npm:2.0.0"],\
             ["@sinonjs/fake-timers", "npm:9.1.2"],\
             ["@sinonjs/samsam", "npm:7.0.1"],\

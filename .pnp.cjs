@@ -64,7 +64,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["formdata-polyfill", "npm:3.0.20"],\
             ["jquery", "npm:3.6.0"],\
             ["jquery-param", "npm:1.1.9"],\
-            ["mocha", "npm:10.1.0"],\
+            ["mocha", "npm:10.2.0"],\
             ["mocha-junit-reporter", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.2.0"],\
             ["moment", "npm:2.29.3"],\
             ["node-fetch", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.6.7"],\
@@ -3036,7 +3036,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["formdata-polyfill", "npm:3.0.20"],\
             ["jquery", "npm:3.6.0"],\
             ["jquery-param", "npm:1.1.9"],\
-            ["mocha", "npm:10.1.0"],\
+            ["mocha", "npm:10.2.0"],\
             ["mocha-junit-reporter", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.2.0"],\
             ["moment", "npm:2.29.3"],\
             ["node-fetch", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.6.7"],\
@@ -4818,20 +4818,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:206792a93c0a25534511a88cb4911c3e1773dcf4ae12e4b97c5d7f4ec423c9b472f827821fe82158c9e8e54dc3e54455a8deb5f0adfd4a50ea80ee1ce22134cc#npm:4.3.4", {\
-          "packageLocation": "./.yarn/__virtual__/debug-virtual-24291acaca/0/cache/debug-npm-4.3.4-4513954577-3dbad3f94e.zip/node_modules/debug/",\
-          "packageDependencies": [\
-            ["debug", "virtual:206792a93c0a25534511a88cb4911c3e1773dcf4ae12e4b97c5d7f4ec423c9b472f827821fe82158c9e8e54dc3e54455a8deb5f0adfd4a50ea80ee1ce22134cc#npm:4.3.4"],\
-            ["@types/supports-color", null],\
-            ["ms", "npm:2.1.2"],\
-            ["supports-color", "npm:8.1.1"]\
-          ],\
-          "packagePeers": [\
-            "@types/supports-color",\
-            "supports-color"\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["virtual:569a25513afb6a24dfed8c5a30a481623293e0360f4b156e464840d4caead450805a6a0e63416cee33f850b619b3920e00801a8b5031df983b570ea9dd38b09f#npm:4.3.4", {\
           "packageLocation": "./.yarn/__virtual__/debug-virtual-4a0a154fbe/0/cache/debug-npm-4.3.4-4513954577-3dbad3f94e.zip/node_modules/debug/",\
           "packageDependencies": [\
@@ -4839,6 +4825,20 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/supports-color", null],\
             ["ms", "npm:2.1.2"],\
             ["supports-color", null]\
+          ],\
+          "packagePeers": [\
+            "@types/supports-color",\
+            "supports-color"\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["virtual:87db25c7c5e6b25bbc12571091cdabc648b79d427ab445d1714ccfdcdfb3265c9de6561ca760cc3de470037cbedf3af4be56ba3b684b3a1c01d4c9c2fd55a741#npm:4.3.4", {\
+          "packageLocation": "./.yarn/__virtual__/debug-virtual-762d08cbe9/0/cache/debug-npm-4.3.4-4513954577-3dbad3f94e.zip/node_modules/debug/",\
+          "packageDependencies": [\
+            ["debug", "virtual:87db25c7c5e6b25bbc12571091cdabc648b79d427ab445d1714ccfdcdfb3265c9de6561ca760cc3de470037cbedf3af4be56ba3b684b3a1c01d4c9c2fd55a741#npm:4.3.4"],\
+            ["@types/supports-color", null],\
+            ["ms", "npm:2.1.2"],\
+            ["supports-color", "npm:8.1.1"]\
           ],\
           "packagePeers": [\
             "@types/supports-color",\
@@ -7169,14 +7169,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["mocha", [\
-        ["npm:10.1.0", {\
-          "packageLocation": "./.yarn/cache/mocha-npm-10.1.0-206792a93c-c64c730576.zip/node_modules/mocha/",\
+        ["npm:10.2.0", {\
+          "packageLocation": "./.yarn/cache/mocha-npm-10.2.0-87db25c7c5-406c45eab1.zip/node_modules/mocha/",\
           "packageDependencies": [\
-            ["mocha", "npm:10.1.0"],\
+            ["mocha", "npm:10.2.0"],\
             ["ansi-colors", "npm:4.1.1"],\
             ["browser-stdout", "npm:1.3.1"],\
             ["chokidar", "npm:3.5.3"],\
-            ["debug", "virtual:206792a93c0a25534511a88cb4911c3e1773dcf4ae12e4b97c5d7f4ec423c9b472f827821fe82158c9e8e54dc3e54455a8deb5f0adfd4a50ea80ee1ce22134cc#npm:4.3.4"],\
+            ["debug", "virtual:87db25c7c5e6b25bbc12571091cdabc648b79d427ab445d1714ccfdcdfb3265c9de6561ca760cc3de470037cbedf3af4be56ba3b684b3a1c01d4c9c2fd55a741#npm:4.3.4"],\
             ["diff", "npm:5.0.0"],\
             ["escape-string-regexp", "npm:4.0.0"],\
             ["find-up", "npm:5.0.0"],\
@@ -7214,7 +7214,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["debug", "virtual:569a25513afb6a24dfed8c5a30a481623293e0360f4b156e464840d4caead450805a6a0e63416cee33f850b619b3920e00801a8b5031df983b570ea9dd38b09f#npm:4.3.4"],\
             ["md5", "npm:2.3.0"],\
             ["mkdirp", "npm:1.0.4"],\
-            ["mocha", "npm:10.1.0"],\
+            ["mocha", "npm:10.2.0"],\
             ["strip-ansi", "npm:6.0.1"],\
             ["xml", "npm:1.0.1"]\
           ],\

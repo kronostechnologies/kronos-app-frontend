@@ -54,7 +54,7 @@
     "fetch-mock": "9.11.0",
     "flow-bin": "0.195.1",
     "formdata-polyfill": "3.0.20",
-    "mocha": "10.1.0",
+    "mocha": "10.2.0",
     "mocha-junit-reporter": "2.2.0",
     "node-fetch": "2.6.7",
     "nyc": "15.1.0",

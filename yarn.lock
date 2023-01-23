@@ -2015,7 +2015,7 @@ __metadata:
     eslint-plugin-import: 2.27.4
     events: ^3.3.0
     fetch-mock: 9.11.0
-    flow-bin: 0.197.0
+    flow-bin: 0.198.1
     formdata-polyfill: 3.0.20
     jquery: ^3.4
     jquery-param: ^1.1.8
@@ -4249,12 +4249,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flow-bin@npm:0.197.0":
-  version: 0.197.0
-  resolution: "flow-bin@npm:0.197.0"
+"flow-bin@npm:0.198.1":
+  version: 0.198.1
+  resolution: "flow-bin@npm:0.198.1"
   bin:
     flow: cli.js
-  checksum: 35a92d67d1b0d33635946cd052dbeda96682cddc97832a5271630ca2728607686dde3acd1db6f1a780a1f398f4b4f3b7f68512940c580ff28bfbc60c4e5392a7
+  checksum: 9eb1039eaf76cf0ee2572765ce052083238ccf7806f13e20bf844e11e4f52ad5f0d34823cfcda3c5ae42fa9c7da89b899149111f71718c7346ed82f0167e8196
   languageName: node
   linkType: hard
 

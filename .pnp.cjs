@@ -60,7 +60,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-import", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.27.4"],\
             ["events", "npm:3.3.0"],\
             ["fetch-mock", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.11.0"],\
-            ["flow-bin", "npm:0.197.0"],\
+            ["flow-bin", "npm:0.198.1"],\
             ["formdata-polyfill", "npm:3.0.20"],\
             ["jquery", "npm:3.6.0"],\
             ["jquery-param", "npm:1.1.9"],\
@@ -3151,7 +3151,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-import", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.27.4"],\
             ["events", "npm:3.3.0"],\
             ["fetch-mock", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.11.0"],\
-            ["flow-bin", "npm:0.197.0"],\
+            ["flow-bin", "npm:0.198.1"],\
             ["formdata-polyfill", "npm:3.0.20"],\
             ["jquery", "npm:3.6.0"],\
             ["jquery-param", "npm:1.1.9"],\
@@ -5931,10 +5931,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["flow-bin", [\
-        ["npm:0.197.0", {\
-          "packageLocation": "./.yarn/unplugged/flow-bin-npm-0.197.0-6d3afba6a6/node_modules/flow-bin/",\
+        ["npm:0.198.1", {\
+          "packageLocation": "./.yarn/unplugged/flow-bin-npm-0.198.1-205b69df3d/node_modules/flow-bin/",\
           "packageDependencies": [\
-            ["flow-bin", "npm:0.197.0"]\
+            ["flow-bin", "npm:0.198.1"]\
           ],\
           "linkType": "HARD"\
         }]\

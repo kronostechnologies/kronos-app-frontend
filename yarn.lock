@@ -1760,12 +1760,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.20.7":
-  version: 7.20.7
-  resolution: "@babel/runtime@npm:7.20.7"
+"@babel/runtime@npm:7.20.13":
+  version: 7.20.13
+  resolution: "@babel/runtime@npm:7.20.13"
   dependencies:
     regenerator-runtime: ^0.13.11
-  checksum: 4629ce5c46f06cca9cfb9b7fc00d48003335a809888e2b91ec2069a2dcfbfef738480cff32ba81e0b7c290f8918e5c22ddcf2b710001464ee84ba62c7e32a3a3
+  checksum: 09b7a97a05c80540db6c9e4ddf8c5d2ebb06cae5caf3a87e33c33f27f8c4d49d9c67a2d72f1570e796045288fad569f98a26ceba0c4f5fad2af84b6ad855c4fb
   languageName: node
   linkType: hard
 
@@ -1995,7 +1995,7 @@ __metadata:
     "@babel/preset-env": 7.20.2
     "@babel/preset-flow": 7.18.6
     "@babel/register": 7.18.9
-    "@babel/runtime": 7.20.7
+    "@babel/runtime": 7.20.13
     "@equisoft/eslint-config": 3.0.3
     "@microsoft/eslint-formatter-sarif": 3.0.0
     "@sentry/browser": ^7.12.0
@@ -2005,17 +2005,17 @@ __metadata:
     blob-polyfill: 7.0.20220408
     chai: 4.3.7
     chai-as-promised: 7.1.1
-    core-js: 3.27.1
+    core-js: 3.27.2
     cross-env: 7.0.3
     es6-error: ^4.1.1
     eslint: 8.32.0
     eslint-import-resolver-node: 0.3.7
     eslint-plugin-chai-friendly: 0.7.2
     eslint-plugin-flowtype: 8.0.3
-    eslint-plugin-import: 2.27.4
+    eslint-plugin-import: 2.27.5
     events: ^3.3.0
     fetch-mock: 9.11.0
-    flow-bin: 0.198.1
+    flow-bin: 0.198.2
     formdata-polyfill: 3.0.20
     jquery: ^3.4
     jquery-param: ^1.1.8
@@ -2872,7 +2872,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"array.prototype.flatmap@npm:^1.3.0":
+"array.prototype.flatmap@npm:^1.3.1":
   version: 1.3.1
   resolution: "array.prototype.flatmap@npm:1.3.1"
   dependencies:
@@ -3419,10 +3419,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:3.27.1":
-  version: 3.27.1
-  resolution: "core-js@npm:3.27.1"
-  checksum: d50b5f88aea4302512ad9446c18e90f4d35dea1e6d8d3f87337690677061565ff11a670f1e0c87de57aa6074375fbb25ed5784076c040d3c4de8b4bce7d2ebeb
+"core-js@npm:3.27.2":
+  version: 3.27.2
+  resolution: "core-js@npm:3.27.2"
+  checksum: 718debd426f55a6b97cf9b757c936be258afd6d4f7052f89d0f96c982d7013e9000b0b006df42831a0cf32adad298e34d6a19052dce9ae1c7ab87162c0c665e0
   languageName: node
   linkType: hard
 
@@ -3845,13 +3845,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:2.27.4":
-  version: 2.27.4
-  resolution: "eslint-plugin-import@npm:2.27.4"
+"eslint-plugin-import@npm:2.27.5":
+  version: 2.27.5
+  resolution: "eslint-plugin-import@npm:2.27.5"
   dependencies:
     array-includes: ^3.1.6
     array.prototype.flat: ^1.3.1
-    array.prototype.flatmap: ^1.3.0
+    array.prototype.flatmap: ^1.3.1
     debug: ^3.2.7
     doctrine: ^2.1.0
     eslint-import-resolver-node: ^0.3.7
@@ -3866,7 +3866,7 @@ __metadata:
     tsconfig-paths: ^3.14.1
   peerDependencies:
     eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
-  checksum: e298a9b1fde6d86737520c7da1d851d1facbf1883e29eddfd374a813eb05a647108c072d5c852b6bf535886c435a419f2fee1d6ae3a324d6f7877d957a796e37
+  checksum: f500571a380167e25d72a4d925ef9a7aae8899eada57653e5f3051ec3d3c16d08271fcefe41a30a9a2f4fefc232f066253673ee4ea77b30dba65ae173dade85d
   languageName: node
   linkType: hard
 
@@ -4249,12 +4249,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flow-bin@npm:0.198.1":
-  version: 0.198.1
-  resolution: "flow-bin@npm:0.198.1"
+"flow-bin@npm:0.198.2":
+  version: 0.198.2
+  resolution: "flow-bin@npm:0.198.2"
   bin:
     flow: cli.js
-  checksum: 9eb1039eaf76cf0ee2572765ce052083238ccf7806f13e20bf844e11e4f52ad5f0d34823cfcda3c5ae42fa9c7da89b899149111f71718c7346ed82f0167e8196
+  checksum: 2d43d70ae9d9b1dd2e2f3b0197bd00b37d0c3e033d56839b0d143d133d5f185c8855ad76e851623a66cb04edd67bd805db699df303aa04fa2b4aa1a08ff81c67
   languageName: node
   linkType: hard
 

@@ -56,7 +56,7 @@
     "formdata-polyfill": "3.0.20",
     "mocha": "10.2.0",
     "mocha-junit-reporter": "2.2.0",
-    "node-fetch": "2.6.8",
+    "node-fetch": "2.6.9",
     "nyc": "15.1.0",
     "regenerator-runtime": "0.13.11",
     "shelljs": "0.8.5",

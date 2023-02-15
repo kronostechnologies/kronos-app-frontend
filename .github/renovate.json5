@@ -3,7 +3,7 @@
     "github>kronostechnologies/standards:renovate-base"
   ],
 
-  reviewers: ["team:crm","team:account"],
+  reviewers: ["team:connect","team:account"],
   rebaseWhen: "conflicted",
 
   js: {

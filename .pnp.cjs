@@ -66,7 +66,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jquery-param", "npm:1.1.9"],\
             ["mocha", "npm:10.2.0"],\
             ["mocha-junit-reporter", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.2.0"],\
-            ["moment", "npm:2.29.3"],\
+            ["moment", "npm:2.29.4"],\
             ["node-fetch", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.6.9"],\
             ["numbro", "npm:2.3.6"],\
             ["nyc", "npm:15.1.0"],\
@@ -3157,7 +3157,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jquery-param", "npm:1.1.9"],\
             ["mocha", "npm:10.2.0"],\
             ["mocha-junit-reporter", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.2.0"],\
-            ["moment", "npm:2.29.3"],\
+            ["moment", "npm:2.29.4"],\
             ["node-fetch", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.6.9"],\
             ["numbro", "npm:2.3.6"],\
             ["nyc", "npm:15.1.0"],\
@@ -7524,10 +7524,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["moment", [\
-        ["npm:2.29.3", {\
-          "packageLocation": "./.yarn/cache/moment-npm-2.29.3-fe4ba99bae-2e780e36d9.zip/node_modules/moment/",\
+        ["npm:2.29.4", {\
+          "packageLocation": "./.yarn/cache/moment-npm-2.29.4-902943305d-0ec3f9c2bc.zip/node_modules/moment/",\
           "packageDependencies": [\
-            ["moment", "npm:2.29.3"]\
+            ["moment", "npm:2.29.4"]\
           ],\
           "linkType": "HARD"\
         }]\

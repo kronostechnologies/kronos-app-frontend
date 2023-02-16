@@ -3324,6 +3324,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@jridgewell/source-map", [\
+        ["npm:0.3.2", {\
+          "packageLocation": "./.yarn/cache/@jridgewell-source-map-npm-0.3.2-6fd1f37b22-1b83f0eb94.zip/node_modules/@jridgewell/source-map/",\
+          "packageDependencies": [\
+            ["@jridgewell/source-map", "npm:0.3.2"],\
+            ["@jridgewell/gen-mapping", "npm:0.3.2"],\
+            ["@jridgewell/trace-mapping", "npm:0.3.9"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@jridgewell/sourcemap-codec", [\
         ["npm:1.4.11", {\
           "packageLocation": "./.yarn/cache/@jridgewell-sourcemap-codec-npm-1.4.11-68fac44d63-3b2afaf840.zip/node_modules/@jridgewell/sourcemap-codec/",\
@@ -8650,14 +8661,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["source-map", "npm:0.6.1"]\
           ],\
           "linkType": "HARD"\
-        }],\
-        ["npm:0.8.0-beta.0", {\
-          "packageLocation": "./.yarn/cache/source-map-npm-0.8.0-beta.0-688a309e94-e94169be64.zip/node_modules/source-map/",\
-          "packageDependencies": [\
-            ["source-map", "npm:0.8.0-beta.0"],\
-            ["whatwg-url", "npm:7.1.0"]\
-          ],\
-          "linkType": "HARD"\
         }]\
       ]],\
       ["source-map-support", [\
@@ -8873,13 +8876,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["terser", [\
-        ["npm:5.13.0", {\
-          "packageLocation": "./.yarn/cache/terser-npm-5.13.0-ab6d861f22-fb3cfc11c1.zip/node_modules/terser/",\
+        ["npm:5.16.3", {\
+          "packageLocation": "./.yarn/cache/terser-npm-5.16.3-5868e6a09f-d3c2ac1c27.zip/node_modules/terser/",\
           "packageDependencies": [\
-            ["terser", "npm:5.13.0"],\
+            ["terser", "npm:5.16.3"],\
+            ["@jridgewell/source-map", "npm:0.3.2"],\
             ["acorn", "npm:8.7.1"],\
             ["commander", "npm:2.20.3"],\
-            ["source-map", "npm:0.8.0-beta.0"],\
             ["source-map-support", "npm:0.5.21"]\
           ],\
           "linkType": "HARD"\
@@ -8907,7 +8910,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["schema-utils", "npm:3.1.1"],\
             ["serialize-javascript", "npm:6.0.0"],\
             ["source-map", "npm:0.6.1"],\
-            ["terser", "npm:5.13.0"],\
+            ["terser", "npm:5.16.3"],\
             ["uglify-js", null],\
             ["webpack", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:5.75.0"]\
           ],\
@@ -9386,16 +9389,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/whatwg-url-npm-6.5.0-07c2c28a54-a10bd5e29f.zip/node_modules/whatwg-url/",\
           "packageDependencies": [\
             ["whatwg-url", "npm:6.5.0"],\
-            ["lodash.sortby", "npm:4.7.0"],\
-            ["tr46", "npm:1.0.1"],\
-            ["webidl-conversions", "npm:4.0.2"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
-        ["npm:7.1.0", {\
-          "packageLocation": "./.yarn/cache/whatwg-url-npm-7.1.0-d6cae01571-fecb07c872.zip/node_modules/whatwg-url/",\
-          "packageDependencies": [\
-            ["whatwg-url", "npm:7.1.0"],\
             ["lodash.sortby", "npm:4.7.0"],\
             ["tr46", "npm:1.0.1"],\
             ["webidl-conversions", "npm:4.0.2"]\

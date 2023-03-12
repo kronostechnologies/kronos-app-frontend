@@ -46,7 +46,7 @@
     "chai-as-promised": "7.1.1",
     "core-js": "3.29.0",
     "cross-env": "7.0.3",
-    "eslint": "8.35.0",
+    "eslint": "8.36.0",
     "eslint-import-resolver-node": "0.3.7",
     "eslint-plugin-chai-friendly": "0.7.2",
     "eslint-plugin-flowtype": "8.0.3",
@@ -62,7 +62,7 @@
     "shelljs": "0.8.5",
     "sinon": "15.0.1",
     "url-search-params-polyfill": "8.1.1",
-    "webpack": "5.75.0",
+    "webpack": "5.76.1",
     "webpack-cli": "5.0.1",
     "yargs": "17.7.1"
   },

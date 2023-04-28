@@ -108,6 +108,7 @@ jobs:
   publish:
     name: Publish to npm
     runs-on: ubuntu-latest
+    environment: npm-deployment
     needs:
       - setup
       - mocha

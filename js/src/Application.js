@@ -2469,6 +2469,15 @@ export default class Application extends EventEmitter {
                 });
                 return null;
             }
+            // Ignore benign error: https://github.com/WICG/resize-observer/issues/38
+            if (hint.originalException.message === 'ResizeObserver loop limit exceeded') {
+                // Don't trigger an error for that but keep a trace.
+                Sentry.addBreadcrumb({
+                    message: 'ResizeObserver loop limit exceeded',
+                    level: 'warning',
+                });
+                return null;
+            }
         }
 
         return event;

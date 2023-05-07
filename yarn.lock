@@ -70,9 +70,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:7.21.5":
-  version: 7.21.5
-  resolution: "@babel/core@npm:7.21.5"
+"@babel/core@npm:7.21.8":
+  version: 7.21.8
+  resolution: "@babel/core@npm:7.21.8"
   dependencies:
     "@ampproject/remapping": ^2.2.0
     "@babel/code-frame": ^7.21.4
@@ -80,7 +80,7 @@ __metadata:
     "@babel/helper-compilation-targets": ^7.21.5
     "@babel/helper-module-transforms": ^7.21.5
     "@babel/helpers": ^7.21.5
-    "@babel/parser": ^7.21.5
+    "@babel/parser": ^7.21.8
     "@babel/template": ^7.20.7
     "@babel/traverse": ^7.21.5
     "@babel/types": ^7.21.5
@@ -89,7 +89,7 @@ __metadata:
     gensync: ^1.0.0-beta.2
     json5: ^2.2.2
     semver: ^6.3.0
-  checksum: 77ca0e6493860fb6f91cf441313c0bb464d21f8c6842cf3f1dbb083a910370e37a4c0ada35cf11ef0ebe7d0ee2d6bde2f4ee9b4caa3328e807988aa282787677
+  checksum: f28118447355af2a90bd340e2e60699f94c8020517eba9b71bf8ebff62fa9e00d63f076e033f9dfb97548053ad62ada45fafb0d96584b1a90e8aef5a3b8241b1
   languageName: node
   linkType: hard
 
@@ -116,9 +116,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/eslint-parser@npm:7.21.3":
-  version: 7.21.3
-  resolution: "@babel/eslint-parser@npm:7.21.3"
+"@babel/eslint-parser@npm:7.21.8":
+  version: 7.21.8
+  resolution: "@babel/eslint-parser@npm:7.21.8"
   dependencies:
     "@nicolo-ribaudo/eslint-scope-5-internals": 5.1.1-v1
     eslint-visitor-keys: ^2.1.0
@@ -126,7 +126,7 @@ __metadata:
   peerDependencies:
     "@babel/core": ">=7.11.0"
     eslint: ^7.5.0 || ^8.0.0
-  checksum: cc44a26a518c62ca93cdbee4ec4fa195c5a69b4f85d696c9df572b1ada99446ebdf3caef58a124f401a798279a765f858c88292bc7a8fc0485c34e178b1a9e82
+  checksum: 6d870f53808682b9d7e3c2a69a832b2095963103bb2d686daee3fcf1df49a0b3dfe58e95c773cab8cf59f2657ec432dfd5e47b9f1835c264eb84d2ec5ab2ad35
   languageName: node
   linkType: hard
 
@@ -861,6 +861,15 @@ __metadata:
   bin:
     parser: ./bin/babel-parser.js
   checksum: c7ec0dae795f2a43885fdd5c1c53c7f11b3428628ae82ebe1e1537cb3d13e25e7993549e026662a3e05dcc743b595f82b25f0a49ef9155459a9a424eedb7e2b0
+  languageName: node
+  linkType: hard
+
+"@babel/parser@npm:^7.21.8":
+  version: 7.21.8
+  resolution: "@babel/parser@npm:7.21.8"
+  bin:
+    parser: ./bin/babel-parser.js
+  checksum: 1b9a820fedfb6ef179e6ffa1dbc080808882949dec68340a616da2aa354af66ea2886bd68e61bd444d270aa0b24ad6273e3cfaf17d6878c34bf2521becacb353
   languageName: node
   linkType: hard
 
@@ -2097,8 +2106,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@equisoft/kronos-app-frontend@workspace:."
   dependencies:
-    "@babel/core": 7.21.5
-    "@babel/eslint-parser": 7.21.3
+    "@babel/core": 7.21.8
+    "@babel/eslint-parser": 7.21.8
     "@babel/plugin-proposal-class-properties": 7.18.6
     "@babel/plugin-proposal-object-rest-spread": 7.20.7
     "@babel/plugin-proposal-optional-chaining": 7.21.0
@@ -2118,7 +2127,7 @@ __metadata:
     blob-polyfill: 7.0.20220408
     chai: 4.3.7
     chai-as-promised: 7.1.1
-    core-js: 3.30.1
+    core-js: 3.30.2
     cross-env: 7.0.3
     es6-error: ^4.1.1
     eslint: 8.40.0
@@ -2128,7 +2137,7 @@ __metadata:
     eslint-plugin-import: 2.27.5
     events: ^3.3.0
     fetch-mock: 9.11.0
-    flow-bin: 0.205.0
+    flow-bin: 0.205.1
     formdata-polyfill: 3.0.20
     jquery: ^3.4
     jquery-param: ^1.1.8
@@ -3586,10 +3595,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:3.30.1":
-  version: 3.30.1
-  resolution: "core-js@npm:3.30.1"
-  checksum: 6d4a00b488694d4c715c424e15dfef31433ac7aa395c39c518a0cfacec918ada1c716fed74682033197e0164e23bbf38bfd598ee9a239c4aaa590ab1ba862ac8
+"core-js@npm:3.30.2":
+  version: 3.30.2
+  resolution: "core-js@npm:3.30.2"
+  checksum: 73d47e2b9d9f502800973982d08e995bbf04832e20b04e04be31dd7607247158271315e9328788a2408190e291c7ffbefad141167b1e57dea9f983e1e723541e
   languageName: node
   linkType: hard
 
@@ -4443,12 +4452,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flow-bin@npm:0.205.0":
-  version: 0.205.0
-  resolution: "flow-bin@npm:0.205.0"
+"flow-bin@npm:0.205.1":
+  version: 0.205.1
+  resolution: "flow-bin@npm:0.205.1"
   bin:
     flow: cli.js
-  checksum: af6cd96bdf8390d3637582c2d66230cedc2a34b2cfe945df2e3c9a41b9b80448f0f3fa748ce76c534e66b1f26ac58ace3f775d3710734e5f0722a98433335323
+  checksum: ea2abbd1353523fbf44dc0955eaeba97130b8603998d8f8682878441aef462a43e8ef0f8aa861add12326de1fdcca4341e6142b63b2118f049995f840f873bfb
   languageName: node
   linkType: hard
 

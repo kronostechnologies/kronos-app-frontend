@@ -173,8 +173,7 @@ export default class Application extends EventEmitter {
             return;
         }
 
-        const reason = event.reason;
-        this.logError('Unhandled promise rejection', event.reason);
+        this.logError('Unhandled promise rejection', error);
     }
 
     logError(error_title, error) {
@@ -2475,6 +2474,15 @@ export default class Application extends EventEmitter {
                 // Don't trigger an error for that but keep a trace.
                 Sentry.addBreadcrumb({
                     message: 'ResizeObserver loop limit exceeded',
+                    level: 'warning',
+                });
+                return null;
+            }
+            // Ignore benign error: https://github.com/getsentry/sentry-javascript/issues/3440
+            if (hint.originalException.message === 'Non-Error promise rejection captured with value:') {
+                // Don't trigger an error for that but keep a trace.
+                Sentry.addBreadcrumb({
+                    message: 'Non-Error promise rejection captured with no value',
                     level: 'warning',
                 });
                 return null;

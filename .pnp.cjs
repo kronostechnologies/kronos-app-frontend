@@ -59,9 +59,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-import", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.27.5"],\
             ["events", "npm:3.3.0"],\
             ["fetch-mock", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.11.0"],\
-            ["flow-bin", "npm:0.205.1"],\
+            ["flow-bin", "npm:0.206.0"],\
             ["formdata-polyfill", "npm:3.0.20"],\
-            ["jquery", "npm:3.6.4"],\
+            ["jquery", "npm:3.7.0"],\
             ["jquery-param", "npm:1.2.1"],\
             ["mocha", "npm:10.2.0"],\
             ["mocha-junit-reporter", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.2.0"],\
@@ -2495,9 +2495,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-import", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.27.5"],\
             ["events", "npm:3.3.0"],\
             ["fetch-mock", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.11.0"],\
-            ["flow-bin", "npm:0.205.1"],\
+            ["flow-bin", "npm:0.206.0"],\
             ["formdata-polyfill", "npm:3.0.20"],\
-            ["jquery", "npm:3.6.4"],\
+            ["jquery", "npm:3.7.0"],\
             ["jquery-param", "npm:1.2.1"],\
             ["mocha", "npm:10.2.0"],\
             ["mocha-junit-reporter", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.2.0"],\
@@ -5088,10 +5088,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["flow-bin", [\
-        ["npm:0.205.1", {\
-          "packageLocation": "./.yarn/unplugged/flow-bin-npm-0.205.1-1f68396437/node_modules/flow-bin/",\
+        ["npm:0.206.0", {\
+          "packageLocation": "./.yarn/unplugged/flow-bin-npm-0.206.0-1aed806cc0/node_modules/flow-bin/",\
           "packageDependencies": [\
-            ["flow-bin", "npm:0.205.1"]\
+            ["flow-bin", "npm:0.206.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -6077,10 +6077,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["jquery", [\
-        ["npm:3.6.4", {\
-          "packageLocation": "./.yarn/cache/jquery-npm-3.6.4-c665e9b5ea-8354f7bd0a.zip/node_modules/jquery/",\
+        ["npm:3.7.0", {\
+          "packageLocation": "./.yarn/cache/jquery-npm-3.7.0-a02a382bf4-907785e133.zip/node_modules/jquery/",\
           "packageDependencies": [\
-            ["jquery", "npm:3.6.4"]\
+            ["jquery", "npm:3.7.0"]\
           ],\
           "linkType": "HARD"\
         }]\

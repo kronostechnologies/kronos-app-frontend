@@ -1417,7 +1417,7 @@ __metadata:
     eslint-plugin-import: 2.27.5
     events: ^3.3.0
     fetch-mock: 9.11.0
-    flow-bin: 0.205.1
+    flow-bin: 0.206.0
     formdata-polyfill: 3.0.20
     jquery: ^3.4
     jquery-param: ^1.1.8
@@ -3478,12 +3478,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flow-bin@npm:0.205.1":
-  version: 0.205.1
-  resolution: "flow-bin@npm:0.205.1"
+"flow-bin@npm:0.206.0":
+  version: 0.206.0
+  resolution: "flow-bin@npm:0.206.0"
   bin:
     flow: cli.js
-  checksum: ea2abbd1353523fbf44dc0955eaeba97130b8603998d8f8682878441aef462a43e8ef0f8aa861add12326de1fdcca4341e6142b63b2118f049995f840f873bfb
+  checksum: 14c1950ed621686532bc76b2703bce0888b2a9b8431052ef08356e1394be0db23006842562f6005b7a8d05f1b9aa5b97e57c53956b44c58ff752d6fcdbaa24cb
   languageName: node
   linkType: hard
 
@@ -4355,9 +4355,9 @@ __metadata:
   linkType: hard
 
 "jquery@npm:^3.4":
-  version: 3.6.4
-  resolution: "jquery@npm:3.6.4"
-  checksum: 8354f7bd0a0424aa714ee1b6b1ef74b410f834eb5c8501682289b358bc151f11677f11188b544f3bb49309d6ec4d15d1a5de175661250c206b06185a252f706f
+  version: 3.7.0
+  resolution: "jquery@npm:3.7.0"
+  checksum: 907785e133afc427650a131af5fccef66a404885037513b3d4d7d63aee6409bcc32a39836868c60e59b05aa0fb8ace8961c18b2ee3ffdf6ffdb571d6d7cd88ff
   languageName: node
   linkType: hard
 

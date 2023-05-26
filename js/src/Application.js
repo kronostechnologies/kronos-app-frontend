@@ -2452,7 +2452,7 @@ export default class Application extends EventEmitter {
     }
 
     sentry_beforeSend(event, hint) {
-        if (hint && typeof hint.originalException === 'object') {
+        if (hint && typeof hint.originalException === 'object' && hint.originalException !== null) {
             if (hint.originalException instanceof FetchAbortError) {
                 // Don't trigger an error for that but keep a trace.
                 Sentry.addBreadcrumb({
@@ -2470,7 +2470,7 @@ export default class Application extends EventEmitter {
                 return null;
             }
             // Ignore benign error: https://github.com/WICG/resize-observer/issues/38
-            if (hint.originalException.message === 'ResizeObserver loop limit exceeded') {
+            if (hint.originalException.message && hint.originalException.message === 'ResizeObserver loop limit exceeded') {
                 // Don't trigger an error for that but keep a trace.
                 Sentry.addBreadcrumb({
                     message: 'ResizeObserver loop limit exceeded',
@@ -2479,7 +2479,7 @@ export default class Application extends EventEmitter {
                 return null;
             }
             // Ignore benign error: https://github.com/getsentry/sentry-javascript/issues/3440
-            if (hint.originalException.message === 'Non-Error promise rejection captured with value:') {
+            if (hint.originalException.message && hint.originalException.message === 'Non-Error promise rejection captured with value:') {
                 // Don't trigger an error for that but keep a trace.
                 Sentry.addBreadcrumb({
                     message: 'Non-Error promise rejection captured with no value',

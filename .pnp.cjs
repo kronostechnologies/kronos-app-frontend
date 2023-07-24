@@ -43,7 +43,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/runtime", "npm:7.22.6"],\
             ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:3.0.3"],\
             ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
-            ["@sentry/browser", "npm:7.58.1"],\
+            ["@sentry/browser", "npm:7.60.0"],\
             ["@xmldom/xmldom", "npm:0.8.10"],\
             ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.1.3"],\
             ["blob-polyfill", "npm:7.0.20220408"],\
@@ -59,7 +59,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-import", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.27.5"],\
             ["events", "npm:3.3.0"],\
             ["fetch-mock", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.11.0"],\
-            ["flow-bin", "npm:0.212.0"],\
+            ["flow-bin", "npm:0.213.0"],\
             ["formdata-polyfill", "npm:3.0.20"],\
             ["jquery", "npm:3.7.0"],\
             ["jquery-param", "npm:1.2.1"],\
@@ -2702,7 +2702,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/runtime", "npm:7.22.6"],\
             ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:3.0.3"],\
             ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
-            ["@sentry/browser", "npm:7.58.1"],\
+            ["@sentry/browser", "npm:7.60.0"],\
             ["@xmldom/xmldom", "npm:0.8.10"],\
             ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.1.3"],\
             ["blob-polyfill", "npm:7.0.20220408"],\
@@ -2718,7 +2718,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-import", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.27.5"],\
             ["events", "npm:3.3.0"],\
             ["fetch-mock", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.11.0"],\
-            ["flow-bin", "npm:0.212.0"],\
+            ["flow-bin", "npm:0.213.0"],\
             ["formdata-polyfill", "npm:3.0.20"],\
             ["jquery", "npm:3.7.0"],\
             ["jquery-param", "npm:1.2.1"],\
@@ -3026,72 +3026,72 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@sentry-internal/tracing", [\
-        ["npm:7.58.1", {\
-          "packageLocation": "./.yarn/cache/@sentry-internal-tracing-npm-7.58.1-3647a36ee0-dd9b67cda7.zip/node_modules/@sentry-internal/tracing/",\
+        ["npm:7.60.0", {\
+          "packageLocation": "./.yarn/cache/@sentry-internal-tracing-npm-7.60.0-de6eb6461d-ebd60aea46.zip/node_modules/@sentry-internal/tracing/",\
           "packageDependencies": [\
-            ["@sentry-internal/tracing", "npm:7.58.1"],\
-            ["@sentry/core", "npm:7.58.1"],\
-            ["@sentry/types", "npm:7.58.1"],\
-            ["@sentry/utils", "npm:7.58.1"],\
+            ["@sentry-internal/tracing", "npm:7.60.0"],\
+            ["@sentry/core", "npm:7.60.0"],\
+            ["@sentry/types", "npm:7.60.0"],\
+            ["@sentry/utils", "npm:7.60.0"],\
             ["tslib", "npm:2.6.0"]\
           ],\
           "linkType": "HARD"\
         }]\
       ]],\
       ["@sentry/browser", [\
-        ["npm:7.58.1", {\
-          "packageLocation": "./.yarn/cache/@sentry-browser-npm-7.58.1-e43fe0e077-753ad3ed12.zip/node_modules/@sentry/browser/",\
+        ["npm:7.60.0", {\
+          "packageLocation": "./.yarn/cache/@sentry-browser-npm-7.60.0-1c492bd9b0-3017e5ff23.zip/node_modules/@sentry/browser/",\
           "packageDependencies": [\
-            ["@sentry/browser", "npm:7.58.1"],\
-            ["@sentry-internal/tracing", "npm:7.58.1"],\
-            ["@sentry/core", "npm:7.58.1"],\
-            ["@sentry/replay", "npm:7.58.1"],\
-            ["@sentry/types", "npm:7.58.1"],\
-            ["@sentry/utils", "npm:7.58.1"],\
+            ["@sentry/browser", "npm:7.60.0"],\
+            ["@sentry-internal/tracing", "npm:7.60.0"],\
+            ["@sentry/core", "npm:7.60.0"],\
+            ["@sentry/replay", "npm:7.60.0"],\
+            ["@sentry/types", "npm:7.60.0"],\
+            ["@sentry/utils", "npm:7.60.0"],\
             ["tslib", "npm:2.6.0"]\
           ],\
           "linkType": "HARD"\
         }]\
       ]],\
       ["@sentry/core", [\
-        ["npm:7.58.1", {\
-          "packageLocation": "./.yarn/cache/@sentry-core-npm-7.58.1-07d32029ec-1008d4b8e3.zip/node_modules/@sentry/core/",\
+        ["npm:7.60.0", {\
+          "packageLocation": "./.yarn/cache/@sentry-core-npm-7.60.0-2188610925-33d5c69f95.zip/node_modules/@sentry/core/",\
           "packageDependencies": [\
-            ["@sentry/core", "npm:7.58.1"],\
-            ["@sentry/types", "npm:7.58.1"],\
-            ["@sentry/utils", "npm:7.58.1"],\
+            ["@sentry/core", "npm:7.60.0"],\
+            ["@sentry/types", "npm:7.60.0"],\
+            ["@sentry/utils", "npm:7.60.0"],\
             ["tslib", "npm:2.6.0"]\
           ],\
           "linkType": "HARD"\
         }]\
       ]],\
       ["@sentry/replay", [\
-        ["npm:7.58.1", {\
-          "packageLocation": "./.yarn/cache/@sentry-replay-npm-7.58.1-163857780d-4cae14b9fa.zip/node_modules/@sentry/replay/",\
+        ["npm:7.60.0", {\
+          "packageLocation": "./.yarn/cache/@sentry-replay-npm-7.60.0-b9ce62baf2-c88ddbeb04.zip/node_modules/@sentry/replay/",\
           "packageDependencies": [\
-            ["@sentry/replay", "npm:7.58.1"],\
-            ["@sentry/core", "npm:7.58.1"],\
-            ["@sentry/types", "npm:7.58.1"],\
-            ["@sentry/utils", "npm:7.58.1"]\
+            ["@sentry/replay", "npm:7.60.0"],\
+            ["@sentry/core", "npm:7.60.0"],\
+            ["@sentry/types", "npm:7.60.0"],\
+            ["@sentry/utils", "npm:7.60.0"]\
           ],\
           "linkType": "HARD"\
         }]\
       ]],\
       ["@sentry/types", [\
-        ["npm:7.58.1", {\
-          "packageLocation": "./.yarn/cache/@sentry-types-npm-7.58.1-cce32c060d-29874507bb.zip/node_modules/@sentry/types/",\
+        ["npm:7.60.0", {\
+          "packageLocation": "./.yarn/cache/@sentry-types-npm-7.60.0-083ffcc1ad-c145704ef1.zip/node_modules/@sentry/types/",\
           "packageDependencies": [\
-            ["@sentry/types", "npm:7.58.1"]\
+            ["@sentry/types", "npm:7.60.0"]\
           ],\
           "linkType": "HARD"\
         }]\
       ]],\
       ["@sentry/utils", [\
-        ["npm:7.58.1", {\
-          "packageLocation": "./.yarn/cache/@sentry-utils-npm-7.58.1-a28000909e-e2435a3ca2.zip/node_modules/@sentry/utils/",\
+        ["npm:7.60.0", {\
+          "packageLocation": "./.yarn/cache/@sentry-utils-npm-7.60.0-6076fec42d-3dd3dd2d7c.zip/node_modules/@sentry/utils/",\
           "packageDependencies": [\
-            ["@sentry/utils", "npm:7.58.1"],\
-            ["@sentry/types", "npm:7.58.1"],\
+            ["@sentry/utils", "npm:7.60.0"],\
+            ["@sentry/types", "npm:7.60.0"],\
             ["tslib", "npm:2.6.0"]\
           ],\
           "linkType": "HARD"\
@@ -5409,10 +5409,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["flow-bin", [\
-        ["npm:0.212.0", {\
-          "packageLocation": "./.yarn/unplugged/flow-bin-npm-0.212.0-eedb485775/node_modules/flow-bin/",\
+        ["npm:0.213.0", {\
+          "packageLocation": "./.yarn/unplugged/flow-bin-npm-0.213.0-a8c604ca7f/node_modules/flow-bin/",\
           "packageDependencies": [\
-            ["flow-bin", "npm:0.212.0"]\
+            ["flow-bin", "npm:0.213.0"]\
           ],\
           "linkType": "HARD"\
         }]\

@@ -4541,9 +4541,9 @@ __metadata:
   linkType: hard
 
 "jquery-param@npm:^1.1.8":
-  version: 1.2.1
-  resolution: "jquery-param@npm:1.2.1"
-  checksum: 6ba0d8d4f67686f9d4808c6243acab8c3974695d8428ab5aad20e0d5cdb6c0f9fcdba3e223404bcc211aa91ef1c0652fa0f18cc4e7da8e43257ee71f2988b44f
+  version: 1.2.3
+  resolution: "jquery-param@npm:1.2.3"
+  checksum: 2a281c323f2acb5ee9dd9081d2002d16e196d53d4ed1b61d05d8529360bd161da7d6a27808ed26bdd5d00fa62b9c2ccc28f1f7c50931206a769be3306d1715e3
   languageName: node
   linkType: hard
 

@@ -2,7 +2,6 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import fetchMock from 'fetch-mock';
 import { Response } from 'node-fetch';
-import './polyfill.js';
 import sinon from 'sinon';
 import FetchService, { FetchAbortError } from '../FetchService';
 

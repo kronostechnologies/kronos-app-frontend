@@ -2,6 +2,7 @@
 import ExtendableError from 'es6-error';
 import encodeParam from 'jquery-param';
 import type Application from './Application';
+import { DOMParser } from '@xmldom/xmldom';
 
 export type RequestBody = string | FormData | URLSearchParams | Blob;
 

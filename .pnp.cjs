@@ -43,7 +43,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/runtime", "npm:7.22.11"],\
             ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:3.0.3"],\
             ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
-            ["@sentry/browser", "npm:7.64.0"],\
+            ["@sentry/browser", "npm:7.66.0"],\
             ["@xmldom/xmldom", "npm:0.8.10"],\
             ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.1.3"],\
             ["chai", "npm:4.3.8"],\
@@ -66,7 +66,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["mocha-junit-reporter", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.2.1"],\
             ["moment", "npm:2.29.4"],\
             ["node-fetch", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.7.0"],\
-            ["numbro", "npm:2.3.6"],\
+            ["numbro", "npm:2.4.0"],\
             ["nyc", "npm:15.1.0"],\
             ["regenerator-runtime", "npm:0.14.0"],\
             ["shelljs", "npm:0.8.5"],\
@@ -2663,7 +2663,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/runtime", "npm:7.22.11"],\
             ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:3.0.3"],\
             ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
-            ["@sentry/browser", "npm:7.64.0"],\
+            ["@sentry/browser", "npm:7.66.0"],\
             ["@xmldom/xmldom", "npm:0.8.10"],\
             ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.1.3"],\
             ["chai", "npm:4.3.8"],\
@@ -2686,7 +2686,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["mocha-junit-reporter", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.2.1"],\
             ["moment", "npm:2.29.4"],\
             ["node-fetch", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.7.0"],\
-            ["numbro", "npm:2.3.6"],\
+            ["numbro", "npm:2.4.0"],\
             ["nyc", "npm:15.1.0"],\
             ["regenerator-runtime", "npm:0.14.0"],\
             ["shelljs", "npm:0.8.5"],\
@@ -2970,72 +2970,72 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@sentry-internal/tracing", [\
-        ["npm:7.64.0", {\
-          "packageLocation": "./.yarn/cache/@sentry-internal-tracing-npm-7.64.0-ee96f46f16-74601ec707.zip/node_modules/@sentry-internal/tracing/",\
+        ["npm:7.66.0", {\
+          "packageLocation": "./.yarn/cache/@sentry-internal-tracing-npm-7.66.0-9edb14300a-8eb427edf6.zip/node_modules/@sentry-internal/tracing/",\
           "packageDependencies": [\
-            ["@sentry-internal/tracing", "npm:7.64.0"],\
-            ["@sentry/core", "npm:7.64.0"],\
-            ["@sentry/types", "npm:7.64.0"],\
-            ["@sentry/utils", "npm:7.64.0"],\
+            ["@sentry-internal/tracing", "npm:7.66.0"],\
+            ["@sentry/core", "npm:7.66.0"],\
+            ["@sentry/types", "npm:7.66.0"],\
+            ["@sentry/utils", "npm:7.66.0"],\
             ["tslib", "npm:2.6.2"]\
           ],\
           "linkType": "HARD"\
         }]\
       ]],\
       ["@sentry/browser", [\
-        ["npm:7.64.0", {\
-          "packageLocation": "./.yarn/cache/@sentry-browser-npm-7.64.0-1e8458c144-759b5289fb.zip/node_modules/@sentry/browser/",\
+        ["npm:7.66.0", {\
+          "packageLocation": "./.yarn/cache/@sentry-browser-npm-7.66.0-054c8c0a0d-c3530289f3.zip/node_modules/@sentry/browser/",\
           "packageDependencies": [\
-            ["@sentry/browser", "npm:7.64.0"],\
-            ["@sentry-internal/tracing", "npm:7.64.0"],\
-            ["@sentry/core", "npm:7.64.0"],\
-            ["@sentry/replay", "npm:7.64.0"],\
-            ["@sentry/types", "npm:7.64.0"],\
-            ["@sentry/utils", "npm:7.64.0"],\
+            ["@sentry/browser", "npm:7.66.0"],\
+            ["@sentry-internal/tracing", "npm:7.66.0"],\
+            ["@sentry/core", "npm:7.66.0"],\
+            ["@sentry/replay", "npm:7.66.0"],\
+            ["@sentry/types", "npm:7.66.0"],\
+            ["@sentry/utils", "npm:7.66.0"],\
             ["tslib", "npm:2.6.2"]\
           ],\
           "linkType": "HARD"\
         }]\
       ]],\
       ["@sentry/core", [\
-        ["npm:7.64.0", {\
-          "packageLocation": "./.yarn/cache/@sentry-core-npm-7.64.0-b10a4f6cb3-62834e0c0d.zip/node_modules/@sentry/core/",\
+        ["npm:7.66.0", {\
+          "packageLocation": "./.yarn/cache/@sentry-core-npm-7.66.0-f6c089918e-50f598d455.zip/node_modules/@sentry/core/",\
           "packageDependencies": [\
-            ["@sentry/core", "npm:7.64.0"],\
-            ["@sentry/types", "npm:7.64.0"],\
-            ["@sentry/utils", "npm:7.64.0"],\
+            ["@sentry/core", "npm:7.66.0"],\
+            ["@sentry/types", "npm:7.66.0"],\
+            ["@sentry/utils", "npm:7.66.0"],\
             ["tslib", "npm:2.6.2"]\
           ],\
           "linkType": "HARD"\
         }]\
       ]],\
       ["@sentry/replay", [\
-        ["npm:7.64.0", {\
-          "packageLocation": "./.yarn/cache/@sentry-replay-npm-7.64.0-135529499e-0e9522bff5.zip/node_modules/@sentry/replay/",\
+        ["npm:7.66.0", {\
+          "packageLocation": "./.yarn/cache/@sentry-replay-npm-7.66.0-fea9f9114c-54b4ea614a.zip/node_modules/@sentry/replay/",\
           "packageDependencies": [\
-            ["@sentry/replay", "npm:7.64.0"],\
-            ["@sentry/core", "npm:7.64.0"],\
-            ["@sentry/types", "npm:7.64.0"],\
-            ["@sentry/utils", "npm:7.64.0"]\
+            ["@sentry/replay", "npm:7.66.0"],\
+            ["@sentry/core", "npm:7.66.0"],\
+            ["@sentry/types", "npm:7.66.0"],\
+            ["@sentry/utils", "npm:7.66.0"]\
           ],\
           "linkType": "HARD"\
         }]\
       ]],\
       ["@sentry/types", [\
-        ["npm:7.64.0", {\
-          "packageLocation": "./.yarn/cache/@sentry-types-npm-7.64.0-629edd6667-405ff957d9.zip/node_modules/@sentry/types/",\
+        ["npm:7.66.0", {\
+          "packageLocation": "./.yarn/cache/@sentry-types-npm-7.66.0-9aa5a801b4-33ae0139e0.zip/node_modules/@sentry/types/",\
           "packageDependencies": [\
-            ["@sentry/types", "npm:7.64.0"]\
+            ["@sentry/types", "npm:7.66.0"]\
           ],\
           "linkType": "HARD"\
         }]\
       ]],\
       ["@sentry/utils", [\
-        ["npm:7.64.0", {\
-          "packageLocation": "./.yarn/cache/@sentry-utils-npm-7.64.0-daa0ce6b92-049cc23242.zip/node_modules/@sentry/utils/",\
+        ["npm:7.66.0", {\
+          "packageLocation": "./.yarn/cache/@sentry-utils-npm-7.66.0-b65eb6e0b1-b33d89c18c.zip/node_modules/@sentry/utils/",\
           "packageDependencies": [\
-            ["@sentry/utils", "npm:7.64.0"],\
-            ["@sentry/types", "npm:7.64.0"],\
+            ["@sentry/utils", "npm:7.66.0"],\
+            ["@sentry/types", "npm:7.66.0"],\
             ["tslib", "npm:2.6.2"]\
           ],\
           "linkType": "HARD"\
@@ -3944,10 +3944,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["bignumber.js", [\
-        ["npm:8.1.1", {\
-          "packageLocation": "./.yarn/cache/bignumber.js-npm-8.1.1-2666aae722-7154434850.zip/node_modules/bignumber.js/",\
+        ["npm:9.1.2", {\
+          "packageLocation": "./.yarn/cache/bignumber.js-npm-9.1.2-c2228c6a4a-582c03af77.zip/node_modules/bignumber.js/",\
           "packageDependencies": [\
-            ["bignumber.js", "npm:8.1.1"]\
+            ["bignumber.js", "npm:9.1.2"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -7169,11 +7169,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["numbro", [\
-        ["npm:2.3.6", {\
-          "packageLocation": "./.yarn/cache/numbro-npm-2.3.6-216a55e4cd-a659bb418d.zip/node_modules/numbro/",\
+        ["npm:2.4.0", {\
+          "packageLocation": "./.yarn/cache/numbro-npm-2.4.0-ff0894829d-25400b2dea.zip/node_modules/numbro/",\
           "packageDependencies": [\
-            ["numbro", "npm:2.3.6"],\
-            ["bignumber.js", "npm:8.1.1"]\
+            ["numbro", "npm:2.4.0"],\
+            ["bignumber.js", "npm:9.1.2"]\
           ],\
           "linkType": "HARD"\
         }]\

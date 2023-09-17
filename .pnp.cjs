@@ -70,7 +70,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["nyc", "npm:15.1.0"],\
             ["regenerator-runtime", "npm:0.14.0"],\
             ["shelljs", "npm:0.8.5"],\
-            ["sinon", "npm:15.2.0"],\
+            ["sinon", "npm:16.0.0"],\
             ["url-search-params-polyfill", "npm:8.2.5"],\
             ["webpack", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:5.88.2"],\
             ["webpack-cli", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:5.1.4"],\
@@ -2690,7 +2690,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["nyc", "npm:15.1.0"],\
             ["regenerator-runtime", "npm:0.14.0"],\
             ["shelljs", "npm:0.8.5"],\
-            ["sinon", "npm:15.2.0"],\
+            ["sinon", "npm:16.0.0"],\
             ["url-search-params-polyfill", "npm:8.2.5"],\
             ["webpack", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:5.88.2"],\
             ["webpack-cli", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:5.1.4"],\
@@ -8068,10 +8068,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["sinon", [\
-        ["npm:15.2.0", {\
-          "packageLocation": "./.yarn/cache/sinon-npm-15.2.0-ba6c0831db-1641b9af8a.zip/node_modules/sinon/",\
+        ["npm:16.0.0", {\
+          "packageLocation": "./.yarn/cache/sinon-npm-16.0.0-35cca97c91-fbcad39d16.zip/node_modules/sinon/",\
           "packageDependencies": [\
-            ["sinon", "npm:15.2.0"],\
+            ["sinon", "npm:16.0.0"],\
             ["@sinonjs/commons", "npm:3.0.0"],\
             ["@sinonjs/fake-timers", "npm:10.3.0"],\
             ["@sinonjs/samsam", "npm:8.0.0"],\

@@ -1614,14 +1614,14 @@ __metadata:
     core-js: 3.33.0
     cross-env: 7.0.3
     es6-error: ^4.1.1
-    eslint: 8.50.0
+    eslint: 8.51.0
     eslint-import-resolver-node: 0.3.9
     eslint-plugin-chai-friendly: 0.7.2
     eslint-plugin-flowtype: 8.0.3
     eslint-plugin-import: 2.28.1
     events: ^3.3.0
     fetch-mock: 9.11.0
-    flow-bin: 0.217.2
+    flow-bin: 0.218.0
     formdata-polyfill: 4.0.10
     jquery: ^3.4
     jquery-param: ^1.1.8
@@ -1633,7 +1633,7 @@ __metadata:
     nyc: 15.1.0
     regenerator-runtime: 0.14.0
     shelljs: 0.8.5
-    sinon: 16.0.0
+    sinon: 16.1.0
     url-search-params-polyfill: 8.2.5
     webpack: 5.88.2
     webpack-cli: 5.1.4
@@ -1683,10 +1683,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:8.50.0":
-  version: 8.50.0
-  resolution: "@eslint/js@npm:8.50.0"
-  checksum: 302478f2acaaa7228729ec6a04f56641590185e1d8cd1c836a6db8a6b8009f80a57349341be9fbb9aa1721a7a569d1be3ffc598a33300d22816f11832095386c
+"@eslint/js@npm:8.51.0":
+  version: 8.51.0
+  resolution: "@eslint/js@npm:8.51.0"
+  checksum: 0228bf1e1e0414843e56d9ff362a2a72d579c078f93174666f29315690e9e30a8633ad72c923297f7fd7182381b5a476805ff04dac8debe638953eb1ded3ac73
   languageName: node
   linkType: hard
 
@@ -1865,68 +1865,68 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry-internal/tracing@npm:7.72.0":
-  version: 7.72.0
-  resolution: "@sentry-internal/tracing@npm:7.72.0"
+"@sentry-internal/tracing@npm:7.73.0":
+  version: 7.73.0
+  resolution: "@sentry-internal/tracing@npm:7.73.0"
   dependencies:
-    "@sentry/core": 7.72.0
-    "@sentry/types": 7.72.0
-    "@sentry/utils": 7.72.0
+    "@sentry/core": 7.73.0
+    "@sentry/types": 7.73.0
+    "@sentry/utils": 7.73.0
     tslib: ^2.4.1 || ^1.9.3
-  checksum: 10917f9bad458ed4e53aac45a3b96906f155de34f02c74128671d4eba1d9029d4adb17463471564c3920c2f29a0950ac320a11a9f58ccba356bf4b8c4fc3576b
+  checksum: 7f13f6bfea114310688f664f234e1dd40ca9a9d950f490b613e779bb1a97f49bcf1ad27ced75e7a09294da45e2654155e18e1f03d0b9144170ec65c5a1b7e0e3
   languageName: node
   linkType: hard
 
 "@sentry/browser@npm:^7.12.0":
-  version: 7.72.0
-  resolution: "@sentry/browser@npm:7.72.0"
+  version: 7.73.0
+  resolution: "@sentry/browser@npm:7.73.0"
   dependencies:
-    "@sentry-internal/tracing": 7.72.0
-    "@sentry/core": 7.72.0
-    "@sentry/replay": 7.72.0
-    "@sentry/types": 7.72.0
-    "@sentry/utils": 7.72.0
+    "@sentry-internal/tracing": 7.73.0
+    "@sentry/core": 7.73.0
+    "@sentry/replay": 7.73.0
+    "@sentry/types": 7.73.0
+    "@sentry/utils": 7.73.0
     tslib: ^2.4.1 || ^1.9.3
-  checksum: 2fc1d4d94d47250f6bddab029f9079879617a5a2e614fe04a1b104361cc30f87987286268d92e7e9bc252560960c6839dbc0d68545b8a4456bdb1ca9415b5d3b
+  checksum: 315630e884b969459244939275a35b0a1edf4947809916b85670ed32bd497d9e014b9f1940f7e8a2c4cdabf3d11b600a70b1d21e98764f3905692aa15bb34f3e
   languageName: node
   linkType: hard
 
-"@sentry/core@npm:7.72.0":
-  version: 7.72.0
-  resolution: "@sentry/core@npm:7.72.0"
+"@sentry/core@npm:7.73.0":
+  version: 7.73.0
+  resolution: "@sentry/core@npm:7.73.0"
   dependencies:
-    "@sentry/types": 7.72.0
-    "@sentry/utils": 7.72.0
+    "@sentry/types": 7.73.0
+    "@sentry/utils": 7.73.0
     tslib: ^2.4.1 || ^1.9.3
-  checksum: e85473d0d9eaa45960937fe354a374d2508ea2bc3f61b65a1567f64ee765e04e08c56638b032071be7aa951149ab57787722a8590e3e90d74a4a93937e8e97f7
+  checksum: 9f0cd49bb26e7bf59bb5fe8be3f33bf057a0e14ac9adbaa2b4e3a39547f943d1b28a893de2b35eb2166d6d8d4d26ef2d7588893040b217052eabf53773be0434
   languageName: node
   linkType: hard
 
-"@sentry/replay@npm:7.72.0":
-  version: 7.72.0
-  resolution: "@sentry/replay@npm:7.72.0"
+"@sentry/replay@npm:7.73.0":
+  version: 7.73.0
+  resolution: "@sentry/replay@npm:7.73.0"
   dependencies:
-    "@sentry/core": 7.72.0
-    "@sentry/types": 7.72.0
-    "@sentry/utils": 7.72.0
-  checksum: c38e48177c89fd573bb225b64d80b44bd17916da173acf3de9b90460918a37ca6b20ce0dac101db25849c97626f61b77d4d754287ac8a13aaabe62a30c74f8aa
+    "@sentry/core": 7.73.0
+    "@sentry/types": 7.73.0
+    "@sentry/utils": 7.73.0
+  checksum: 4ae9327dd7cb324ac40940bfffedc9d380a346381f1030ea2561fc1549b3b5387874e34fcb62e081c2305290dab5c2b5ac809e4ddb43b0210bf49ec331b51b43
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:7.72.0":
-  version: 7.72.0
-  resolution: "@sentry/types@npm:7.72.0"
-  checksum: 1122ef5c8715305224c8e6c878782c28a04d008a1cb9ee0fa33b9178dd1155e834195da7f737fe8f550e75ef9b360786c614b7b222f86446a0d390a2a973202d
+"@sentry/types@npm:7.73.0":
+  version: 7.73.0
+  resolution: "@sentry/types@npm:7.73.0"
+  checksum: 64f1a52b1fb1e2206a3104021d52704b808a9c021fc7ae6edef18c7024c315595f2bf82f779c665d207ad8af871dbd3cfb1393d451446f907118eb85773ffc67
   languageName: node
   linkType: hard
 
-"@sentry/utils@npm:7.72.0":
-  version: 7.72.0
-  resolution: "@sentry/utils@npm:7.72.0"
+"@sentry/utils@npm:7.73.0":
+  version: 7.73.0
+  resolution: "@sentry/utils@npm:7.73.0"
   dependencies:
-    "@sentry/types": 7.72.0
+    "@sentry/types": 7.73.0
     tslib: ^2.4.1 || ^1.9.3
-  checksum: 0cd88bb7b6f8349b303d8f91fe3ad260c7c91a6e23e378051b726f46a60f1dcbaaf13657b2e6d85fe959e5ba24f40e74e54192b00414feaac2922374845f438a
+  checksum: 02357ff670d58d2152b4f5e81fc26806e7cf75e1693b7df464a3f7dfdf8194fd0bea05ff7babcdca6b81a24faa91265162eb6dfe2bc50d74fe8822516d9ce009
   languageName: node
   linkType: hard
 
@@ -3496,14 +3496,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:8.50.0":
-  version: 8.50.0
-  resolution: "eslint@npm:8.50.0"
+"eslint@npm:8.51.0":
+  version: 8.51.0
+  resolution: "eslint@npm:8.51.0"
   dependencies:
     "@eslint-community/eslint-utils": ^4.2.0
     "@eslint-community/regexpp": ^4.6.1
     "@eslint/eslintrc": ^2.1.2
-    "@eslint/js": 8.50.0
+    "@eslint/js": 8.51.0
     "@humanwhocodes/config-array": ^0.11.11
     "@humanwhocodes/module-importer": ^1.0.1
     "@nodelib/fs.walk": ^1.2.8
@@ -3539,7 +3539,7 @@ __metadata:
     text-table: ^0.2.0
   bin:
     eslint: bin/eslint.js
-  checksum: 9ebfe5615dc84700000d218e32ddfdcfc227ca600f65f18e5541ec34f8902a00356a9a8804d9468fd6c8637a5ef6a3897291dad91ba6579d5b32ffeae5e31768
+  checksum: 214fa5d1fcb67af1b8992ce9584ccd85e1aa7a482f8b8ea5b96edc28fa838a18a3b69456db45fc1ed3ef95f1e9efa9714f737292dc681e572d471d02fda9649c
   languageName: node
   linkType: hard
 
@@ -3850,12 +3850,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flow-bin@npm:0.217.2":
-  version: 0.217.2
-  resolution: "flow-bin@npm:0.217.2"
+"flow-bin@npm:0.218.0":
+  version: 0.218.0
+  resolution: "flow-bin@npm:0.218.0"
   bin:
     flow: cli.js
-  checksum: 313a6b964db780f8d7eee75a9bf640d0e512265fd5b709d09c87afcfae414dbd9967cb18bf1ebddfb3f9b0741a2fb52ba99329e633738c8916b188706e11d42c
+  checksum: 531182392dd313aa883d7a55df0a55797828060def08dfb0622b0235e0b579c5c18f9f8d302bdda52e73579cb3308343ac2bf1bad9459562a50f61fb3a8b8a0a
   languageName: node
   linkType: hard
 
@@ -6329,9 +6329,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sinon@npm:16.0.0":
-  version: 16.0.0
-  resolution: "sinon@npm:16.0.0"
+"sinon@npm:16.1.0":
+  version: 16.1.0
+  resolution: "sinon@npm:16.1.0"
   dependencies:
     "@sinonjs/commons": ^3.0.0
     "@sinonjs/fake-timers": ^10.3.0
@@ -6339,7 +6339,7 @@ __metadata:
     diff: ^5.1.0
     nise: ^5.1.4
     supports-color: ^7.2.0
-  checksum: fbcad39d1610c669bb37ce2d325f2ac666ff5187935d09d1e757e11c50d07b8556b7dfa322eb38ad6ace8a18912224cc502e990779bc3d0954244a1ae8391984
+  checksum: b3f910e9b3d28f1241b28ac9d384f45c673b64ecfabf7ca2b94c964036118bd4166a2315f2ec2379a85745a7d4840384514aca416bbf189508a9d7fb55b9d5a8
   languageName: node
   linkType: hard
 

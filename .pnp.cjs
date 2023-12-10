@@ -41,12 +41,12 @@ const RAW_RUNTIME_STATE =
           ["@babel/runtime", "npm:7.23.5"],\
           ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:3.0.3"],\
           ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
-          ["@sentry/browser", "npm:7.84.0"],\
+          ["@sentry/browser", "npm:7.86.0"],\
           ["@xmldom/xmldom", "npm:0.8.10"],\
           ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.1.3"],\
           ["chai", "npm:4.3.10"],\
           ["chai-as-promised", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:7.1.1"],\
-          ["core-js", "npm:3.33.3"],\
+          ["core-js", "npm:3.34.0"],\
           ["cross-env", "npm:7.0.3"],\
           ["es6-error", "npm:4.1.1"],\
           ["eslint", "npm:8.55.0"],\
@@ -56,7 +56,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-import", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.29.0"],\
           ["events", "npm:3.3.0"],\
           ["fetch-mock", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.11.0"],\
-          ["flow-bin", "npm:0.223.2"],\
+          ["flow-bin", "npm:0.223.3"],\
           ["formdata-polyfill", "npm:4.0.10"],\
           ["jquery", "npm:3.7.1"],\
           ["jquery-param", "npm:1.2.3"],\
@@ -2685,12 +2685,12 @@ const RAW_RUNTIME_STATE =
           ["@babel/runtime", "npm:7.23.5"],\
           ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:3.0.3"],\
           ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
-          ["@sentry/browser", "npm:7.84.0"],\
+          ["@sentry/browser", "npm:7.86.0"],\
           ["@xmldom/xmldom", "npm:0.8.10"],\
           ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.1.3"],\
           ["chai", "npm:4.3.10"],\
           ["chai-as-promised", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:7.1.1"],\
-          ["core-js", "npm:3.33.3"],\
+          ["core-js", "npm:3.34.0"],\
           ["cross-env", "npm:7.0.3"],\
           ["es6-error", "npm:4.1.1"],\
           ["eslint", "npm:8.55.0"],\
@@ -2700,7 +2700,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-import", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.29.0"],\
           ["events", "npm:3.3.0"],\
           ["fetch-mock", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.11.0"],\
-          ["flow-bin", "npm:0.223.2"],\
+          ["flow-bin", "npm:0.223.3"],\
           ["formdata-polyfill", "npm:4.0.10"],\
           ["jquery", "npm:3.7.1"],\
           ["jquery-param", "npm:1.2.3"],\
@@ -3005,71 +3005,84 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
-    ["@sentry-internal/tracing", [\
-      ["npm:7.84.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-internal-tracing-npm-7.84.0-3eea00b8f5-10c0.zip/node_modules/@sentry-internal/tracing/",\
+    ["@sentry-internal/feedback", [\
+      ["npm:7.86.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-internal-feedback-npm-7.86.0-40b8f59e4f-10c0.zip/node_modules/@sentry-internal/feedback/",\
         "packageDependencies": [\
-          ["@sentry-internal/tracing", "npm:7.84.0"],\
-          ["@sentry/core", "npm:7.84.0"],\
-          ["@sentry/types", "npm:7.84.0"],\
-          ["@sentry/utils", "npm:7.84.0"]\
+          ["@sentry-internal/feedback", "npm:7.86.0"],\
+          ["@sentry/core", "npm:7.86.0"],\
+          ["@sentry/types", "npm:7.86.0"],\
+          ["@sentry/utils", "npm:7.86.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@sentry-internal/tracing", [\
+      ["npm:7.86.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-internal-tracing-npm-7.86.0-535de8f6c4-10c0.zip/node_modules/@sentry-internal/tracing/",\
+        "packageDependencies": [\
+          ["@sentry-internal/tracing", "npm:7.86.0"],\
+          ["@sentry/core", "npm:7.86.0"],\
+          ["@sentry/types", "npm:7.86.0"],\
+          ["@sentry/utils", "npm:7.86.0"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@sentry/browser", [\
-      ["npm:7.84.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-browser-npm-7.84.0-1ac03de2f0-10c0.zip/node_modules/@sentry/browser/",\
+      ["npm:7.86.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-browser-npm-7.86.0-f317854fdf-10c0.zip/node_modules/@sentry/browser/",\
         "packageDependencies": [\
-          ["@sentry/browser", "npm:7.84.0"],\
-          ["@sentry-internal/tracing", "npm:7.84.0"],\
-          ["@sentry/core", "npm:7.84.0"],\
-          ["@sentry/replay", "npm:7.84.0"],\
-          ["@sentry/types", "npm:7.84.0"],\
-          ["@sentry/utils", "npm:7.84.0"]\
+          ["@sentry/browser", "npm:7.86.0"],\
+          ["@sentry-internal/feedback", "npm:7.86.0"],\
+          ["@sentry-internal/tracing", "npm:7.86.0"],\
+          ["@sentry/core", "npm:7.86.0"],\
+          ["@sentry/replay", "npm:7.86.0"],\
+          ["@sentry/types", "npm:7.86.0"],\
+          ["@sentry/utils", "npm:7.86.0"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@sentry/core", [\
-      ["npm:7.84.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-core-npm-7.84.0-99f9fe0d4e-10c0.zip/node_modules/@sentry/core/",\
+      ["npm:7.86.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-core-npm-7.86.0-3ff0511f68-10c0.zip/node_modules/@sentry/core/",\
         "packageDependencies": [\
-          ["@sentry/core", "npm:7.84.0"],\
-          ["@sentry/types", "npm:7.84.0"],\
-          ["@sentry/utils", "npm:7.84.0"]\
+          ["@sentry/core", "npm:7.86.0"],\
+          ["@sentry/types", "npm:7.86.0"],\
+          ["@sentry/utils", "npm:7.86.0"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@sentry/replay", [\
-      ["npm:7.84.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-replay-npm-7.84.0-863aed64c6-10c0.zip/node_modules/@sentry/replay/",\
+      ["npm:7.86.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-replay-npm-7.86.0-05e28e905e-10c0.zip/node_modules/@sentry/replay/",\
         "packageDependencies": [\
-          ["@sentry/replay", "npm:7.84.0"],\
-          ["@sentry-internal/tracing", "npm:7.84.0"],\
-          ["@sentry/core", "npm:7.84.0"],\
-          ["@sentry/types", "npm:7.84.0"],\
-          ["@sentry/utils", "npm:7.84.0"]\
+          ["@sentry/replay", "npm:7.86.0"],\
+          ["@sentry-internal/tracing", "npm:7.86.0"],\
+          ["@sentry/core", "npm:7.86.0"],\
+          ["@sentry/types", "npm:7.86.0"],\
+          ["@sentry/utils", "npm:7.86.0"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@sentry/types", [\
-      ["npm:7.84.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-types-npm-7.84.0-523eed17f5-10c0.zip/node_modules/@sentry/types/",\
+      ["npm:7.86.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-types-npm-7.86.0-09732a404b-10c0.zip/node_modules/@sentry/types/",\
         "packageDependencies": [\
-          ["@sentry/types", "npm:7.84.0"]\
+          ["@sentry/types", "npm:7.86.0"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@sentry/utils", [\
-      ["npm:7.84.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-utils-npm-7.84.0-8daf811910-10c0.zip/node_modules/@sentry/utils/",\
+      ["npm:7.86.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-utils-npm-7.86.0-12987ed1a2-10c0.zip/node_modules/@sentry/utils/",\
         "packageDependencies": [\
-          ["@sentry/utils", "npm:7.84.0"],\
-          ["@sentry/types", "npm:7.84.0"]\
+          ["@sentry/utils", "npm:7.86.0"],\
+          ["@sentry/types", "npm:7.86.0"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -4406,6 +4419,13 @@ const RAW_RUNTIME_STATE =
           ["core-js", "npm:3.33.3"]\
         ],\
         "linkType": "HARD"\
+      }],\
+      ["npm:3.34.0", {\
+        "packageLocation": "./.yarn/unplugged/core-js-npm-3.34.0-8debcb197b/node_modules/core-js/",\
+        "packageDependencies": [\
+          ["core-js", "npm:3.34.0"]\
+        ],\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["core-js-compat", [\
@@ -5370,10 +5390,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["flow-bin", [\
-      ["npm:0.223.2", {\
-        "packageLocation": "./.yarn/unplugged/flow-bin-npm-0.223.2-617637b47a/node_modules/flow-bin/",\
+      ["npm:0.223.3", {\
+        "packageLocation": "./.yarn/unplugged/flow-bin-npm-0.223.3-4a7850d12d/node_modules/flow-bin/",\
         "packageDependencies": [\
-          ["flow-bin", "npm:0.223.2"]\
+          ["flow-bin", "npm:0.223.3"]\
         ],\
         "linkType": "HARD"\
       }]\

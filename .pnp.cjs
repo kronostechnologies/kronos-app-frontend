@@ -51,7 +51,7 @@ const RAW_RUNTIME_STATE =
           ["es6-error", "npm:4.1.1"],\
           ["eslint", "npm:8.56.0"],\
           ["eslint-import-resolver-node", "npm:0.3.9"],\
-          ["eslint-plugin-chai-friendly", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:0.7.2"],\
+          ["eslint-plugin-chai-friendly", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:0.7.3"],\
           ["eslint-plugin-flowtype", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:8.0.3"],\
           ["eslint-plugin-import", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.29.1"],\
           ["events", "npm:3.3.0"],\
@@ -2771,7 +2771,7 @@ const RAW_RUNTIME_STATE =
           ["es6-error", "npm:4.1.1"],\
           ["eslint", "npm:8.56.0"],\
           ["eslint-import-resolver-node", "npm:0.3.9"],\
-          ["eslint-plugin-chai-friendly", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:0.7.2"],\
+          ["eslint-plugin-chai-friendly", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:0.7.3"],\
           ["eslint-plugin-flowtype", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:8.0.3"],\
           ["eslint-plugin-import", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:2.29.1"],\
           ["events", "npm:3.3.0"],\
@@ -5042,17 +5042,17 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["eslint-plugin-chai-friendly", [\
-      ["npm:0.7.2", {\
-        "packageLocation": "../../../../cache/others/berry/cache/eslint-plugin-chai-friendly-npm-0.7.2-c89144ca78-10c0.zip/node_modules/eslint-plugin-chai-friendly/",\
+      ["npm:0.7.3", {\
+        "packageLocation": "../../../../cache/others/berry/cache/eslint-plugin-chai-friendly-npm-0.7.3-db77468ec2-10c0.zip/node_modules/eslint-plugin-chai-friendly/",\
         "packageDependencies": [\
-          ["eslint-plugin-chai-friendly", "npm:0.7.2"]\
+          ["eslint-plugin-chai-friendly", "npm:0.7.3"]\
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:0.7.2", {\
-        "packageLocation": "./.yarn/__virtual__/eslint-plugin-chai-friendly-virtual-c857f805e2/5/cache/others/berry/cache/eslint-plugin-chai-friendly-npm-0.7.2-c89144ca78-10c0.zip/node_modules/eslint-plugin-chai-friendly/",\
+      ["virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:0.7.3", {\
+        "packageLocation": "./.yarn/__virtual__/eslint-plugin-chai-friendly-virtual-a287ad8c8b/5/cache/others/berry/cache/eslint-plugin-chai-friendly-npm-0.7.3-db77468ec2-10c0.zip/node_modules/eslint-plugin-chai-friendly/",\
         "packageDependencies": [\
-          ["eslint-plugin-chai-friendly", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:0.7.2"],\
+          ["eslint-plugin-chai-friendly", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:0.7.3"],\
           ["@types/eslint", null],\
           ["eslint", "npm:8.56.0"]\
         ],\

@@ -44,7 +44,7 @@ const RAW_RUNTIME_STATE =
           ["@sentry/browser", "npm:7.92.0"],\
           ["@xmldom/xmldom", "npm:0.8.10"],\
           ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.1.3"],\
-          ["chai", "npm:4.4.0"],\
+          ["chai", "npm:5.0.0"],\
           ["chai-as-promised", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:7.1.1"],\
           ["core-js", "npm:3.35.0"],\
           ["cross-env", "npm:7.0.3"],\
@@ -2764,7 +2764,7 @@ const RAW_RUNTIME_STATE =
           ["@sentry/browser", "npm:7.92.0"],\
           ["@xmldom/xmldom", "npm:0.8.10"],\
           ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.1.3"],\
-          ["chai", "npm:4.4.0"],\
+          ["chai", "npm:5.0.0"],\
           ["chai-as-promised", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:7.1.1"],\
           ["core-js", "npm:3.35.0"],\
           ["cross-env", "npm:7.0.3"],\
@@ -3919,10 +3919,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["assertion-error", [\
-      ["npm:1.1.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/assertion-error-npm-1.1.0-66b893015e-10c0.zip/node_modules/assertion-error/",\
+      ["npm:2.0.1", {\
+        "packageLocation": "../../../../cache/others/berry/cache/assertion-error-npm-2.0.1-8169d136f2-10c0.zip/node_modules/assertion-error/",\
         "packageDependencies": [\
-          ["assertion-error", "npm:1.1.0"]\
+          ["assertion-error", "npm:2.0.1"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -4204,17 +4204,15 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["chai", [\
-      ["npm:4.4.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/chai-npm-4.4.0-fdb99315e9-10c0.zip/node_modules/chai/",\
+      ["npm:5.0.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/chai-npm-5.0.0-a8f4a2b2d7-10c0.zip/node_modules/chai/",\
         "packageDependencies": [\
-          ["chai", "npm:4.4.0"],\
-          ["assertion-error", "npm:1.1.0"],\
-          ["check-error", "npm:1.0.3"],\
-          ["deep-eql", "npm:4.1.3"],\
-          ["get-func-name", "npm:2.0.2"],\
-          ["loupe", "npm:2.3.7"],\
-          ["pathval", "npm:1.1.1"],\
-          ["type-detect", "npm:4.0.8"]\
+          ["chai", "npm:5.0.0"],\
+          ["assertion-error", "npm:2.0.1"],\
+          ["check-error", "npm:2.0.0"],\
+          ["deep-eql", "npm:5.0.1"],\
+          ["loupe", "npm:3.0.2"],\
+          ["pathval", "npm:2.0.0"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -4232,7 +4230,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["chai-as-promised", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:7.1.1"],\
           ["@types/chai", null],\
-          ["chai", "npm:4.4.0"],\
+          ["chai", "npm:5.0.0"],\
           ["check-error", "npm:1.0.3"]\
         ],\
         "packagePeers": [\
@@ -4278,6 +4276,13 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["check-error", "npm:1.0.3"],\
           ["get-func-name", "npm:2.0.2"]\
+        ],\
+        "linkType": "HARD"\
+      }],\
+      ["npm:2.0.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/check-error-npm-2.0.0-f3bb82e0c7-10c0.zip/node_modules/check-error/",\
+        "packageDependencies": [\
+          ["check-error", "npm:2.0.0"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -4620,11 +4625,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["deep-eql", [\
-      ["npm:4.1.3", {\
-        "packageLocation": "../../../../cache/others/berry/cache/deep-eql-npm-4.1.3-020a64f862-10c0.zip/node_modules/deep-eql/",\
+      ["npm:5.0.1", {\
+        "packageLocation": "../../../../cache/others/berry/cache/deep-eql-npm-5.0.1-2c26401e09-10c0.zip/node_modules/deep-eql/",\
         "packageDependencies": [\
-          ["deep-eql", "npm:4.1.3"],\
-          ["type-detect", "npm:4.0.8"]\
+          ["deep-eql", "npm:5.0.1"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -6737,10 +6741,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["loupe", [\
-      ["npm:2.3.7", {\
-        "packageLocation": "../../../../cache/others/berry/cache/loupe-npm-2.3.7-f294c2ef33-10c0.zip/node_modules/loupe/",\
+      ["npm:3.0.2", {\
+        "packageLocation": "../../../../cache/others/berry/cache/loupe-npm-3.0.2-9678a2256e-10c0.zip/node_modules/loupe/",\
         "packageDependencies": [\
-          ["loupe", "npm:2.3.7"],\
+          ["loupe", "npm:3.0.2"],\
           ["get-func-name", "npm:2.0.2"]\
         ],\
         "linkType": "HARD"\
@@ -7558,10 +7562,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["pathval", [\
-      ["npm:1.1.1", {\
-        "packageLocation": "../../../../cache/others/berry/cache/pathval-npm-1.1.1-ce0311d7e0-10c0.zip/node_modules/pathval/",\
+      ["npm:2.0.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/pathval-npm-2.0.0-e9fc9a6282-10c0.zip/node_modules/pathval/",\
         "packageDependencies": [\
-          ["pathval", "npm:1.1.1"]\
+          ["pathval", "npm:2.0.0"]\
         ],\
         "linkType": "HARD"\
       }]\

@@ -737,22 +737,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-classes@npm:^7.23.5":
-  version: 7.23.5
-  resolution: "@babel/plugin-transform-classes@npm:7.23.5"
+"@babel/plugin-transform-classes@npm:^7.23.8":
+  version: 7.23.8
+  resolution: "@babel/plugin-transform-classes@npm:7.23.8"
   dependencies:
     "@babel/helper-annotate-as-pure": "npm:^7.22.5"
-    "@babel/helper-compilation-targets": "npm:^7.22.15"
+    "@babel/helper-compilation-targets": "npm:^7.23.6"
     "@babel/helper-environment-visitor": "npm:^7.22.20"
     "@babel/helper-function-name": "npm:^7.23.0"
-    "@babel/helper-optimise-call-expression": "npm:^7.22.5"
     "@babel/helper-plugin-utils": "npm:^7.22.5"
     "@babel/helper-replace-supers": "npm:^7.22.20"
     "@babel/helper-split-export-declaration": "npm:^7.22.6"
     globals: "npm:^11.1.0"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 07988f52b4893151887d1ea6ff79e5fe834078c5731bd09babd5659edbbae21ea4e2de326a02443a63fd776b4c945da6177f07875b56fe66e0b7899e830a9e92
+  checksum: 227ac5166501e04d9e7fbd5eda6869b084ffa4af6830ac12544ac6ea14953ca00eb1762b0df9349c0f6c8d2a799385910f558066cd0fb85b9ca437b1131a6043
   languageName: node
   linkType: hard
 
@@ -1271,9 +1270,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:7.23.7":
-  version: 7.23.7
-  resolution: "@babel/preset-env@npm:7.23.7"
+"@babel/preset-env@npm:7.23.8":
+  version: 7.23.8
+  resolution: "@babel/preset-env@npm:7.23.8"
   dependencies:
     "@babel/compat-data": "npm:^7.23.5"
     "@babel/helper-compilation-targets": "npm:^7.23.6"
@@ -1308,7 +1307,7 @@ __metadata:
     "@babel/plugin-transform-block-scoping": "npm:^7.23.4"
     "@babel/plugin-transform-class-properties": "npm:^7.23.3"
     "@babel/plugin-transform-class-static-block": "npm:^7.23.4"
-    "@babel/plugin-transform-classes": "npm:^7.23.5"
+    "@babel/plugin-transform-classes": "npm:^7.23.8"
     "@babel/plugin-transform-computed-properties": "npm:^7.23.3"
     "@babel/plugin-transform-destructuring": "npm:^7.23.3"
     "@babel/plugin-transform-dotall-regex": "npm:^7.23.3"
@@ -1357,7 +1356,7 @@ __metadata:
     semver: "npm:^6.3.1"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: ac9def873cec52ee02a550bde6e22eced16d1ae331bb8ebc82c03e4c91c12ac17e3e4027647e61612937bcc25ac46e71370aaf99dc2e85dbd11f7777ffeed54e
+  checksum: e602ad954645f1a509644e3d2c72b3c63bdc2273c377e7a83b78f076eca215887ea3624ffc36aaad03deb9ac8acd89e247fd4562b96e0f2b679485e20d8ff25f
   languageName: node
   linkType: hard
 
@@ -1409,7 +1408,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.23.7, @babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:7.23.8":
+  version: 7.23.8
+  resolution: "@babel/runtime@npm:7.23.8"
+  dependencies:
+    regenerator-runtime: "npm:^0.14.0"
+  checksum: ba5e8fbb32ef04f6cab5e89c54a0497c2fde7b730595cc1af93496270314f13ff2c6a9360fdb2f0bdd4d6b376752ce3cf85642bd6b876969a6a62954934c2df8
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.8.4":
   version: 7.23.7
   resolution: "@babel/runtime@npm:7.23.7"
   dependencies:
@@ -1495,28 +1503,28 @@ __metadata:
     "@babel/plugin-transform-flow-strip-types": "npm:7.23.3"
     "@babel/plugin-transform-runtime": "npm:7.23.7"
     "@babel/polyfill": "npm:7.12.1"
-    "@babel/preset-env": "npm:7.23.7"
+    "@babel/preset-env": "npm:7.23.8"
     "@babel/preset-flow": "npm:7.23.3"
     "@babel/register": "npm:7.23.7"
-    "@babel/runtime": "npm:7.23.7"
+    "@babel/runtime": "npm:7.23.8"
     "@equisoft/eslint-config": "npm:3.0.3"
     "@microsoft/eslint-formatter-sarif": "npm:3.0.0"
     "@sentry/browser": "npm:^7.12.0"
     "@xmldom/xmldom": "npm:0.8.10"
     babel-loader: "npm:9.1.3"
-    chai: "npm:4.4.0"
+    chai: "npm:4.4.1"
     chai-as-promised: "npm:7.1.1"
     core-js: "npm:3.35.0"
     cross-env: "npm:7.0.3"
     es6-error: "npm:^4.1.1"
     eslint: "npm:8.56.0"
     eslint-import-resolver-node: "npm:0.3.9"
-    eslint-plugin-chai-friendly: "npm:0.7.3"
+    eslint-plugin-chai-friendly: "npm:0.7.4"
     eslint-plugin-flowtype: "npm:8.0.3"
     eslint-plugin-import: "npm:2.29.1"
     events: "npm:^3.3.0"
     fetch-mock: "npm:9.11.0"
-    flow-bin: "npm:0.225.1"
+    flow-bin: "npm:0.226.0"
     formdata-polyfill: "npm:4.0.10"
     jquery: "npm:^3.4"
     jquery-param: "npm:^1.1.8"
@@ -1766,77 +1774,77 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry-internal/feedback@npm:7.92.0":
-  version: 7.92.0
-  resolution: "@sentry-internal/feedback@npm:7.92.0"
+"@sentry-internal/feedback@npm:7.93.0":
+  version: 7.93.0
+  resolution: "@sentry-internal/feedback@npm:7.93.0"
   dependencies:
-    "@sentry/core": "npm:7.92.0"
-    "@sentry/types": "npm:7.92.0"
-    "@sentry/utils": "npm:7.92.0"
-  checksum: 36650e289962d7e4219a54cef89e8f110a4314fb01b1b34fc205790554ce5615c56b5a40aa6ee5e65914e139d03197e81d595f37009dba6479b99a82af211d1e
+    "@sentry/core": "npm:7.93.0"
+    "@sentry/types": "npm:7.93.0"
+    "@sentry/utils": "npm:7.93.0"
+  checksum: 759829b41acf2e8faf2a91ec373b17e76e4f18e0ed19499a0928945bab6fb9c0e14f7cc9297557243d935d6f5c7f08bfc7c5455c491e6a96104e340e6bf4bbcb
   languageName: node
   linkType: hard
 
-"@sentry-internal/tracing@npm:7.92.0":
-  version: 7.92.0
-  resolution: "@sentry-internal/tracing@npm:7.92.0"
+"@sentry-internal/tracing@npm:7.93.0":
+  version: 7.93.0
+  resolution: "@sentry-internal/tracing@npm:7.93.0"
   dependencies:
-    "@sentry/core": "npm:7.92.0"
-    "@sentry/types": "npm:7.92.0"
-    "@sentry/utils": "npm:7.92.0"
-  checksum: bb0548ed351cb16fbe1e37d7ee72494c6923cf5c5c89f47ae6d2c61b4cfbefdb9946bf091407b7ab798e72e3d8116fcbc8c4370645780a60c7d3868196b7e30c
+    "@sentry/core": "npm:7.93.0"
+    "@sentry/types": "npm:7.93.0"
+    "@sentry/utils": "npm:7.93.0"
+  checksum: 47d11dbc03886399766e29e4178dd308e18c75846846b726e5007304d3bae032513f1ac1fd949a42883483f2eba2b6a12a5359cd3bed56e0ad218486fda198fc
   languageName: node
   linkType: hard
 
 "@sentry/browser@npm:^7.12.0":
-  version: 7.92.0
-  resolution: "@sentry/browser@npm:7.92.0"
+  version: 7.93.0
+  resolution: "@sentry/browser@npm:7.93.0"
   dependencies:
-    "@sentry-internal/feedback": "npm:7.92.0"
-    "@sentry-internal/tracing": "npm:7.92.0"
-    "@sentry/core": "npm:7.92.0"
-    "@sentry/replay": "npm:7.92.0"
-    "@sentry/types": "npm:7.92.0"
-    "@sentry/utils": "npm:7.92.0"
-  checksum: 3e04cdf501dd041fab7a5df12621cbd33dd53d4cc304e23374bca2fbae78fcc331eb1b99f8ebddef19325bac5d0fddf1101c0f876ba7af04ac21fd9447355a69
+    "@sentry-internal/feedback": "npm:7.93.0"
+    "@sentry-internal/tracing": "npm:7.93.0"
+    "@sentry/core": "npm:7.93.0"
+    "@sentry/replay": "npm:7.93.0"
+    "@sentry/types": "npm:7.93.0"
+    "@sentry/utils": "npm:7.93.0"
+  checksum: 68cb15b80b70d001ac947ef3cdc7cf9db1792ab963c325595a0efaaaf24a52b653c8ed5771a7bcd9ea9285624a1c031130622d706f4219037936727524e70186
   languageName: node
   linkType: hard
 
-"@sentry/core@npm:7.92.0":
-  version: 7.92.0
-  resolution: "@sentry/core@npm:7.92.0"
+"@sentry/core@npm:7.93.0":
+  version: 7.93.0
+  resolution: "@sentry/core@npm:7.93.0"
   dependencies:
-    "@sentry/types": "npm:7.92.0"
-    "@sentry/utils": "npm:7.92.0"
-  checksum: a0c042b479dce2803e9746ad6e58831762a9b9f48a0fc7024377dcc33e170ccac59b76df2946bdf70d420ac07f2b747582f08ece13769140f1fdfcc04ccafa8b
+    "@sentry/types": "npm:7.93.0"
+    "@sentry/utils": "npm:7.93.0"
+  checksum: 47af9504d4ed75435a8ce648e3752e330ac8305e71433c8b4bb7161140b27678f104310ef21a06077dc22b09e884f72937900c28501b111dfe78f50c069b6eb9
   languageName: node
   linkType: hard
 
-"@sentry/replay@npm:7.92.0":
-  version: 7.92.0
-  resolution: "@sentry/replay@npm:7.92.0"
+"@sentry/replay@npm:7.93.0":
+  version: 7.93.0
+  resolution: "@sentry/replay@npm:7.93.0"
   dependencies:
-    "@sentry-internal/tracing": "npm:7.92.0"
-    "@sentry/core": "npm:7.92.0"
-    "@sentry/types": "npm:7.92.0"
-    "@sentry/utils": "npm:7.92.0"
-  checksum: 5e6ef56fbac077b931791459b0039d5d033caeb10682b935c63afcc48578e7e90b99671b0528c6a5fdf5934fa8f92f976ded65a7923d0798aed00bb4b84d134a
+    "@sentry-internal/tracing": "npm:7.93.0"
+    "@sentry/core": "npm:7.93.0"
+    "@sentry/types": "npm:7.93.0"
+    "@sentry/utils": "npm:7.93.0"
+  checksum: 4e3c153b766b6ec009ba8f0da95976a46bbd8efbeb972782529d8e8018bb66a75d8220ba19cec293d48f5b8499cbe1c6da68da6947d9c593e47a5d0f6d3af4e7
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:7.92.0":
-  version: 7.92.0
-  resolution: "@sentry/types@npm:7.92.0"
-  checksum: fe8b0b2807b85e110e05d3d18c3da4dc2cbd7e9157e5958d3fe2994710da145604a6e2f7f52ae8f8a4b77a5ea03963787b421dfca38a2a68d510c566b8ee50a6
+"@sentry/types@npm:7.93.0":
+  version: 7.93.0
+  resolution: "@sentry/types@npm:7.93.0"
+  checksum: 6598ee0d0e1754821eb4ae1754c3f0f4d996dc120cb092dda90b4dd2cb9fabe78866e0f3d4d45fffc667a1da421776d536050c91440e8cbcdfd5b913747723c9
   languageName: node
   linkType: hard
 
-"@sentry/utils@npm:7.92.0":
-  version: 7.92.0
-  resolution: "@sentry/utils@npm:7.92.0"
+"@sentry/utils@npm:7.93.0":
+  version: 7.93.0
+  resolution: "@sentry/utils@npm:7.93.0"
   dependencies:
-    "@sentry/types": "npm:7.92.0"
-  checksum: a92c6cf69a5bbd158d54c1ef6865cb81acdfaf37e6336a9e64a3db65769ae3b27f900788c5543f9dfa47d6bb8fa9cc5f2afbe24ff3c257d6a4e56829fc03e2b2
+    "@sentry/types": "npm:7.93.0"
+  checksum: 8f6f82ba62207fb2ad6cf459b91c832bf351026b9e4c5e1461d93228b469b0467411faad12a0ec46b976df2a5a3a315498d5c17e366b15781e2fed2863855b8d
   languageName: node
   linkType: hard
 
@@ -2652,9 +2660,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai@npm:4.4.0":
-  version: 4.4.0
-  resolution: "chai@npm:4.4.0"
+"chai@npm:4.4.1":
+  version: 4.4.1
+  resolution: "chai@npm:4.4.1"
   dependencies:
     assertion-error: "npm:^1.1.0"
     check-error: "npm:^1.0.3"
@@ -2663,7 +2671,7 @@ __metadata:
     loupe: "npm:^2.3.6"
     pathval: "npm:^1.1.1"
     type-detect: "npm:^4.0.8"
-  checksum: 34b6b616e77b42ae746f397ef8affaa0f3f2aa3955985de6d0faabcc9de250546e9e4f0d6bd9e59c920ff5f67937e6fa6e0f02752c0c3c43b0904e4f423cb9f7
+  checksum: 91590a8fe18bd6235dece04ccb2d5b4ecec49984b50924499bdcd7a95c02cb1fd2a689407c19bb854497bde534ef57525cfad6c7fdd2507100fd802fbc2aefbd
   languageName: node
   linkType: hard
 
@@ -3271,12 +3279,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-chai-friendly@npm:0.7.3":
-  version: 0.7.3
-  resolution: "eslint-plugin-chai-friendly@npm:0.7.3"
+"eslint-plugin-chai-friendly@npm:0.7.4":
+  version: 0.7.4
+  resolution: "eslint-plugin-chai-friendly@npm:0.7.4"
   peerDependencies:
     eslint: ">=3.0.0"
-  checksum: 6aa14b587f20a7d877e5428a5fcb28c2624ab7fd1581193cc1ae41fd60d69607fa9361e063857038b36a6d20d0ae808cd2215f9c7689c2ad59e45630c4645820
+  checksum: b161e4796de4db304042ea8da1bd467d63d22e89f74e85134c2a6755c49c53021ac2e48003af06d41b7a1b1b5e8cceacca6dc18ffaee02afd79a1c243728b8a7
   languageName: node
   linkType: hard
 
@@ -3663,12 +3671,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flow-bin@npm:0.225.1":
-  version: 0.225.1
-  resolution: "flow-bin@npm:0.225.1"
+"flow-bin@npm:0.226.0":
+  version: 0.226.0
+  resolution: "flow-bin@npm:0.226.0"
   bin:
     flow: cli.js
-  checksum: dd91973af705a33a0fea9b7171adcec1af2a5f1ed2b4bfbe5fe83337ff4d3a3f45f8a89b077ce33b9e8ce19f5785f6af75911b0428b232641deee37c23feb8a8
+  checksum: 7f0d61701a10de48af2b2585e1ff4f296a72d451bfbc2557189bfe2943eea160f7cdcfb94e330fbe793c73788c46b1c1deb625229bcc057cee0da88c3a0a1a91
   languageName: node
   linkType: hard
 

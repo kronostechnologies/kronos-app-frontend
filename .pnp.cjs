@@ -41,7 +41,7 @@ const RAW_RUNTIME_STATE =
           ["@babel/runtime", "npm:7.23.8"],\
           ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:3.0.3"],\
           ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
-          ["@sentry/browser", "npm:7.95.0"],\
+          ["@sentry/browser", "npm:7.98.0"],\
           ["@xmldom/xmldom", "npm:0.8.10"],\
           ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.1.3"],\
           ["chai", "npm:4.4.1"],\
@@ -2710,7 +2710,7 @@ const RAW_RUNTIME_STATE =
           ["@babel/runtime", "npm:7.23.8"],\
           ["@equisoft/eslint-config", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:3.0.3"],\
           ["@microsoft/eslint-formatter-sarif", "npm:3.0.0"],\
-          ["@sentry/browser", "npm:7.95.0"],\
+          ["@sentry/browser", "npm:7.98.0"],\
           ["@xmldom/xmldom", "npm:0.8.10"],\
           ["babel-loader", "virtual:ac7d112d83679ae9450c3daefcbe82fae28ac6673a14e5ed3727dd648b9dc28a1362c55802568dabf1e85c77eb47603435e88bad48d75dd7e73c7a146e0782bb#npm:9.1.3"],\
           ["chai", "npm:4.4.1"],\
@@ -3031,97 +3031,97 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["@sentry-internal/feedback", [\
-      ["npm:7.95.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-internal-feedback-npm-7.95.0-37ae4b94b7-10c0.zip/node_modules/@sentry-internal/feedback/",\
+      ["npm:7.98.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-internal-feedback-npm-7.98.0-bbd3fadd07-10c0.zip/node_modules/@sentry-internal/feedback/",\
         "packageDependencies": [\
-          ["@sentry-internal/feedback", "npm:7.95.0"],\
-          ["@sentry/core", "npm:7.95.0"],\
-          ["@sentry/types", "npm:7.95.0"],\
-          ["@sentry/utils", "npm:7.95.0"]\
+          ["@sentry-internal/feedback", "npm:7.98.0"],\
+          ["@sentry/core", "npm:7.98.0"],\
+          ["@sentry/types", "npm:7.98.0"],\
+          ["@sentry/utils", "npm:7.98.0"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@sentry-internal/replay-canvas", [\
-      ["npm:7.95.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-internal-replay-canvas-npm-7.95.0-8d51cecced-10c0.zip/node_modules/@sentry-internal/replay-canvas/",\
+      ["npm:7.98.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-internal-replay-canvas-npm-7.98.0-a444a96ee2-10c0.zip/node_modules/@sentry-internal/replay-canvas/",\
         "packageDependencies": [\
-          ["@sentry-internal/replay-canvas", "npm:7.95.0"],\
-          ["@sentry/core", "npm:7.95.0"],\
-          ["@sentry/replay", "npm:7.95.0"],\
-          ["@sentry/types", "npm:7.95.0"],\
-          ["@sentry/utils", "npm:7.95.0"]\
+          ["@sentry-internal/replay-canvas", "npm:7.98.0"],\
+          ["@sentry/core", "npm:7.98.0"],\
+          ["@sentry/replay", "npm:7.98.0"],\
+          ["@sentry/types", "npm:7.98.0"],\
+          ["@sentry/utils", "npm:7.98.0"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@sentry-internal/tracing", [\
-      ["npm:7.95.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-internal-tracing-npm-7.95.0-b2d557e4b8-10c0.zip/node_modules/@sentry-internal/tracing/",\
+      ["npm:7.98.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-internal-tracing-npm-7.98.0-b35ecd7b6e-10c0.zip/node_modules/@sentry-internal/tracing/",\
         "packageDependencies": [\
-          ["@sentry-internal/tracing", "npm:7.95.0"],\
-          ["@sentry/core", "npm:7.95.0"],\
-          ["@sentry/types", "npm:7.95.0"],\
-          ["@sentry/utils", "npm:7.95.0"]\
+          ["@sentry-internal/tracing", "npm:7.98.0"],\
+          ["@sentry/core", "npm:7.98.0"],\
+          ["@sentry/types", "npm:7.98.0"],\
+          ["@sentry/utils", "npm:7.98.0"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@sentry/browser", [\
-      ["npm:7.95.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-browser-npm-7.95.0-de3ef3ba73-10c0.zip/node_modules/@sentry/browser/",\
+      ["npm:7.98.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-browser-npm-7.98.0-042a41aa80-10c0.zip/node_modules/@sentry/browser/",\
         "packageDependencies": [\
-          ["@sentry/browser", "npm:7.95.0"],\
-          ["@sentry-internal/feedback", "npm:7.95.0"],\
-          ["@sentry-internal/replay-canvas", "npm:7.95.0"],\
-          ["@sentry-internal/tracing", "npm:7.95.0"],\
-          ["@sentry/core", "npm:7.95.0"],\
-          ["@sentry/replay", "npm:7.95.0"],\
-          ["@sentry/types", "npm:7.95.0"],\
-          ["@sentry/utils", "npm:7.95.0"]\
+          ["@sentry/browser", "npm:7.98.0"],\
+          ["@sentry-internal/feedback", "npm:7.98.0"],\
+          ["@sentry-internal/replay-canvas", "npm:7.98.0"],\
+          ["@sentry-internal/tracing", "npm:7.98.0"],\
+          ["@sentry/core", "npm:7.98.0"],\
+          ["@sentry/replay", "npm:7.98.0"],\
+          ["@sentry/types", "npm:7.98.0"],\
+          ["@sentry/utils", "npm:7.98.0"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@sentry/core", [\
-      ["npm:7.95.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-core-npm-7.95.0-763008a3f5-10c0.zip/node_modules/@sentry/core/",\
+      ["npm:7.98.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-core-npm-7.98.0-cd8aa44aea-10c0.zip/node_modules/@sentry/core/",\
         "packageDependencies": [\
-          ["@sentry/core", "npm:7.95.0"],\
-          ["@sentry/types", "npm:7.95.0"],\
-          ["@sentry/utils", "npm:7.95.0"]\
+          ["@sentry/core", "npm:7.98.0"],\
+          ["@sentry/types", "npm:7.98.0"],\
+          ["@sentry/utils", "npm:7.98.0"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@sentry/replay", [\
-      ["npm:7.95.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-replay-npm-7.95.0-854a8cb374-10c0.zip/node_modules/@sentry/replay/",\
+      ["npm:7.98.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-replay-npm-7.98.0-662591177a-10c0.zip/node_modules/@sentry/replay/",\
         "packageDependencies": [\
-          ["@sentry/replay", "npm:7.95.0"],\
-          ["@sentry-internal/tracing", "npm:7.95.0"],\
-          ["@sentry/core", "npm:7.95.0"],\
-          ["@sentry/types", "npm:7.95.0"],\
-          ["@sentry/utils", "npm:7.95.0"]\
+          ["@sentry/replay", "npm:7.98.0"],\
+          ["@sentry-internal/tracing", "npm:7.98.0"],\
+          ["@sentry/core", "npm:7.98.0"],\
+          ["@sentry/types", "npm:7.98.0"],\
+          ["@sentry/utils", "npm:7.98.0"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@sentry/types", [\
-      ["npm:7.95.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-types-npm-7.95.0-ea53c4be2d-10c0.zip/node_modules/@sentry/types/",\
+      ["npm:7.98.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-types-npm-7.98.0-f025acb8ce-10c0.zip/node_modules/@sentry/types/",\
         "packageDependencies": [\
-          ["@sentry/types", "npm:7.95.0"]\
+          ["@sentry/types", "npm:7.98.0"]\
         ],\
         "linkType": "HARD"\
       }]\
     ]],\
     ["@sentry/utils", [\
-      ["npm:7.95.0", {\
-        "packageLocation": "../../../../cache/others/berry/cache/@sentry-utils-npm-7.95.0-39f6a329d4-10c0.zip/node_modules/@sentry/utils/",\
+      ["npm:7.98.0", {\
+        "packageLocation": "../../../../cache/others/berry/cache/@sentry-utils-npm-7.98.0-fb8ed7102b-10c0.zip/node_modules/@sentry/utils/",\
         "packageDependencies": [\
-          ["@sentry/utils", "npm:7.95.0"],\
-          ["@sentry/types", "npm:7.95.0"]\
+          ["@sentry/utils", "npm:7.98.0"],\
+          ["@sentry/types", "npm:7.98.0"]\
         ],\
         "linkType": "HARD"\
       }]\

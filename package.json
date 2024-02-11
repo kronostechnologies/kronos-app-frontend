@@ -52,7 +52,7 @@
     "fetch-mock": "9.11.0",
     "flow-bin": "0.228.0",
     "formdata-polyfill": "4.0.10",
-    "mocha": "10.2.0",
+    "mocha": "10.3.0",
     "mocha-junit-reporter": "2.2.1",
     "node-fetch": "2.7.0",
     "nyc": "15.1.0",
